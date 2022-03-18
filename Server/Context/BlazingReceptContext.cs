@@ -15,7 +15,7 @@ public class BlazingReceptContext : DbContext
         this.ChangeTracker.LazyLoadingEnabled = false;
     }
 
-    public DbSet<Recipe> Recipe { get; set; }
-    public DbSet<Ingredient> Ingredient { get; set; }
-    public DbSet<IngredientCategory> IngredientCategory { get; set; }
+    public DbSet<Recipe> Recipe => Set<Recipe>();
+    public DbSet<Ingredient> Ingredient => Set<Ingredient>();
+    public DbSet<IngredientCategory> IngredientCategory => Set<IngredientCategory>();
 }

@@ -13,6 +13,7 @@ public class IngredientsRepository : RepositoryBase<Ingredient>, IIngredientsRep
 
     public override async Task<IReadOnlyList<Ingredient>> ListAllAsync()
     {
-        return await _dbContext.Set<Ingredient>().ToListAsync();
+        return await _context.Set<Ingredient>().ToListAsync();
     }
 }
+ 

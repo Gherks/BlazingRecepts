@@ -4,7 +4,7 @@ namespace BlazingRecept.Server.Repositories.Interfaces;
 
 public interface IAsyncRepository<Type> where Type : BaseEntity
 {
-    Task<Type> GetByIdAsync(Guid id);
+    Task<Type?> GetByIdAsync(Guid id);
     Task<IReadOnlyList<Type>> ListAllAsync();
     Task<Type> AddAsync(Type entity);
     Task<IEnumerable<Type>> AddManyAsync(IEnumerable<Type> entities);

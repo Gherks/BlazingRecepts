@@ -9,12 +9,12 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
 {
     protected internal BlazingReceptContext _context;
 
-    public RepositoryBase(BlazingReceptContext dbContext)
+    public RepositoryBase(BlazingReceptContext context)
     {
-        _context = dbContext;
+        _context = context;
     }
 
-    public virtual async Task<Type> GetByIdAsync(Guid id)
+    public virtual async Task<Type?> GetByIdAsync(Guid id)
     {
         return await _context.Set<Type>().FindAsync(id);
     }

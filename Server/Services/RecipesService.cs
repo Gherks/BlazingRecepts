@@ -17,9 +17,9 @@ namespace BlazingRecept.Server.Services
             _mapper = mapper;
         }
 
-        public async Task<RecipeDto> GetByIdAsync(Guid id)
+        public async Task<RecipeDto?> GetByIdAsync(Guid id)
         {
-            Recipe recipe = await _repository.GetByIdAsync(id);
+            Recipe? recipe = await _repository.GetByIdAsync(id);
 
             if (recipe != null)
             {
@@ -54,7 +54,7 @@ namespace BlazingRecept.Server.Services
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            Recipe recipe = await _repository.GetByIdAsync(id);
+            Recipe? recipe = await _repository.GetByIdAsync(id);
 
             if (recipe != null)
             {
