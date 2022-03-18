@@ -2,8 +2,8 @@
 
 namespace BlazingRecept.Server.Entities;
 
-public class WeightedIngredient : BaseEntity
+public sealed class WeightedIngredient : BaseEntity
 {
-    public Ingredient Ingredient { get; set; }
-    public int Grams { get; set; }
+    public Ingredient Ingredient { get; set; } = new();
+    public int Grams { get; set; } = -1;
 }

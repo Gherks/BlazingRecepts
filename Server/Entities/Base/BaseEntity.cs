@@ -1,6 +1,9 @@
-﻿namespace BlazingRecept.Server.Entities.Base;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BlazingRecept.Server.Entities.Base;
 
 public class BaseEntity
 {
-    public Guid Id { get; set; }
+    [Required]
+    public Guid Id { get; set; } = Guid.Empty;
 }

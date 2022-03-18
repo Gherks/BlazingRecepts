@@ -30,9 +30,9 @@ namespace BlazingRecept.Server.Services
 
         public sealed class IngredientCategoryComparer : IComparer<IngredientCategoryDto>
         {
-            public int Compare(IngredientCategoryDto first, IngredientCategoryDto second)
+            public int Compare(IngredientCategoryDto? first, IngredientCategoryDto? second)
             {
-                return first.SortOrder > second.SortOrder ? 1 : -1;
+                return first?.SortOrder > second?.SortOrder ? 1 : -1;
             }
         }
     }

@@ -2,10 +2,10 @@
 
 namespace BlazingRecept.Server.Entities;
 
-public class Recipe : BaseEntity
+public sealed class Recipe : BaseEntity
 {
-    public string Name { get; set; }
-    public string Instructions { get; set; }
-    public int BasePortions { get; set; }
-    public List<WeightedIngredient> WeightedIngredients { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Instructions { get; set; } = string.Empty;
+    public int BasePortions { get; set; } = -1;
+    public List<WeightedIngredient> WeightedIngredients { get; set; } = new();
 }

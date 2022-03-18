@@ -2,8 +2,8 @@
 
 namespace BlazingRecept.Server.Entities;
 
-public class IngredientCategory : BaseEntity
+public sealed class IngredientCategory : BaseEntity
 {
-    public string Name { get; set; }
-    public int SortOrder { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int SortOrder { get; set; } = -1;
 }

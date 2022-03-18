@@ -19,7 +19,7 @@ namespace BlazingRecept.Server.Services
             _mapper = mapper;
         }
 
-        public async Task<IngredientDto> GetByIdAsync(Guid id)
+        public async Task<IngredientDto?> GetByIdAsync(Guid id)
         {
             Ingredient ingredient = await _repository.GetByIdAsync(id);
 
@@ -28,7 +28,7 @@ namespace BlazingRecept.Server.Services
                 IReadOnlyList<IngredientCategoryDto> ingredientCategoryDtos = await _ingredientCategoryService.GetAllAsync();
 
                 IngredientDto ingredientDto = _mapper.Map<IngredientDto>(ingredient);
-                ingredientDto.Category = ingredientCategoryDtos.FirstOrDefault(ingredientCategory => ingredientCategory.Id == ingredient.IngredientCategoryId);
+                ingredientDto.Category = ingredientCategoryDtos?.FirstOrDefault(ingredientCategory => ingredientCategory.Id == ingredient.IngredientCategoryId);
 
                 return ingredientDto;
             }
