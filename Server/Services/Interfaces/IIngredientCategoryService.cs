@@ -1,8 +1,6 @@
-﻿using Receptacle.Shared.Dto;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using BlazingRecept.Shared.Dto;
 
-namespace Receptacle.Server.Services.Interfaces
+namespace BlazingRecept.Server.Services.Interfaces
 {
     public interface IIngredientCategoryService
     {

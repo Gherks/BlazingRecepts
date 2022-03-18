@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Receptacle.Server.Services.Interfaces;
-using Receptacle.Shared.Dto;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using BlazingRecept.Server.Services.Interfaces;
+using BlazingRecept.Shared.Dto;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Receptacle.Server.Controllers;
+namespace BlazingRecept.Server.Controllers;
 
 [ApiController]
 [Route("api/ingredientcategories")]

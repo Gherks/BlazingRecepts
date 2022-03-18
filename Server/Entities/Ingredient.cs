@@ -1,8 +1,7 @@
-﻿using Receptacle.Server.Entities.Base;
-using System;
+﻿using BlazingRecept.Server.Entities.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Receptacle.Server.Entities;
+namespace BlazingRecept.Server.Entities;
 
 public class Ingredient : BaseEntity
 {

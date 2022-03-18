@@ -1,7 +1,6 @@
-﻿using Receptacle.Server.Entities.Base;
-using System.Collections.Generic;
+﻿using BlazingRecept.Server.Entities.Base;
 
-namespace Receptacle.Server.Entities;
+namespace BlazingRecept.Server.Entities;
 
 public class Recipe : BaseEntity
 {

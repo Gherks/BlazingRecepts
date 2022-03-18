@@ -1,6 +1,6 @@
-﻿using Receptacle.Server.Entities;
+﻿using BlazingRecept.Server.Entities;
 
-namespace Receptacle.Server.Repositories.Interfaces;
+namespace BlazingRecept.Server.Repositories.Interfaces;
 
 public interface IIngredientCategoryRepository : IAsyncRepository<IngredientCategory>
 {

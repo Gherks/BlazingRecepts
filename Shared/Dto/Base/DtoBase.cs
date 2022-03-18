@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Receptacle.Shared.Dto.Base;
+﻿namespace BlazingRecept.Shared.Dto.Base;
 
 public class DtoBase
 {

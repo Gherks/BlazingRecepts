@@ -1,6 +1,6 @@
-﻿using Receptacle.Shared.Dto.Base;
+﻿using BlazingRecept.Shared.Dto.Base;
 
-namespace Receptacle.Shared.Dto;
+namespace BlazingRecept.Shared.Dto;
 
 public class IngredientCategoryDto : DtoBase
 {

@@ -1,9 +1,6 @@
-﻿using Receptacle.Server.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using BlazingRecept.Server.Entities.Base;
 
-namespace Receptacle.Server.Repositories.Interfaces;
+namespace BlazingRecept.Server.Repositories.Interfaces;
 
 public interface IAsyncRepository<Type> where Type : BaseEntity
 {

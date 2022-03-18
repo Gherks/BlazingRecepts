@@ -1,12 +1,12 @@
-﻿using Receptacle.Server.Context;
-using Receptacle.Server.Entities;
-using Receptacle.Server.Repositories.Interfaces;
+﻿using BlazingRecept.Server.Context;
+using BlazingRecept.Server.Entities;
+using BlazingRecept.Server.Repositories.Interfaces;
 
-namespace Receptacle.Server.Repositories;
+namespace BlazingRecept.Server.Repositories;
 
 public class IngredientCategoryRepository : RepositoryBase<IngredientCategory>, IIngredientCategoryRepository
 {
-    public IngredientCategoryRepository(ReceptacleContext dbContext) : base(dbContext)
+    public IngredientCategoryRepository(BlazingReceptContext dbContext) : base(dbContext)
     {
     }
 }

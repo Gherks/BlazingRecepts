@@ -1,6 +1,6 @@
-﻿using Receptacle.Server.Entities.Base;
+﻿using BlazingRecept.Server.Entities.Base;
 
-namespace Receptacle.Server.Entities;
+namespace BlazingRecept.Server.Entities;
 
 public class IngredientCategory : BaseEntity
 {

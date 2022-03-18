@@ -1,19 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Receptacle.Server.Context;
-using Receptacle.Server.Entities.Base;
-using Receptacle.Server.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BlazingRecept.Server.Context;
+using BlazingRecept.Server.Entities.Base;
+using BlazingRecept.Server.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
-namespace Receptacle.Server.Repositories;
+namespace BlazingRecept.Server.Repositories;
 
 public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEntity
 {
-    protected internal ReceptacleContext _context;
+    protected internal BlazingReceptContext _context;
 
-    public RepositoryBase(ReceptacleContext dbContext)
+    public RepositoryBase(BlazingReceptContext dbContext)
     {
         _context = dbContext;
     }

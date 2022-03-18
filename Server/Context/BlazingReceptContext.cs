@@ -1,16 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Receptacle.Server.Entities;
+﻿using BlazingRecept.Server.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace Receptacle.Server.Context;
+namespace BlazingRecept.Server.Context;
 
-public class ReceptacleContext : DbContext
+public class BlazingReceptContext : DbContext
 {
-    public ReceptacleContext()
+    public BlazingReceptContext()
     {
         this.ChangeTracker.LazyLoadingEnabled = false;
     }
 
-    public ReceptacleContext(DbContextOptions options) : base(options)
+    public BlazingReceptContext(DbContextOptions options) : base(options)
     {
         this.ChangeTracker.LazyLoadingEnabled = false;
     }

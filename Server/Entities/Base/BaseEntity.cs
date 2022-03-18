@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Receptacle.Server.Entities.Base;
+﻿namespace BlazingRecept.Server.Entities.Base;
 
 public class BaseEntity
 {

@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using Receptacle.Server.Entities;
-using Receptacle.Server.Repositories.Interfaces;
-using Receptacle.Server.Services.Interfaces;
-using Receptacle.Shared.Dto;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BlazingRecept.Server.Entities;
+using BlazingRecept.Server.Repositories.Interfaces;
+using BlazingRecept.Server.Services.Interfaces;
+using BlazingRecept.Shared.Dto;
 
-namespace Receptacle.Server.Services
+namespace BlazingRecept.Server.Services
 {
     public class IngredientCategoryService : IIngredientCategoryService
     {

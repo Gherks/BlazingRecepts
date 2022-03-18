@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Receptacle.Server.Entities;
-using Receptacle.Shared.Dto;
+using BlazingRecept.Server.Entities;
+using BlazingRecept.Shared.Dto;
 
-namespace Receptacle.Server.AutoMapperProfiles;
+namespace BlazingRecept.Server.AutoMapperProfiles;
 
 public class RecipeProfile : Profile
 {
