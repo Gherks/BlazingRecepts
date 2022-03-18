@@ -1,5 +1,43 @@
 ﻿@page "/createrecipe"
 
-<PageTitle>Create Recipe</PageTitle>
+@using BlazingRecept.Client.Utilities;
 
-<h1>Create Recipe</h1>
+<PageTitle>Create Recipe</PageTitle>
+<h1>Create recipe</h1>
+<div class="card mb-2">
+    <div class="card-body">
+        <EditForm Model="_form" OnValidSubmit="@ValidFormSubmitted">
+            <CustomValidation @ref="_customValidation" />
+            <div class="form-floating mb-2">
+                <input type="text" id="name" name="name" class="form-control" @bind="_form.Name" placeholder="Name">
+                <label for="name">Name</label>
+                <ValidationMessage For="() => _form.Name" />
+            </div>
+            <div class="form-floating mb-2">
+                <input type="text" id="base-portions" name="base-portions" class="form-control" @bind="_form.BasePortions" placeholder="Base portions">
+                <label for="base-portions">Base portions</label>
+                <ValidationMessage For="() => _form.BasePortions" />
+            </div>
+            <div class="form-floating mb-2">
+                <textarea id="instructions" name="instructions" class="form-control" @bind="_form.Instructions" @bind:event="oninput" placeholder="Enter instructions here" style="height: 200px"></textarea>
+                <label for="instructions">Enter instructions here</label>
+            </div>
+            <div class="card mb-2">
+                <div class="card-body">
+                    @if(string.IsNullOrWhiteSpace(_form.Instructions))
+                    {
+                        <p>Markdown text based upon instructions entered above will end up here</p>
+                    }
+                    else
+                    {
+                        @((MarkupString) _form.InstructionsPreview)
+                    }
+                </div>
+            </div>
+            <p>
+                <a class="link-primary" href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown Cheat Sheet</a>
+            </p>
+            <button class="btn btn-primary" type="submit">Add recipe</button>
+        </EditForm>
+    </div>
+</div>
