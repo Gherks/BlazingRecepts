@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace BlazingRecept.Server.Controllers;
+namespace BlazingRecept.Client.Pages;
 
 public partial class Ingredients : ComponentBase
 {
