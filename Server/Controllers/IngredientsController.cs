@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlazingRecept.Server.Controllers;
 
+//[Authorize]
 [ApiController]
 [Route("api/ingredients")]
+//[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class IngredientsController : ControllerBase
 {
     private readonly ILogger<IngredientsController> _logger;
@@ -24,19 +26,15 @@ public class IngredientsController : ControllerBase
     [HttpGet]
     public async Task<IReadOnlyList<IngredientDto>> Get()
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
         return await _service.GetAllAsync();
     }
 
     [HttpGet("{ingredientIdentifier}")]
     public async Task<ActionResult<IngredientDto>> Get(string ingredientIdentifier)
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
         if (Guid.TryParse(ingredientIdentifier, out Guid id))
         {
-            IngredientDto ingredientDto = await _service.GetByIdAsync(id);
+            IngredientDto? ingredientDto = await _service.GetByIdAsync(id);
 
             if (ingredientDto != null)
             {
@@ -50,8 +48,6 @@ public class IngredientsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<IngredientDto>> Post(IngredientDto ingredientDto)
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
         try
         {
             if (ingredientDto == null)
@@ -70,8 +66,6 @@ public class IngredientsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
         bool ingredientRemoved = await _service.DeleteAsync(id);
 
         if (ingredientRemoved)

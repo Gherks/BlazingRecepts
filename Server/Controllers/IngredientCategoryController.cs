@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlazingRecept.Server.Controllers;
 
+//[Authorize]
 [ApiController]
 [Route("api/ingredientcategories")]
+//[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class IngredientCategoryController : ControllerBase
 {
     private readonly ILogger<IngredientCategoryController> _logger;
