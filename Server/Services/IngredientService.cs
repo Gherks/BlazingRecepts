@@ -71,7 +71,9 @@ namespace BlazingRecept.Server.Services
 
             foreach (IngredientCollectionTypeDto ingredientCollectionTypeDto in ingredientCollectionTypes)
             {
-                ingredientCollectionTypeDto.Ingredients.OrderBy(ingredient => ingredient.Name);
+                ingredientCollectionTypeDto.Ingredients = ingredientCollectionTypeDto.Ingredients
+                    .OrderBy(ingredientDto => ingredientDto.Name)
+                    .ToList();
             }
 
             return ingredientCollectionTypes;
