@@ -1,4 +1,4 @@
-﻿using BlazingRecept.Client.Components.Utilities.Modals;
+﻿using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;

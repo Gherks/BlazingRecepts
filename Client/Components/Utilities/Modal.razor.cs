@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace BlazingRecept.Client.Components.Utilities.Modals;
+namespace BlazingRecept.Client.Components.Utilities;
 
 public partial class Modal
 {
