@@ -1,9 +1,10 @@
+using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazingRecept.Client.Components.PageComponents.Ingredients;
+namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 
 public partial class IngredientForm : ComponentBase
 {
@@ -12,6 +13,9 @@ public partial class IngredientForm : ComponentBase
     private CustomValidation? _customValidation;
 
     private IReadOnlyList<IngredientCategoryDto>? _ingredientCategoryDtos = new List<IngredientCategoryDto>();
+
+    [CascadingParameter]
+    protected internal Ingredients? IngredientsPage { get; private set; }
 
     [Inject]
     public IIngredientService? IngredientService { get; set; }
@@ -40,7 +44,18 @@ public partial class IngredientForm : ComponentBase
         {
             IngredientDto newIngredientDto = CreateIngredientDtoFromForm() ?? throw new InvalidOperationException();
 
-            await IngredientService.SaveAsync(newIngredientDto);
+            IngredientDto? ingredientDto = await IngredientService.SaveAsync(newIngredientDto);
+
+            if (ingredientDto != null)
+            {
+                if (IngredientsPage == null) throw new InvalidOperationException();
+
+                IngredientsPage.AddNewIngredientToCollection(ingredientDto);
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 
