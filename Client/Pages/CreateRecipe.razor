@@ -1,6 +1,7 @@
 ﻿@page "/createrecipe"
 
 @using BlazingRecept.Client.Utilities;
+@using Markdig
 
 <PageTitle>Create Recipe</PageTitle>
 <h1>Create recipe</h1>
@@ -30,7 +31,7 @@
                     }
                     else
                     {
-                        @((MarkupString) _form.InstructionsPreview)
+                        @((MarkupString) Markdown.ToHtml(_form.Instructions))
                     }
                 </div>
             </div>

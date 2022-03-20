@@ -1,5 +1,4 @@
 using BlazingRecept.Client.Utilities;
-using Markdig;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Pages;
@@ -76,6 +75,5 @@ public partial class CreateRecipe : ComponentBase
         public string Name { get; set; } = string.Empty;
         public string BasePortions { get; set; } = string.Empty;
         public string Instructions { get; set; } = string.Empty;
-        public string InstructionsPreview => Markdown.ToHtml(Instructions);
     }
 }
