@@ -1,13 +1,21 @@
 using BlazingRecept.Client.Utilities;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazingRecept.Client.Pages;
 
 public partial class CreateRecipe : ComponentBase
 {
+    private readonly string _editFormId = "CreateRecipeEditForm";
     private readonly Form _form = new();
 
     private CustomValidation? _customValidation;
+    private EditContext? _editContext;
+
+    public CreateRecipe()
+    {
+        _editContext = new(_form);
+    }
 
     private void ValidFormSubmitted()
     {
