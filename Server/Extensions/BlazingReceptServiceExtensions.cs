@@ -18,7 +18,7 @@ public static class BlazingReceptServiceCollectionExtensions
 
     public static WebApplicationBuilder AddBlazingReceptServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IIngredientsService, IngredientsService>();
+        builder.Services.AddScoped<IIngredientService, IngredientService>();
         builder.Services.AddScoped<IIngredientCategoryService, IngredientCategoryService>();
 
         return builder;
