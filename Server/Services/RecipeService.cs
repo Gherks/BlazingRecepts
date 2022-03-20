@@ -6,20 +6,20 @@ using BlazingRecept.Shared.Dto;
 
 namespace BlazingRecept.Server.Services
 {
-    public class RecipesService : IRecipesService
+    public class RecipeService : IRecipeService
     {
-        private readonly IRecipesRepository _repository;
+        private readonly IRecipesRepository _recipesRepository;
         private readonly IMapper _mapper;
 
-        public RecipesService(IRecipesRepository repository, IMapper mapper)
+        public RecipeService(IRecipesRepository recipesRepository, IMapper mapper)
         {
-            _repository = repository;
+            _recipesRepository = recipesRepository;
             _mapper = mapper;
         }
 
         public async Task<RecipeDto?> GetByIdAsync(Guid id)
         {
-            Recipe? recipe = await _repository.GetByIdAsync(id);
+            Recipe? recipe = await _recipesRepository.GetByIdAsync(id);
 
             if (recipe != null)
             {
@@ -31,7 +31,7 @@ namespace BlazingRecept.Server.Services
 
         public async Task<IReadOnlyList<RecipeDto>> GetAllAsync()
         {
-            IReadOnlyList<Recipe> entities = await _repository.ListAllAsync();
+            IReadOnlyList<Recipe> entities = await _recipesRepository.ListAllAsync() ?? new List<Recipe>();
 
             return entities.Select(recipe => _mapper.Map<RecipeDto>(recipe)).ToArray();
         }
@@ -42,11 +42,11 @@ namespace BlazingRecept.Server.Services
 
             if (recipe.Id == Guid.Empty)
             {
-                recipe = await _repository.AddAsync(recipe);
+                recipe = await _recipesRepository.AddAsync(recipe);
             }
             else
             {
-                await _repository.UpdateAsync(recipe);
+                await _recipesRepository.UpdateAsync(recipe);
             }
 
             return _mapper.Map<RecipeDto>(recipe);
@@ -54,11 +54,11 @@ namespace BlazingRecept.Server.Services
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            Recipe? recipe = await _repository.GetByIdAsync(id);
+            Recipe? recipe = await _recipesRepository.GetByIdAsync(id);
 
             if (recipe != null)
             {
-                return await _repository.DeleteAsync(recipe);
+                await _recipesRepository.DeleteAsync(recipe);
             }
 
             return false;

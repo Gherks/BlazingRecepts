@@ -2,12 +2,12 @@
 
 namespace BlazingRecept.Shared.Dto;
 
-public class IngredientDto : DtoBase
+public sealed class IngredientDto : DtoBase
 {
-    public IngredientCategoryDto Category { get; set; } = new();
     public string Name { get; set; } = "";
-    public decimal Fat { get; set; } = 0;
-    public decimal Carbohydrates { get; set; } = 0;
-    public decimal Protein { get; set; } = 0;
-    public decimal Calories { get; set; } = 0;
+    public double Fat { get; set; } = 0;
+    public double Carbohydrates { get; set; } = 0;
+    public double Protein { get; set; } = 0;
+    public double Calories { get; set; } = 0;
+    public IngredientCategoryDto CategoryDto { get; set; } = new();
 }

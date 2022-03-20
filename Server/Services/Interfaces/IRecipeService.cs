@@ -2,7 +2,7 @@
 
 namespace BlazingRecept.Server.Services.Interfaces
 {
-    public interface IRecipesService
+    public interface IRecipeService
     {
         Task<RecipeDto?> GetByIdAsync(Guid id);
         Task<IReadOnlyList<RecipeDto>> GetAllAsync();

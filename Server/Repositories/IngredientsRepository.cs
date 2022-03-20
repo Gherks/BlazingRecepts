@@ -11,9 +11,16 @@ public class IngredientsRepository : RepositoryBase<Ingredient>, IIngredientsRep
     {
     }
 
-    public override async Task<IReadOnlyList<Ingredient>> ListAllAsync()
+    public async Task<bool> AnyAsync(string name)
     {
-        return await _context.Set<Ingredient>().ToListAsync();
+        try
+        {
+            return await _context.Ingredient.AnyAsync(entity => entity.Name == name);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 }
  

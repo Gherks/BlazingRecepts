@@ -2,7 +2,7 @@
 
 namespace BlazingRecept.Shared.Dto;
 
-public class RecipeDto : DtoBase
+public sealed class RecipeDto : DtoBase
 {
     public string Name { get; set; } = "";
     public string Instructions { get; set; } = "";

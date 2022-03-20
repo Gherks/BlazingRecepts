@@ -8,18 +8,18 @@ namespace BlazingRecept.Server.Services
 {
     public class IngredientCategoryService : IIngredientCategoryService
     {
-        private readonly IIngredientCategoryRepository _repository;
+        private readonly IIngredientCategoryRepository _ingredientCategoryRepository;
         private readonly IMapper _mapper;
 
-        public IngredientCategoryService(IIngredientCategoryRepository repository, IMapper mapper)
+        public IngredientCategoryService(IIngredientCategoryRepository ingredientCategoryRepository, IMapper mapper)
         {
-            _repository = repository;
+            _ingredientCategoryRepository = ingredientCategoryRepository;
             _mapper = mapper;
         }
 
         public async Task<IReadOnlyList<IngredientCategoryDto>> GetAllAsync()
         {
-            IReadOnlyList<IngredientCategory> entities = await _repository.ListAllAsync();
+            IReadOnlyList<IngredientCategory> entities = await _ingredientCategoryRepository.ListAllAsync() ?? new List<IngredientCategory>();
 
             List<IngredientCategoryDto> ingredientCategoryDtos = entities.Select(ingredientCategory => _mapper.Map<IngredientCategoryDto>(ingredientCategory)).ToList();
 
