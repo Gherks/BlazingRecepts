@@ -1,6 +1,8 @@
 ﻿using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 
 namespace BlazingRecept.Server.Controllers;
 
@@ -11,28 +13,29 @@ namespace BlazingRecept.Server.Controllers;
 //[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class RecipeController : ControllerBase
 {
-    private readonly ILogger<RecipeController> _logger;
-
-    private readonly IRecipesService _service;
+    private readonly IRecipeService _service;
 
     // The Web API will only accept tokens 1) for users, and 2) having the "API.Access" scope for this API
-    //static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
+    static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
 
-    public RecipeController(ILogger<RecipeController> logger, IRecipesService service)
+    public RecipeController(IRecipeService service)
     {
-        _logger = logger;
         _service = service;
     }
 
     [HttpGet]
     public async Task<IReadOnlyList<RecipeDto>> Get()
     {
+        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+
         return await _service.GetAllAsync();
     }
 
     [HttpGet("{recipeIdentifier}")]
     public async Task<ActionResult<RecipeDto>> Get(string recipeIdentifier)
     {
+        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+
         if (Guid.TryParse(recipeIdentifier, out Guid id))
         {
             RecipeDto? recipeDto = await _service.GetByIdAsync(id);
@@ -49,6 +52,8 @@ public class RecipeController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<RecipeDto>> Post(RecipeDto recipeDto)
     {
+        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+
         try
         {
             if (recipeDto == null)
@@ -67,6 +72,8 @@ public class RecipeController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
+        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+
         bool recipeRemoved = await _service.DeleteAsync(id);
 
         if (recipeRemoved)
