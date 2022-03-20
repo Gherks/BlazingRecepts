@@ -6,7 +6,7 @@ namespace BlazingRecept.Server.Repositories;
 
 public class IngredientCategoryRepository : RepositoryBase<IngredientCategory>, IIngredientCategoryRepository
 {
-    public IngredientCategoryRepository(BlazingReceptContext dbContext) : base(dbContext)
+    public IngredientCategoryRepository(BlazingReceptContext context) : base(context)
     {
     }
 }

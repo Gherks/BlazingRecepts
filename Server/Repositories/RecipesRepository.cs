@@ -6,7 +6,7 @@ namespace BlazingRecept.Server.Repositories;
 
 public class RecipesRepository : RepositoryBase<Recipe>, IRecipesRepository
 {
-    public RecipesRepository(BlazingReceptContext dbContext) : base(dbContext)
+    public RecipesRepository(BlazingReceptContext context) : base(context)
     {
     }
 }
