@@ -7,19 +7,25 @@ namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 
 public partial class IngredientTables : ComponentBase
 {
+    private Guid _editingIngredientGuid = Guid.Empty;
+
     private RemovalConfirmationModal? _removalConfirmationModal;
 
     [CascadingParameter]
     protected internal Ingredients? IngredientsPage { get; private set; }
+
+    [Inject]
+    public IIngredientService? IngredientService { get; set; }
 
     public void Refresh()
     {
         StateHasChanged();
     }
 
-    private void OnIngredientEditClick()
+    private void OnIngredientEditClick(Guid editingIngredientGuid)
     {
-
+        _editingIngredientGuid = editingIngredientGuid;
+        StateHasChanged();
     }
 
     private void OnIngredientRemovalModalOpen(IngredientDto ingredientDto)
@@ -30,6 +36,30 @@ public partial class IngredientTables : ComponentBase
         }
 
         _removalConfirmationModal.Open(ingredientDto);
+    }
+
+    private async Task OnIngredientEditConfirm(IngredientDto ingredientDto)
+    {
+        if (IngredientService == null)
+        {
+            throw new InvalidOperationException("Can not save edited ingredient because the ingredient service has not been set.");
+        }
+
+        IngredientDto? savedIngredientDto = await IngredientService.SaveAsync(ingredientDto);
+
+        if (savedIngredientDto == null)
+        {
+            // Log
+        }
+
+        _editingIngredientGuid = Guid.Empty;
+        StateHasChanged();
+    }
+
+    private void OnIngredientEditCancel()
+    {
+        _editingIngredientGuid = Guid.Empty;
+        StateHasChanged();
     }
 
     private Task OnIngredientRemoved(IngredientDto ingredientDto)

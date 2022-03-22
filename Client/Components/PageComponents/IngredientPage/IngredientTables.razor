@@ -21,21 +21,52 @@
                 <tbody>
                     @foreach (IngredientDto ingredientDto in IngredientsPage.IngredientCollectionTypes[index].Ingredients)
                     {
-                        <tr id="@ingredientDto.Id">
-                            <td>@ingredientDto.Name</td>
-                            <td>@ingredientDto.Fat</td>
-                            <td>@ingredientDto.Carbohydrates</td>
-                            <td>@ingredientDto.Protein</td>
-                            <td>@ingredientDto.Calories</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" @onclick="() => OnIngredientEditClick()">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm" @onclick="() => OnIngredientRemovalModalOpen(ingredientDto)">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        if (_editingIngredientGuid == ingredientDto.Id)
+                        {
+                            <tr id="@ingredientDto.Id">
+                                <td>
+                                    <input type="text" id="name" name="name" class="form-control" @bind="@ingredientDto.Name" placeholder="@ingredientDto.Name">
+                                </td>
+                                <td>
+                                    <input type="text" id="fat" name="fat" class="form-control" @bind="@ingredientDto.Fat" placeholder="@ingredientDto.Fat">
+                                </td>
+                                <td>
+                                    <input type="text" id="carbohydrates" name="carbohydrates" class="form-control" @bind="@ingredientDto.Carbohydrates" placeholder="@ingredientDto.Carbohydrates">
+                                </td>
+                                <td>
+                                    <input type="text" id="protein" name="protein" class="form-control" @bind="@ingredientDto.Protein" placeholder="@ingredientDto.Protein">
+                                </td>
+                                <td>
+                                    <input type="text" id="calories" name="calories" class="form-control" @bind="@ingredientDto.Calories" placeholder="@ingredientDto.Calories">
+                                </td>
+                                <td>
+                                    <button class="btn btn-success btn-sm" @onclick="() => OnIngredientEditConfirm(ingredientDto)">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" @onclick="() => OnIngredientEditCancel()">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr id="@ingredientDto.Id">
+                                <td>@ingredientDto.Name</td>
+                                <td>@ingredientDto.Fat</td>
+                                <td>@ingredientDto.Carbohydrates</td>
+                                <td>@ingredientDto.Protein</td>
+                                <td>@ingredientDto.Calories</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" @onclick="() => OnIngredientEditClick(ingredientDto.Id)">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" @onclick="() => OnIngredientRemovalModalOpen(ingredientDto)">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
