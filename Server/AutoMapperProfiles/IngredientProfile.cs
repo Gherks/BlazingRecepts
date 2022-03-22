@@ -8,7 +8,10 @@ public class IngredientProfile : Profile
 {
     public IngredientProfile()
     {
-        CreateMap<Ingredient, IngredientDto>();
+        CreateMap<Ingredient, IngredientDto>()
+            .ForMember(ingredientDto => ingredientDto.CategoryDto,
+                options => options.MapFrom(ingredient => ingredient.IngredientCategory));
+
         CreateMap<IngredientDto, Ingredient>()
             .ForMember(ingredient => ingredient.IngredientCategoryId,
                 options => options.MapFrom(ingredientDto => ingredientDto.CategoryDto.Id));
