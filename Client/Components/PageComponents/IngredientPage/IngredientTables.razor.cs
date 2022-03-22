@@ -1,7 +1,7 @@
+using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
-using BlazingRecept.Client.Pages;
 
 namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 

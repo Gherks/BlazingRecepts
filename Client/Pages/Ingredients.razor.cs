@@ -9,7 +9,7 @@ public partial class Ingredients : ComponentBase
 {
     private IngredientTables? _ingredientTables;
 
-    public IReadOnlyList<IngredientCollectionTypeDto>? IngredientCollectionTypes { get; private set; } = new List<IngredientCollectionTypeDto>(); 
+    public IReadOnlyList<IngredientCollectionTypeDto>? IngredientCollectionTypes { get; private set; } = new List<IngredientCollectionTypeDto>();
 
     [Inject]
     public IIngredientService? IngredientService { get; set; }

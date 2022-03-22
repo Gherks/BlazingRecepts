@@ -1,7 +1,6 @@
 ﻿using BlazingRecept.Server.Context;
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
-using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazingRecept.Server.Repositories;
@@ -50,4 +49,3 @@ public class IngredientsRepository : RepositoryBase<Ingredient>, IIngredientsRep
         return ingredient;
     }
 }
- 

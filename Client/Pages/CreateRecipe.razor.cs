@@ -23,13 +23,6 @@ public partial class CreateRecipe : ComponentBase
         {
             return;
         }
-
-        //ParseForm();
-
-        //await BaseDataService.SaveAsync(_baseDataDto);
-        //await SignaturesService.SaveAsync(_signaturesDto);
-
-        //GotoNextStep();
     }
 
     private bool RunValidation()
