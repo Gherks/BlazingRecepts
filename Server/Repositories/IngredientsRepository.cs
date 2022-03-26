@@ -18,7 +18,7 @@ public class IngredientsRepository : RepositoryBase<Ingredient>, IIngredientsRep
     {
         try
         {
-            return await _context.Ingredient.AnyAsync(entity => entity.Name == name);
+            return await _context.Ingredient.AnyAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
         }
         catch (Exception)
         {

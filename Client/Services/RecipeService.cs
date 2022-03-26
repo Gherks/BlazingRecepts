@@ -16,6 +16,23 @@ namespace BlazingRecept.Client.Services
             _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
         }
 
+        public async Task<bool> AnyAsync(string name)
+        {
+            try
+            {
+                Uri uri = new Uri(_httpClient.BaseAddress + _apiAddress + $"/{name}");
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
+                HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+
+                return response.StatusCode == HttpStatusCode.OK;
+            }
+            catch (Exception)
+            {
+            }
+
+            return false;
+        }
+
         public async Task<RecipeDto?> GetByIdAsync(Guid id)
         {
             try

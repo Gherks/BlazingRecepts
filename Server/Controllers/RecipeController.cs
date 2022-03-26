@@ -13,14 +13,36 @@ namespace BlazingRecept.Server.Controllers;
 //[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class RecipeController : ControllerBase
 {
-    private readonly IRecipeService _service;
+    private readonly IRecipeService _recipeService;
 
     // The Web API will only accept tokens 1) for users, and 2) having the "API.Access" scope for this API
     static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
 
-    public RecipeController(IRecipeService service)
+    public RecipeController(IRecipeService recipeService)
     {
-        _service = service;
+        _recipeService = recipeService;
+    }
+
+    [HttpHead("{identifier}")]
+    public async Task<ActionResult> HeadAsync(string identifier)
+    {
+        bool ingredientExists;
+
+        if (Guid.TryParse(identifier, out Guid id))
+        {
+            ingredientExists = await _recipeService.AnyAsync(id);
+        }
+        else
+        {
+            ingredientExists = await _recipeService.AnyAsync(identifier);
+        }
+
+        if (ingredientExists)
+        {
+            return Ok();
+        }
+
+        return NoContent();
     }
 
     [HttpGet]
@@ -28,7 +50,7 @@ public class RecipeController : ControllerBase
     {
         //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
-        return await _service.GetAllAsync();
+        return await _recipeService.GetAllAsync();
     }
 
     [HttpGet("{recipeIdentifier}")]
@@ -38,7 +60,7 @@ public class RecipeController : ControllerBase
 
         if (Guid.TryParse(recipeIdentifier, out Guid id))
         {
-            RecipeDto? recipeDto = await _service.GetByIdAsync(id);
+            RecipeDto? recipeDto = await _recipeService.GetByIdAsync(id);
 
             if (recipeDto != null)
             {
@@ -61,7 +83,7 @@ public class RecipeController : ControllerBase
                 return BadRequest();
             }
 
-            return Ok(await _service.SaveAsync(recipeDto));
+            return Ok(await _recipeService.SaveAsync(recipeDto));
         }
         catch (Exception exception)
         {
@@ -74,7 +96,7 @@ public class RecipeController : ControllerBase
     {
         //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
-        bool recipeRemoved = await _service.DeleteAsync(id);
+        bool recipeRemoved = await _recipeService.DeleteAsync(id);
 
         if (recipeRemoved)
         {
