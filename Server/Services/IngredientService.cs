@@ -48,7 +48,7 @@ namespace BlazingRecept.Server.Services
             return ingredients.Select(ingredient => _mapper.Map<IngredientDto>(ingredient)).ToList();
         }
 
-        public async Task<List<IngredientCollectionTypeDto>> GetAllSortedAsync()
+        public async Task<IReadOnlyList<IngredientCollectionTypeDto>> GetAllSortedAsync()
         {
             IReadOnlyList<IngredientCategoryDto> ingredientCategoryDtos = await _ingredientCategoryService.GetAllAsync();
 

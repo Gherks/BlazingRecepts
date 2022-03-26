@@ -45,7 +45,7 @@ public class IngredientController : ControllerBase
     }
 
     [HttpGet()]
-    public async Task<List<IngredientCollectionTypeDto>> Get()
+    public async Task<IReadOnlyList<IngredientCollectionTypeDto>> Get()
     {
         //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 

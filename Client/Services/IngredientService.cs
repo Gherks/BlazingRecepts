@@ -55,7 +55,7 @@ namespace BlazingRecept.Client.Services
             return null;
         }
 
-        public async Task<List<IngredientCollectionTypeDto>?> GetAllSortedAsync()
+        public async Task<IReadOnlyList<IngredientCollectionTypeDto>?> GetAllSortedAsync()
         {
             try
             {
@@ -63,7 +63,7 @@ namespace BlazingRecept.Client.Services
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    return await response.Content.ReadFromJsonAsync<List<IngredientCollectionTypeDto>>();
+                    return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientCollectionTypeDto>>();
                 }
             }
             catch (AccessTokenNotAvailableException exception)
