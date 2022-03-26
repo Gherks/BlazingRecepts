@@ -22,8 +22,6 @@ public partial class Modal
     [Parameter]
     public RenderFragment? Buttons { get; set; }
 
-    public Func<Task>? OnCloseAsync { get; set; }
-
     public void Open()
     {
         _modalDisplay = "block;";
@@ -31,15 +29,10 @@ public partial class Modal
         StateHasChanged();
     }
 
-    public async Task CloseAsync()
+    public void Close()
     {
         _modalDisplay = "none";
         _modalClass = "";
         StateHasChanged();
-
-        if (OnCloseAsync != null)
-        {
-            await OnCloseAsync.Invoke();
-        }
     }
 }
