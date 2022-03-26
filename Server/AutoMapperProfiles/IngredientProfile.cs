@@ -14,6 +14,8 @@ public class IngredientProfile : Profile
 
         CreateMap<IngredientDto, Ingredient>()
             .ForMember(ingredient => ingredient.IngredientCategoryId,
-                options => options.MapFrom(ingredientDto => ingredientDto.CategoryDto.Id));
+                options => options.MapFrom(ingredientDto => ingredientDto.CategoryDto.Id))
+            .ForMember(ingredient => ingredient.IngredientCategory,
+                options => options.MapFrom(ingredientDto => ingredientDto.CategoryDto));
     }
 }

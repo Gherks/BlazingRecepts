@@ -8,6 +8,9 @@ public class RecipeProfile : Profile
 {
     public RecipeProfile()
     {
-        CreateMap<Recipe, RecipeDto>().ReverseMap();
+        CreateMap<Recipe, RecipeDto>()
+            .ForMember(recipeDto => recipeDto.IngredientMeasurementDtos,
+                options => options.MapFrom(recipe => recipe.IngredientMeasurements))
+            .ReverseMap();
     }
 }
