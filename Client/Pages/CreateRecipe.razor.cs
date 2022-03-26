@@ -119,7 +119,7 @@ public partial class CreateRecipe : ComponentBase
         recipeDto.PortionAmount = Convert.ToInt32(_form.PortionAmount);
         recipeDto.Instructions = _form.Instructions;
 
-        foreach(IngredientForm ingredientForm in IngredientForms)
+        foreach (IngredientForm ingredientForm in IngredientForms)
         {
             IngredientMeasurementDto ingredientMeasurementDto = new()
             {

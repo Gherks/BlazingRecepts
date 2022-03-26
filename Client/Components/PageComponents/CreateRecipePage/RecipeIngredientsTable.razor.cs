@@ -11,7 +11,7 @@ public partial class RecipeIngredientsTable : ComponentBase
     private void HandleIngredientEdit(IngredientForm ingredientForm)
     {
         if (CreateRecipe == null) throw new InvalidOperationException();
-        
+
         CreateRecipe.HandleAddIngredientModalOpen(ingredientForm);
     }
 

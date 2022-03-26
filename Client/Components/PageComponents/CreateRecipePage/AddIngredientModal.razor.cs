@@ -1,6 +1,5 @@
 ﻿using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Pages;
-using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
