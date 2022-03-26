@@ -1,5 +1,6 @@
 using BlazingRecept.Client;
 using BlazingRecept.Client.Extensions;
+using Blazored.Toast;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -9,6 +10,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.AddHttpClients();
 builder.AddServices();
+
+builder.Services.AddBlazoredToast();
 
 //builder.Services.AddMsalAuthentication(options =>
 //{

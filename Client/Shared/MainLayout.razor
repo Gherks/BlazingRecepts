@@ -1,10 +1,17 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.Toast.Configuration
+
+@inherits LayoutComponentBase
+
+<BlazoredToasts Timeout="5"
+                IconType="IconType.FontAwesome"
+                ErrorIcon="fa-solid fa-xmark" 
+                SuccessIcon="fa-solid fa-thumbs-up"
+                InfoIcon="fa-solid fa-circle-info"/>
 
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
-
     <main>
 @*        <div class="top-row px-4 auth">
             <LoginDisplay />
