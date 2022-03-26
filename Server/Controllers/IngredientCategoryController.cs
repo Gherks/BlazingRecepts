@@ -8,7 +8,7 @@ namespace BlazingRecept.Server.Controllers;
 
 //[Authorize]
 [ApiController]
-[Route("api/ingredientcategory")]
+[Route("api/ingredientcategories")]
 //[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class IngredientCategoryController : ControllerBase
 {

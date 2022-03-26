@@ -8,7 +8,7 @@ namespace BlazingRecept.Client.Services
 {
     public class RecipeService : IRecipeService
     {
-        private readonly string _apiAddress = "api/recipe";
+        private readonly string _apiAddress = "api/recipes";
         private readonly HttpClient _httpClient;
 
         public RecipeService(IHttpClientFactory httpClientFactory)
@@ -66,6 +66,10 @@ namespace BlazingRecept.Client.Services
                     return await response.Content.ReadFromJsonAsync<IReadOnlyList<RecipeDto>>();
                 }
             }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
             catch (Exception)
             {
             }
@@ -88,6 +92,10 @@ namespace BlazingRecept.Client.Services
                 {
                     return await response.Content.ReadFromJsonAsync<RecipeDto>();
                 }
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
             }
             catch (Exception)
             {

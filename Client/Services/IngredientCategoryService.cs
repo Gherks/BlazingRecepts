@@ -8,7 +8,7 @@ namespace BlazingRecept.Client.Services
 {
     public class IngredientCategoryService : IIngredientCategoryService
     {
-        private readonly string _apiAddress = "api/ingredientcategory";
+        private readonly string _apiAddress = "api/ingredientcategories";
         private readonly HttpClient _httpClient;
 
         public IngredientCategoryService(IHttpClientFactory httpClientFactory)
