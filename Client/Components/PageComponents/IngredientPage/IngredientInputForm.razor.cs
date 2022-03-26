@@ -52,11 +52,11 @@ public partial class IngredientInputForm : ComponentBase
 
             if (ToastService == null) throw new InvalidOperationException();
 
-            if (ingredientDto != null)
+            if (ingredientDto != null && ingredientDto.Id != Guid.Empty)
             {
                 if (IngredientsPage == null) throw new InvalidOperationException();
 
-                ToastService.ShowSuccess("New ingredient successfully added!");
+                ToastService.ShowSuccess("Ingredient successfully added!");
                 IngredientsPage.AddNewIngredientToCollection(ingredientDto);
             }
             else
@@ -68,10 +68,7 @@ public partial class IngredientInputForm : ComponentBase
 
     private async Task<bool> Validate()
     {
-        if (_customValidation == null)
-        {
-            throw new InvalidOperationException("Custom validation object is not available during validation.");
-        }
+        if (_customValidation == null) throw new InvalidOperationException("Custom validation object is not available during validation.");
 
         _customValidation.ClearErrors();
 
@@ -85,10 +82,7 @@ public partial class IngredientInputForm : ComponentBase
         }
         else
         {
-            if (IngredientService == null)
-            {
-                throw new InvalidOperationException("Ingredient service is not available during validation.");
-            }
+            if (IngredientService == null) throw new InvalidOperationException("Ingredient service is not available during validation.");
 
             bool ingredientExists = await IngredientService.AnyAsync(_form.Name);
 

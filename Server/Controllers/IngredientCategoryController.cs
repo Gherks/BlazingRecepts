@@ -12,14 +12,14 @@ namespace BlazingRecept.Server.Controllers;
 //[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class IngredientCategoryController : ControllerBase
 {
-    private readonly IIngredientCategoryService _service;
+    private readonly IIngredientCategoryService _ingredientCategoryService;
 
     // The Web API will only accept tokens 1) for users, and 2) having the "API.Access" scope for this API
     static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
 
-    public IngredientCategoryController(IIngredientCategoryService service)
+    public IngredientCategoryController(IIngredientCategoryService ingredientCategoryService)
     {
-        _service = service;
+        _ingredientCategoryService = ingredientCategoryService;
     }
 
     [HttpGet]
@@ -27,6 +27,6 @@ public class IngredientCategoryController : ControllerBase
     {
         //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
-        return await _service.GetAllAsync();
+        return await _ingredientCategoryService.GetAllAsync();
     }
 }

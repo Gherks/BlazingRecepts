@@ -12,14 +12,14 @@ namespace BlazingRecept.Server.Controllers;
 //[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class IngredientController : ControllerBase
 {
-    private readonly IIngredientService _service;
+    private readonly IIngredientService _ingredientService;
 
     // The Web API will only accept tokens 1) for users, and 2) having the "API.Access" scope for this API
     static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
 
-    public IngredientController(IIngredientService service)
+    public IngredientController(IIngredientService ingredientService)
     {
-        _service = service;
+        _ingredientService = ingredientService;
     }
 
     [HttpHead("{identifier}")]
@@ -29,11 +29,11 @@ public class IngredientController : ControllerBase
 
         if (Guid.TryParse(identifier, out Guid id))
         {
-            ingredientExists = await _service.AnyAsync(id);
+            ingredientExists = await _ingredientService.AnyAsync(id);
         }
         else
         {
-            ingredientExists = await _service.AnyAsync(identifier);
+            ingredientExists = await _ingredientService.AnyAsync(identifier);
         }
 
         if (ingredientExists)
@@ -49,7 +49,7 @@ public class IngredientController : ControllerBase
     {
         //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
-        return await _service.GetAllAsync();
+        return await _ingredientService.GetAllAsync();
     }
 
     [HttpGet("sorted")]
@@ -57,7 +57,7 @@ public class IngredientController : ControllerBase
     {
         //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
-        return await _service.GetAllSortedAsync();
+        return await _ingredientService.GetAllSortedAsync();
     }
 
     [HttpGet("{ingredientIdentifier}")]
@@ -67,7 +67,7 @@ public class IngredientController : ControllerBase
 
         if (Guid.TryParse(ingredientIdentifier, out Guid id))
         {
-            IngredientDto? ingredientDto = await _service.GetByIdAsync(id);
+            IngredientDto? ingredientDto = await _ingredientService.GetByIdAsync(id);
 
             if (ingredientDto != null)
             {
@@ -90,7 +90,7 @@ public class IngredientController : ControllerBase
                 return BadRequest();
             }
 
-            return Ok(await _service.SaveAsync(ingredientDto));
+            return Ok(await _ingredientService.SaveAsync(ingredientDto));
         }
         catch (Exception exception)
         {
@@ -103,7 +103,7 @@ public class IngredientController : ControllerBase
     {
         //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
-        bool ingredientRemoved = await _service.DeleteAsync(id);
+        bool ingredientRemoved = await _ingredientService.DeleteAsync(id);
 
         if (ingredientRemoved)
         {
