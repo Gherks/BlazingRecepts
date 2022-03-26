@@ -1,0 +1,34 @@
+﻿@using BlazingRecept.Client.Utilities;
+
+<div class="mb-2">
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Measurement</th>
+                <th>Grams</th>
+                <th>Note</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (IngredientForm ingredientForm in GetIngredientForms())
+            {
+                <tr>
+                    <td>@ingredientForm.IngredientDto.Name</td>
+                    <td>@ingredientForm.Measurement</td>
+                    <td>@ingredientForm.Grams</td>
+                    <td>@ingredientForm.Note</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEdit(ingredientForm)">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemoval(ingredientForm)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

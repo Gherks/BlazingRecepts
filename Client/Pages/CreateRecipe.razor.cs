@@ -1,31 +1,43 @@
+using BlazingRecept.Client.Components.PageComponents.CreateRecipePage;
+using BlazingRecept.Client.Components.Utilities;
+using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
+using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazingRecept.Client.Pages;
 
 public partial class CreateRecipe : ComponentBase
 {
-    private readonly string _editFormId = "CreateRecipeEditForm";
     private readonly Form _form = new();
 
-    private CustomValidation? _customValidation;
-    private EditContext? _editContext;
 
-    public CreateRecipe()
+    private AddIngredientModal? _addIngredientModal;
+    private IngredientRemovalConfirmationModal? _ingredientRemovalConfirmationModal;
+    private CustomValidation? _customValidation;
+
+    public IReadOnlyList<IngredientDto>? Ingredients { get; set; } = new List<IngredientDto>();
+    public List<IngredientForm> IngredientForms { get; set; } = new();
+
+    [Inject]
+    public IIngredientService? IngredientService { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        _editContext = new(_form);
+        if (IngredientService == null) throw new InvalidOperationException("Add ingredient modal cannot be opened because ingredient service has not been set.");
+
+        Ingredients = await IngredientService.GetAllAsync();
     }
 
-    private void ValidFormSubmitted()
+    private void HandleValidFormSubmitted()
     {
-        if (RunValidation() == false)
+        if (Validate() == false)
         {
             return;
         }
     }
 
-    private bool RunValidation()
+    private bool Validate()
     {
         if (_customValidation == null)
         {
@@ -43,21 +55,21 @@ public partial class CreateRecipe : ComponentBase
             });
         }
 
-        if (string.IsNullOrWhiteSpace(_form.BasePortions))
+        if (string.IsNullOrWhiteSpace(_form.PortionAmount))
         {
-            errors.Add(nameof(_form.BasePortions), new List<string>() {
+            errors.Add(nameof(_form.PortionAmount), new List<string>() {
                 "Amount of portions is required."
             });
         }
-        else if (int.TryParse(_form.BasePortions, out int basePortions) == false)
+        else if (int.TryParse(_form.PortionAmount, out int basePortions) == false)
         {
-            errors.Add(nameof(_form.BasePortions), new List<string>() {
+            errors.Add(nameof(_form.PortionAmount), new List<string>() {
                 "Portions must only include numbers."
             });
         }
         else if (basePortions <= 0)
         {
-            errors.Add(nameof(_form.BasePortions), new List<string>() {
+            errors.Add(nameof(_form.PortionAmount), new List<string>() {
                 "Portions must be a positive number."
             });
         }
@@ -71,10 +83,60 @@ public partial class CreateRecipe : ComponentBase
         return true;
     }
 
+    public void HandleAddIngredientModalOpen(IngredientForm? ingredientForm)
+    {
+        if (_addIngredientModal == null) throw new InvalidOperationException();
+
+        _addIngredientModal.Open(ingredientForm);
+    }
+
+    public void OpenIngredientRemovalModalOpen(IngredientForm ingredientForm)
+    {
+        if (_ingredientRemovalConfirmationModal == null) throw new InvalidOperationException();
+
+        _ingredientRemovalConfirmationModal.Open(ingredientForm.IngredientDto);
+    }
+
+    public Task HandleIngredientRemovalConfirmed(IngredientDto ingredientDto)
+    {
+        IngredientForm? ingredientForm = IngredientForms.FirstOrDefault(ingredientForm =>
+            ingredientForm.IngredientDto.Id == ingredientDto.Id);
+
+        if (ingredientForm != null)
+        {
+            IngredientForms.Remove(ingredientForm);
+            StateHasChanged();
+        }
+        else
+        {
+            // Log.Warning("Could not remove ingreident from recipe that was supposed to be removed.");
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private void HandleNewIngredientFromModal(IngredientForm newIngredientForm)
+    {
+        IngredientForm? existingIngredientForm = IngredientForms.FirstOrDefault(ingredientForm =>
+            ingredientForm.IngredientDto.Name == newIngredientForm.IngredientDto.Name);
+
+        if (existingIngredientForm != null)
+        {
+            int index = IngredientForms.IndexOf(newIngredientForm);
+            IngredientForms[index] = newIngredientForm;
+        }
+        else
+        {
+            IngredientForms.Add(newIngredientForm);
+        }
+
+        StateHasChanged();
+    }
+
     private class Form
     {
         public string Name { get; set; } = string.Empty;
-        public string BasePortions { get; set; } = string.Empty;
+        public string PortionAmount { get; set; } = string.Empty;
         public string Instructions { get; set; } = string.Empty;
     }
 }

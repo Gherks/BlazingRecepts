@@ -1,0 +1,52 @@
+﻿@using BlazingRecept.Client.Components.Utilities;
+@using BlazingRecept.Client.Utilities;
+
+@inherits ComponentBase
+
+<Modal @ref="_modal" Title="Add ingredient">
+    <Body>
+        <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
+            <CustomValidation @ref="_customValidation" />
+            <div class="row mb-2">
+                <label for="name" class="col-3 col-form-label">Name</label>
+                <div class="col-9">
+                    <BlazoredTypeahead id="name"
+                                       SearchMethod="SearchForIngredients"
+                                       @bind-Value="_ingredientForm.IngredientDto">
+                        <SelectedTemplate Context="ingredientDto">
+                            @ingredientDto.Name
+                        </SelectedTemplate>
+                        <ResultTemplate Context="ingredientDto">
+                            @ingredientDto.Name
+                        </ResultTemplate>
+                    </BlazoredTypeahead>
+                    <ValidationMessage For="() => _ingredientForm.IngredientDto" />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="measurement" class="col-3 col-form-label">Measurement</label>
+                <div class="col-9">
+                    <input type="text" id="measurement" class="form-control" @bind="_ingredientForm!.Measurement">
+                    <ValidationMessage For="() => _ingredientForm.Measurement" />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="grams" class="col-3 col-form-label">Grams</label>
+                <div class="col-9">
+                    <input type="text" id="grams" class="form-control" @bind="_ingredientForm!.Grams">
+                    <ValidationMessage For="() => _ingredientForm.Grams" />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="note" class="col-3 col-form-label">Note</label>
+                <div class="col-9">
+                    <input type="text" id="note" class="form-control" @bind="_ingredientForm!.Note">
+                </div>
+            </div>
+        </EditForm>
+    </Body>
+    <Buttons>
+        <button form="@_editFormId" class="btn btn-primary" type="submit">Add</button>
+        <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Cancel</button>
+    </Buttons>
+</Modal>

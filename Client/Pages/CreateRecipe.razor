@@ -1,46 +1,56 @@
 ﻿@page "/createrecipe"
 
 @using BlazingRecept.Client.Components.PageComponents.CreateRecipePage
+@using BlazingRecept.Client.Components.Utilities
 @using BlazingRecept.Client.Utilities;
 @using Markdig
 
 <PageTitle>Create Recipe</PageTitle>
-<h1>Create recipe</h1>
-<div class="card mb-2">
-    <div class="card-body">
-        <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@ValidFormSubmitted">
-            <CustomValidation @ref="_customValidation" />
-            <div class="form-floating mb-2">
-                <input type="text" id="name" name="name" class="form-control" @bind="_form.Name" placeholder="Name">
-                <label for="name">Name</label>
-                <ValidationMessage For="() => _form.Name" />
-            </div>
-            <div class="form-floating mb-2">
-                <input type="text" id="base-portions" name="base-portions" class="form-control" @bind="_form.BasePortions" placeholder="Base portions">
-                <label for="base-portions">Base portions</label>
-                <ValidationMessage For="() => _form.BasePortions" />
-            </div>
-            <div class="form-floating mb-2">
-                <textarea id="instructions" name="instructions" class="form-control" @bind="_form.Instructions" @bind:event="oninput" placeholder="Enter instructions here" style="height: 200px"></textarea>
-                <label for="instructions">Enter instructions here</label>
-            </div>
-            <div class="card mb-2">
-                <div class="card-body">
-                    @if (string.IsNullOrWhiteSpace(_form.Instructions))
-                    {
-                        <p>Markdown text based upon instructions entered above will end up here</p>
-                    }
-                    else
-                    {
-                        @((MarkupString) Markdown.ToHtml(_form.Instructions))
-                    }
+<CascadingValue Value=@this>
+    <AddIngredientModal @ref="_addIngredientModal" OnIngredientValid="HandleNewIngredientFromModal" />
+    <IngredientRemovalConfirmationModal @ref="_ingredientRemovalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
+    <h1>Create recipe</h1>
+    <div class="card mb-2">
+        <div class="card-body">
+            <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
+                <CustomValidation @ref="_customValidation" />
+                <div class="form-floating mb-2">
+                    <input type="text" id="name" name="name" class="form-control" @bind="_form.Name" placeholder="Name">
+                    <label for="name">Name</label>
+                    <ValidationMessage For="() => _form.Name" />
                 </div>
-            </div>
-            <p>
-                <a class="link-primary" href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown Cheat Sheet</a>
-            </p>
-        </EditForm>
-        <IngredientAttacher />
-        <button form="@_editFormId" class="btn btn-primary" type="submit">Add recipe</button>
+                <div class="form-floating mb-2">
+                    <input type="text" id="portion-amount" name="portion-amount" class="form-control" @bind="_form.PortionAmount" placeholder="Portion amount">
+                    <label for="portion-amount">Portion amount</label>
+                    <ValidationMessage For="() => _form.PortionAmount" />
+                </div>
+                <div class="form-floating mb-2">
+                    <textarea id="instructions" name="instructions" class="form-control" @bind="_form.Instructions" @bind:event="oninput" placeholder="Enter instructions here" style="height: 200px"></textarea>
+                    <label for="instructions">Enter instructions here</label>
+                </div>
+                <div class="card mb-2">
+                    <div class="card-body">
+                        @if (string.IsNullOrWhiteSpace(_form.Instructions))
+                        {
+                            <p>Markdown text based upon instructions entered above will end up here</p>
+                        }
+                        else
+                        {
+                            @((MarkupString) Markdown.ToHtml(_form.Instructions))
+                        }
+                    </div>
+                </div>
+                <p>
+                    <a class="link-primary" href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown Cheat Sheet</a>
+                </p>
+                <RecipeIngredientsTable />
+                <div class="mb-2">
+                    <button type="button" class="btn btn-primary" @onclick="@(_ => HandleAddIngredientModalOpen(null))">Add ingredient</button>
+                </div>
+                <div class="mb-2">
+                    <button type="submit" class="btn btn-primary">Add recipe</button>
+                </div>
+            </EditForm>
+        </div>
     </div>
-</div>
+</CascadingValue>
