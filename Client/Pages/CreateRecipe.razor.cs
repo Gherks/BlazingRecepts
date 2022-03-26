@@ -3,6 +3,7 @@ using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Pages;
@@ -22,6 +23,12 @@ public partial class CreateRecipe : ComponentBase
     [Inject]
     public IIngredientService? IngredientService { get; set; }
 
+    [Inject]
+    public IRecipeService? RecipeService { get; set; }
+
+    [Inject]
+    public IToastService? ToastService { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         if (IngredientService == null) throw new InvalidOperationException("Add ingredient modal cannot be opened because ingredient service has not been set.");
@@ -29,20 +36,28 @@ public partial class CreateRecipe : ComponentBase
         Ingredients = await IngredientService.GetAllAsync();
     }
 
-    private void HandleValidFormSubmitted()
+    private async Task HandleValidFormSubmitted()
     {
-        if (Validate() == false)
+        if (await Validate())
         {
-            return;
+            RecipeDto? recipeDto = ParseRecipeForm();
+
+            if (RecipeService == null) throw new InvalidOperationException();
+
+            recipeDto = await RecipeService.SaveAsync(recipeDto);
+
+            if (recipeDto != null && recipeDto.Id != Guid.Empty)
+            {
+                if (ToastService == null) throw new InvalidOperationException();
+
+                ToastService.ShowSuccess("Recipe successfully added!");
+            }
         }
     }
 
-    private bool Validate()
+    private async Task<bool> Validate()
     {
-        if (_customValidation == null)
-        {
-            throw new InvalidOperationException("Custom validation variable is not set during validation.");
-        }
+        if (_customValidation == null) throw new InvalidOperationException("Custom validation variable is not set during validation.");
 
         _customValidation.ClearErrors();
 
@@ -53,6 +68,19 @@ public partial class CreateRecipe : ComponentBase
             errors.Add(nameof(_form.Name), new List<string>() {
                 "Name is required."
             });
+        }
+        else
+        {
+            if (RecipeService == null) throw new InvalidOperationException("Ingredient service is not available during validation.");
+
+            bool recipeExists = await RecipeService.AnyAsync(_form.Name);
+
+            if (recipeExists)
+            {
+                errors.Add(nameof(_form.RecipeCreationErrorMessage), new List<string>() {
+                    "Recipe with name already exists."
+                });
+            }
         }
 
         if (string.IsNullOrWhiteSpace(_form.PortionAmount))
@@ -81,6 +109,30 @@ public partial class CreateRecipe : ComponentBase
         }
 
         return true;
+    }
+
+    private RecipeDto ParseRecipeForm()
+    {
+        RecipeDto recipeDto = new();
+
+        recipeDto.Name = _form.Name;
+        recipeDto.PortionAmount = Convert.ToInt32(_form.PortionAmount);
+        recipeDto.Instructions = _form.Instructions;
+
+        foreach(IngredientForm ingredientForm in IngredientForms)
+        {
+            IngredientMeasurementDto ingredientMeasurementDto = new()
+            {
+                IngredientDto = ingredientForm.IngredientDto,
+                Measurement = ingredientForm.Measurement,
+                Grams = Convert.ToInt32(ingredientForm.Grams),
+                Note = ingredientForm.Note
+            };
+
+            recipeDto.IngredientMeasurementDtos.Add(ingredientMeasurementDto);
+        }
+
+        return recipeDto;
     }
 
     public void HandleAddIngredientModalOpen(IngredientForm? ingredientForm)
@@ -138,5 +190,6 @@ public partial class CreateRecipe : ComponentBase
         public string Name { get; set; } = string.Empty;
         public string PortionAmount { get; set; } = string.Empty;
         public string Instructions { get; set; } = string.Empty;
+        public string RecipeCreationErrorMessage { get; set; } = string.Empty;
     }
 }
