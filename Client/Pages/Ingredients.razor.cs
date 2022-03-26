@@ -26,7 +26,7 @@ public partial class Ingredients : ComponentBase
 
     public void AddNewIngredientToCollection(IngredientDto ingredientDto)
     {
-        if (IngredientCollectionTypes == null) throw new InvalidOperationException("Can not add new ingredient to collection because ingredient collection is null.");
+        if (IngredientCollectionTypes == null) throw new InvalidOperationException("Cannot add new ingredient to collection because ingredient collection is null.");
         if (_ingredientTables == null) throw new InvalidOperationException("Ingredient table reference is null and can therefore not be refreshed.");
 
         int categoryIndex = ingredientDto.CategoryDto.SortOrder;

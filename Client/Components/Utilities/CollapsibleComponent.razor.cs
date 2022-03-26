@@ -19,5 +19,5 @@ public partial class CollapsibleComponent : ComponentBase
     [Parameter]
     public bool ShowChildContent { get; set; } = false;
 
-    public void Toggle() => ShowChildContent = !ShowChildContent;
+    public void HandleToggle() => ShowChildContent = !ShowChildContent;
 }

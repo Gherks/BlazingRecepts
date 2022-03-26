@@ -4,8 +4,8 @@ namespace BlazingRecept.Shared.Dto;
 
 public sealed class RecipeDto : DtoBase
 {
-    public string Name { get; set; } = "";
-    public string Instructions { get; set; } = "";
-    public int BasePortions { get; set; } = 1;
-    public List<WeightedIngredientDto> WeightedIngredients { get; set; } = new();
+    public string Name { get; set; } = string.Empty;
+    public string Instructions { get; set; } = string.Empty;
+    public int PortionAmount { get; set; } = -1;
+    public List<IngredientMeasurementDto> IngredientMeasurementDtos { get; set; } = new();
 }

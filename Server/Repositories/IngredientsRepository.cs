@@ -28,13 +28,13 @@ public class IngredientsRepository : RepositoryBase<Ingredient>, IIngredientsRep
 
     public override async Task<Ingredient> AddAsync(Ingredient ingredient)
     {
-        if (_ingredientCategoryRepository == null) throw new InvalidOperationException("Ingredient category repository can not be used because it has not been set.");
+        if (_ingredientCategoryRepository == null) throw new InvalidOperationException("Ingredient category repository cannot be used because it has not been set.");
 
         try
         {
             IngredientCategory? ingredientCategory = await _ingredientCategoryRepository.GetByIdAsync(ingredient.IngredientCategoryId);
 
-            if (ingredientCategory == null) throw new InvalidOperationException("Ingredient category can not be used because it could not be fetched from database.");
+            if (ingredientCategory == null) throw new InvalidOperationException("Ingredient category cannot be used because it could not be fetched from database.");
 
             ingredient.IngredientCategory = ingredientCategory;
             _context.Ingredient.Add(ingredient);
