@@ -2,6 +2,7 @@ using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
@@ -22,6 +23,9 @@ public partial class IngredientForm : ComponentBase
 
     [Inject]
     public IIngredientCategoryService? IngredientCategoryService { get; set; }
+
+    [Inject]
+    public IToastService? ToastService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,15 +50,18 @@ public partial class IngredientForm : ComponentBase
 
             IngredientDto? ingredientDto = await IngredientService.SaveAsync(newIngredientDto);
 
+            if (ToastService == null) throw new InvalidOperationException();
+
             if (ingredientDto != null)
             {
                 if (IngredientsPage == null) throw new InvalidOperationException();
 
+                ToastService.ShowSuccess("New ingredient successfully added!");
                 IngredientsPage.AddNewIngredientToCollection(ingredientDto);
             }
             else
             {
-                throw new InvalidOperationException();
+                ToastService.ShowError("Failed to add new ingredient.");
             }
         }
     }

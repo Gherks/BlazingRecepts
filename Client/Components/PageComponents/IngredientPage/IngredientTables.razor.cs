@@ -1,6 +1,7 @@
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
@@ -16,6 +17,9 @@ public partial class IngredientTables : ComponentBase
 
     [Inject]
     public IIngredientService? IngredientService { get; set; }
+
+    [Inject]
+    public IToastService? ToastService { get; set; }
 
     public void Refresh()
     {
@@ -72,6 +76,9 @@ public partial class IngredientTables : ComponentBase
 
         if (removalSuccessful)
         {
+            if (ToastService == null) throw new InvalidOperationException();
+
+            ToastService.ShowInfo("Successfully removed ingredient.");
             StateHasChanged();
         }
 
