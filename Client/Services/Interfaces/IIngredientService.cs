@@ -6,6 +6,7 @@ namespace BlazingRecept.Client.Services.Interfaces
     {
         Task<bool> AnyAsync(string name);
         Task<IngredientDto?> GetByIdAsync(Guid id);
+        Task<IReadOnlyList<IngredientDto>?> GetAllAsync();
         Task<IReadOnlyList<IngredientCollectionTypeDto>?> GetAllSortedAsync();
         Task<IngredientDto?> SaveAsync(IngredientDto ingredientDto);
         Task<bool> DeleteAsync(Guid id);

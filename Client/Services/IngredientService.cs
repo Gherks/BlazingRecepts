@@ -55,11 +55,33 @@ namespace BlazingRecept.Client.Services
             return null;
         }
 
-        public async Task<IReadOnlyList<IngredientCollectionTypeDto>?> GetAllSortedAsync()
+        public async Task<IReadOnlyList<IngredientDto>?> GetAllAsync()
         {
             try
             {
                 HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientDto>>();
+                }
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
+            catch (Exception)
+            {
+            }
+
+            return null;
+        }
+
+        public async Task<IReadOnlyList<IngredientCollectionTypeDto>?> GetAllSortedAsync()
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + "/sorted");
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {

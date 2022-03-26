@@ -44,8 +44,16 @@ public class IngredientController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet()]
-    public async Task<IReadOnlyList<IngredientCollectionTypeDto>> Get()
+    [HttpGet]
+    public async Task<IReadOnlyList<IngredientDto>> Get()
+    {
+        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+
+        return await _service.GetAllAsync();
+    }
+
+    [HttpGet("sorted")]
+    public async Task<IReadOnlyList<IngredientCollectionTypeDto>> GetSorted()
     {
         //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
