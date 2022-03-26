@@ -1,7 +1,9 @@
-﻿@using BlazingRecept.Shared.Dto
+﻿@using BlazingRecept.Client.Components.Utilities
+@using BlazingRecept.Shared.Dto
+
 @inherits ComponentBase
 
-<RemovalConfirmationModal @ref="_removalConfirmationModal" OnConfirm="OnIngredientRemoved" />
+<IngredientRemovalConfirmationModal @ref="_ingredientRemovalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
 <div class="card mb-2">
     <div class="card-body">
         @for (int index = 0; index < IngredientsPage?.IngredientCollectionTypes?.Count; ++index)
@@ -40,10 +42,10 @@
                                     <input type="text" id="calories" name="calories" class="form-control" @bind="@ingredientDto.Calories" placeholder="@ingredientDto.Calories">
                                 </td>
                                 <td>
-                                    <button class="btn btn-success btn-sm" @onclick="() => OnIngredientEditConfirm(ingredientDto)">
+                                    <button class="btn btn-success btn-sm" @onclick="() => HandleIngredientEditConfirmed(ingredientDto)">
                                         <i class="fa-solid fa-check"></i>
                                     </button>
-                                    <button class="btn btn-danger btn-sm" @onclick="() => OnIngredientEditCancel()">
+                                    <button class="btn btn-danger btn-sm" @onclick="() => HandleIngredientEditCancel()">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </td>
@@ -58,10 +60,10 @@
                                 <td>@ingredientDto.Protein</td>
                                 <td>@ingredientDto.Calories</td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" @onclick="() => OnIngredientEditClick(ingredientDto.Id)">
+                                    <button class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEditClicked(ingredientDto.Id)">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
-                                    <button class="btn btn-danger btn-sm" @onclick="() => OnIngredientRemovalModalOpen(ingredientDto)">
+                                    <button class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemovalModalOpen(ingredientDto)">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </td>

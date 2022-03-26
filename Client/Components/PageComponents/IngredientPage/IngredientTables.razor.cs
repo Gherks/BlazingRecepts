@@ -1,3 +1,4 @@
+using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
@@ -10,7 +11,7 @@ public partial class IngredientTables : ComponentBase
 {
     private Guid _editingIngredientGuid = Guid.Empty;
 
-    private RemovalConfirmationModal? _removalConfirmationModal;
+    private IngredientRemovalConfirmationModal? _ingredientRemovalConfirmationModal;
 
     [CascadingParameter]
     protected internal Ingredients? IngredientsPage { get; private set; }
@@ -26,28 +27,23 @@ public partial class IngredientTables : ComponentBase
         StateHasChanged();
     }
 
-    private void OnIngredientEditClick(Guid editingIngredientGuid)
+    private void HandleIngredientEditClicked(Guid editingIngredientGuid)
     {
         _editingIngredientGuid = editingIngredientGuid;
         StateHasChanged();
     }
 
-    private void OnIngredientRemovalModalOpen(IngredientDto ingredientDto)
+    private void HandleIngredientRemovalModalOpen(IngredientDto? ingredientDto)
     {
-        if (_removalConfirmationModal == null)
-        {
-            throw new InvalidOperationException("ConfirmationModal can not be opened because it has not been set.");
-        }
+        if (_ingredientRemovalConfirmationModal == null) throw new InvalidOperationException("ConfirmationModal cannot be opened because it has not been set.");
+        if (ingredientDto == null) throw new InvalidOperationException();
 
-        _removalConfirmationModal.Open(ingredientDto);
+        _ingredientRemovalConfirmationModal.Open(ingredientDto);
     }
 
-    private async Task OnIngredientEditConfirm(IngredientDto ingredientDto)
+    private async Task HandleIngredientEditConfirmed(IngredientDto ingredientDto)
     {
-        if (IngredientService == null)
-        {
-            throw new InvalidOperationException("Can not save edited ingredient because the ingredient service has not been set.");
-        }
+        if (IngredientService == null) throw new InvalidOperationException("Cannot save edited ingredient because the ingredient service has not been set.");
 
         IngredientDto? savedIngredientDto = await IngredientService.SaveAsync(ingredientDto);
 
@@ -60,28 +56,29 @@ public partial class IngredientTables : ComponentBase
         StateHasChanged();
     }
 
-    private void OnIngredientEditCancel()
+    private void HandleIngredientEditCancel()
     {
         _editingIngredientGuid = Guid.Empty;
         StateHasChanged();
     }
 
-    private Task OnIngredientRemoved(IngredientDto ingredientDto)
+    private async Task HandleIngredientRemovalConfirmed(IngredientDto ingredientDto)
     {
-        if (IngredientsPage == null) throw new InvalidOperationException("Can not remove ingredient from ingredient page collection because ingredient page reference is null.");
-        if (IngredientsPage.IngredientCollectionTypes == null) throw new InvalidOperationException("Can not remove ingredient from ingredient page collection because ingredient page collection is null.");
+        if (IngredientService == null) throw new InvalidOperationException();
+        if (IngredientsPage == null) throw new InvalidOperationException("Cannot remove ingredient from ingredient page collection because ingredient page reference is null.");
+        if (IngredientsPage.IngredientCollectionTypes == null) throw new InvalidOperationException("Cannot remove ingredient from ingredient page collection because ingredient page collection is null.");
+
+        bool removalFromDatabaseSuccessful = await IngredientService.DeleteAsync(ingredientDto.Id);
 
         int categoryIndex = ingredientDto.CategoryDto.SortOrder;
-        bool removalSuccessful = IngredientsPage.IngredientCollectionTypes[categoryIndex].Ingredients.Remove(ingredientDto);
+        bool removalFromCollectionSuccessful = IngredientsPage.IngredientCollectionTypes[categoryIndex].Ingredients.Remove(ingredientDto);
 
-        if (removalSuccessful)
+        if (removalFromDatabaseSuccessful && removalFromCollectionSuccessful)
         {
             if (ToastService == null) throw new InvalidOperationException();
 
             ToastService.ShowInfo("Successfully removed ingredient.");
             StateHasChanged();
         }
-
-        return Task.CompletedTask;
     }
 }
