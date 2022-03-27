@@ -7,11 +7,8 @@ namespace BlazingRecept.Server.Repositories;
 
 public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
 {
-    private IIngredientCategoryRepository? _ingredientCategoryRepository;
-
-    public RecipeRepository(BlazingReceptContext context, IIngredientCategoryRepository ingredientCategoryRepository) : base(context)
+    public RecipeRepository(BlazingReceptContext context) : base(context)
     {
-        _ingredientCategoryRepository = ingredientCategoryRepository;
     }
 
     public async Task<bool> AnyAsync(string name)
@@ -26,18 +23,49 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
     }
 
-    public override async Task<Recipe> AddAsync(Recipe recipe)
+    public override async Task<Recipe?> GetByIdAsync(Guid id)
     {
-        if (_ingredientCategoryRepository == null) throw new InvalidOperationException("Ingredient category repository cannot be used because it has not been set.");
-
         try
         {
-            //IngredientCategory? ingredientCategory = await _ingredientCategoryRepository.GetByIdAsync(ingredient.IngredientCategoryId);
+            return await _context.Recipe
+                .Include(recipe => recipe.IngredientMeasurements)
+                    .ThenInclude(ingredientMeasurement => ingredientMeasurement.Ingredient)
+                        .ThenInclude(ingredient => ingredient.IngredientCategory)
+                .FirstOrDefaultAsync(recipe => recipe.Id == id);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
 
-            //if (ingredientCategory == null) throw new InvalidOperationException("Ingredient category cannot be used because it could not be fetched from database.");
+    public override async Task<IReadOnlyList<Recipe>?> ListAllAsync()
+    {
+        try
+        {
+            return await _context.Recipe
+                .Include(recipe => recipe.IngredientMeasurements)
+                    .ThenInclude(ingredientMeasurement => ingredientMeasurement.Ingredient)
+                        .ThenInclude(ingredient => ingredient.IngredientCategory)
+                .ToListAsync();
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
 
-            //ingredient.IngredientCategory = ingredientCategory;
-            //_context.Ingredient.Add(ingredient);
+    public override async Task<Recipe> AddAsync(Recipe recipe)
+    {
+        try
+        {
+            foreach(IngredientMeasurement ingredientMeasurement in recipe.IngredientMeasurements)
+            {
+                _context.Attach(ingredientMeasurement.Ingredient);
+                _context.Attach(ingredientMeasurement.Ingredient.IngredientCategory);
+            }
+
+            _context.Recipe.Add(recipe);
 
             await _context.SaveChangesAsync();
             await _context.Entry(recipe).ReloadAsync();
