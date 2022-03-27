@@ -20,4 +20,11 @@ public partial class Recipe : ComponentBase
 
         _recipeDto = await RecipeService.GetByIdAsync(RecipeId);
     }
+
+    private bool ContainsInstructions()
+    {
+        if (_recipeDto == null) throw new InvalidOperationException();
+
+        return string.IsNullOrWhiteSpace(_recipeDto.Instructions) == false;
+    }
 }
