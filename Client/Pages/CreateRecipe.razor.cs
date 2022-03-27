@@ -126,9 +126,9 @@ public partial class CreateRecipe : ComponentBase
             IngredientMeasurementDto ingredientMeasurementDto = new()
             {
                 IngredientDto = ingredientForm.IngredientDto,
-                Measurement = ingredientForm.Measurement,
+                Measurement = ingredientForm.Measurement.Trim(),
                 Grams = Convert.ToInt32(ingredientForm.Grams),
-                Note = ingredientForm.Note
+                Note = ingredientForm.Note.Trim()
             };
 
             recipeDto.IngredientMeasurementDtos.Add(ingredientMeasurementDto);

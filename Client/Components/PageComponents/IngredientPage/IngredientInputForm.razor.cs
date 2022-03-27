@@ -153,7 +153,7 @@ public partial class IngredientInputForm : ComponentBase
 
         return new IngredientDto()
         {
-            Name = _form.Name,
+            Name = _form.Name.Trim(),
             Fat = double.Parse(_form.Fat),
             Carbohydrates = double.Parse(_form.Carbohydrates),
             Protein = double.Parse(_form.Protein),
