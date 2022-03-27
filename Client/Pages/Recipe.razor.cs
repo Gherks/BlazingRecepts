@@ -1,4 +1,5 @@
 using BlazingRecept.Client.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 
@@ -26,5 +27,12 @@ public partial class Recipe : ComponentBase
         if (_recipeDto == null) throw new InvalidOperationException();
 
         return string.IsNullOrWhiteSpace(_recipeDto.Instructions) == false;
+    }
+
+    private string GetMeasurement(IngredientMeasurementDto ingredientMeasurementDto)
+    {
+        if (ingredientMeasurementDto == null) throw new InvalidOperationException();
+
+        return ingredientMeasurementDto.Measurement.Trim() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
     }
 }
