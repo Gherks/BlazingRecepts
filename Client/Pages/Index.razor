@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using BlazingRecept.Shared.Dto
 
 <PageTitle>Index</PageTitle>
 
@@ -7,3 +8,14 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+<h2>Recipes</h2>
+<div class="list-group">
+    @if(_recipes != null)
+    {
+        foreach (RecipeDto recipeDto in _recipes)
+        {
+            <button type="button" class="list-group-item list-group-item-action" @onclick="@(_ => HandleRecipeNavigation(recipeDto))">recipeDto.Name</button>
+        }
+    }
+</div>
