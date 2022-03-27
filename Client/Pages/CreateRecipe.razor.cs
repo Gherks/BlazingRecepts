@@ -10,8 +10,7 @@ namespace BlazingRecept.Client.Pages;
 
 public partial class CreateRecipe : ComponentBase
 {
-    private readonly Form _form = new();
-
+    private Form _form = new();
 
     private AddIngredientModal? _addIngredientModal;
     private IngredientRemovalConfirmationModal? _ingredientRemovalConfirmationModal;
@@ -51,6 +50,9 @@ public partial class CreateRecipe : ComponentBase
                 if (ToastService == null) throw new InvalidOperationException();
 
                 ToastService.ShowSuccess("Recipe successfully added!");
+
+                _form = new();
+                IngredientForms.Clear();
             }
         }
     }
