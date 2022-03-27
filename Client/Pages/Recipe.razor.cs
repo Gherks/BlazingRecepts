@@ -1,9 +1,23 @@
+using BlazingRecept.Client.Services.Interfaces;
+using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Pages;
 
 public partial class Recipe : ComponentBase
 {
+    private RecipeDto? _recipeDto = new RecipeDto();
+
     [Parameter]
     public Guid Id { get; set; }
+
+    [Inject]
+    public IRecipeService? RecipeService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (RecipeService == null) throw new InvalidOperationException();
+
+        _recipeDto = await RecipeService.GetByIdAsync(Id);
+    }
 }

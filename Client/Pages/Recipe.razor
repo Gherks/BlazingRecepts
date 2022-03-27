@@ -1,7 +1,52 @@
 ﻿@page "/recipe/{Id:guid}"
 
+@using BlazingRecept.Shared.Dto
+@using Markdig
+
 @inherits ComponentBase
 
 <PageTitle>Recipe</PageTitle>
 
-<h1>Recipe</h1>
+@if (_recipeDto != null)
+{
+    <h1>@_recipeDto.Name</h1>
+    <h2>Portions: @_recipeDto.PortionAmount</h2>
+    <div class="card">
+        @if (string.IsNullOrWhiteSpace(_recipeDto.Instructions))
+        {
+            <h2>Instructions</h2>
+            <div class="card mb-2">
+                <div class="card-body">
+                    @((MarkupString) Markdown.ToHtml(_recipeDto.Instructions))
+                </div>
+            </div>
+        }
+        <div class="card mb-2">
+            <table class="table table-hover table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Measurement</th>
+                        <th>Grams</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (IngredientMeasurementDto ingredientMeasurementDto in _recipeDto.IngredientMeasurementDtos)
+                    {
+                        <tr>
+                            <td>@ingredientMeasurementDto.IngredientDto.Name</td>
+                            <td>@ingredientMeasurementDto.Measurement</td>
+                            <td>@ingredientMeasurementDto.Grams</td>
+                            <td>@ingredientMeasurementDto.Note</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <h1>Something went wrong...</h1>
+}
