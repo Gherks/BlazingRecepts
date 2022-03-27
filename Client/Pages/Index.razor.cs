@@ -6,7 +6,7 @@ namespace BlazingRecept.Client.Pages;
 
 public partial class Index : ComponentBase
 {
-    public IReadOnlyList<RecipeDto>? _recipes = new List<RecipeDto>();
+    private IReadOnlyList<RecipeDto>? _recipeDtos = new List<RecipeDto>();
 
     [Inject]
     public IRecipeService? RecipeService { get; set; }
@@ -18,7 +18,7 @@ public partial class Index : ComponentBase
     {
         if (RecipeService == null) throw new InvalidOperationException();
 
-        _recipes = await RecipeService.GetAllAsync();
+        _recipeDtos = await RecipeService.GetAllAsync();
     }
 
     private void HandleRecipeNavigation(RecipeDto recipeDto)
