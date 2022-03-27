@@ -9,7 +9,7 @@ public partial class Recipe : ComponentBase
     private RecipeDto? _recipeDto = new RecipeDto();
 
     [Parameter]
-    public Guid Id { get; set; }
+    public Guid RecipeId { get; set; }
 
     [Inject]
     public IRecipeService? RecipeService { get; set; }
@@ -18,6 +18,6 @@ public partial class Recipe : ComponentBase
     {
         if (RecipeService == null) throw new InvalidOperationException();
 
-        _recipeDto = await RecipeService.GetByIdAsync(Id);
+        _recipeDto = await RecipeService.GetByIdAsync(RecipeId);
     }
 }
