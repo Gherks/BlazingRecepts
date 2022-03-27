@@ -25,6 +25,6 @@ public partial class Index : ComponentBase
     {
         if (NavigationManager == null) throw new InvalidOperationException();
 
-        NavigationManager.NavigateTo($"recipes/{recipeDto.Id}");
+        NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
     }
 }

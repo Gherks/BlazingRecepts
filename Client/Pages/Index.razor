@@ -10,7 +10,7 @@
     {
         foreach (RecipeDto recipeDto in _recipeDtos)
         {
-            <button type="button" class="list-group-item list-group-item-action" @onclick="@(_ => HandleRecipeNavigation(recipeDto))">recipeDto.Name</button>
+            <button type="button" class="list-group-item list-group-item-action" @onclick="@(_ => HandleRecipeNavigation(recipeDto))">@recipeDto.Name</button>
         }
     }
 </div>
