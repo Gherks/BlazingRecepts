@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazingRecept.Client.Components.PageComponents.CreateRecipePage;
 
-public partial class AddIngredientModal : ComponentBase
+public partial class AddIngredientMeasurementModal : ComponentBase
 {
     private readonly string _editFormId = "AddIngredientModalEditForm";
 

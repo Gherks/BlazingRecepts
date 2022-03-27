@@ -12,7 +12,7 @@ public partial class CreateRecipe : ComponentBase
 {
     private Form _form = new();
 
-    private AddIngredientModal? _addIngredientModal;
+    private AddIngredientMeasurementModal? _addIngredientMeasurementModal;
     private IngredientRemovalConfirmationModal? _ingredientRemovalConfirmationModal;
     private CustomValidation? _customValidation;
 
@@ -139,9 +139,9 @@ public partial class CreateRecipe : ComponentBase
 
     public void HandleAddIngredientModalOpen(IngredientForm? ingredientForm)
     {
-        if (_addIngredientModal == null) throw new InvalidOperationException();
+        if (_addIngredientMeasurementModal == null) throw new InvalidOperationException();
 
-        _addIngredientModal.Open(ingredientForm);
+        _addIngredientMeasurementModal.Open(ingredientForm);
     }
 
     public void OpenIngredientRemovalModalOpen(IngredientForm ingredientForm)
