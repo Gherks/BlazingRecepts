@@ -4,119 +4,118 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace BlazingRecept.Client.Services
+namespace BlazingRecept.Client.Services;
+
+public class RecipeService : IRecipeService
 {
-    public class RecipeService : IRecipeService
+    private readonly string _apiAddress = "api/recipes";
+    private readonly HttpClient _httpClient;
+
+    public RecipeService(IHttpClientFactory httpClientFactory)
     {
-        private readonly string _apiAddress = "api/recipes";
-        private readonly HttpClient _httpClient;
+        _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
+    }
 
-        public RecipeService(IHttpClientFactory httpClientFactory)
+    public async Task<bool> AnyAsync(string name)
+    {
+        try
         {
-            _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
+            Uri uri = new Uri(_httpClient.BaseAddress + _apiAddress + $"/{name}");
+            HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
+            HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+
+            return response.StatusCode == HttpStatusCode.OK;
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<bool> AnyAsync(string name)
+        return false;
+    }
+
+    public async Task<RecipeDto?> GetByIdAsync(Guid id)
+    {
+        try
         {
-            try
-            {
-                Uri uri = new Uri(_httpClient.BaseAddress + _apiAddress + $"/{name}");
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
-                HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + $"/{id}");
 
-                return response.StatusCode == HttpStatusCode.OK;
-            }
-            catch (Exception)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
+                return await response.Content.ReadFromJsonAsync<RecipeDto>();
             }
-
-            return false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<RecipeDto?> GetByIdAsync(Guid id)
+        return null;
+    }
+
+    public async Task<IReadOnlyList<RecipeDto>?> GetAllAsync()
+    {
+        try
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
 
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await response.Content.ReadFromJsonAsync<RecipeDto>();
-                }
-            }
-            catch (AccessTokenNotAvailableException exception)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                exception.Redirect();
+                return await response.Content.ReadFromJsonAsync<IReadOnlyList<RecipeDto>>();
             }
-            catch (Exception)
-            {
-            }
-
-            return null;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<IReadOnlyList<RecipeDto>?> GetAllAsync()
+        return null;
+    }
+
+    public async Task<RecipeDto?> SaveAsync(RecipeDto recipeDto)
+    {
+        if (recipeDto == null)
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await response.Content.ReadFromJsonAsync<IReadOnlyList<RecipeDto>>();
-                }
-            }
-            catch (AccessTokenNotAvailableException exception)
-            {
-                exception.Redirect();
-            }
-            catch (Exception)
-            {
-            }
-
-            return null;
+            throw new ArgumentNullException(nameof(recipeDto));
         }
 
-        public async Task<RecipeDto?> SaveAsync(RecipeDto recipeDto)
+        try
         {
-            if (recipeDto == null)
-            {
-                throw new ArgumentNullException(nameof(recipeDto));
-            }
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_apiAddress, recipeDto);
 
-            try
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_apiAddress, recipeDto);
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await response.Content.ReadFromJsonAsync<RecipeDto>();
-                }
+                return await response.Content.ReadFromJsonAsync<RecipeDto>();
             }
-            catch (AccessTokenNotAvailableException exception)
-            {
-                exception.Redirect();
-            }
-            catch (Exception)
-            {
-            }
-
-            return null;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        { 
+            exception.Redirect();
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        return null;
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        try
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.DeleteAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _httpClient.DeleteAsync(_apiAddress + $"/{id}");
 
-                return response.StatusCode == HttpStatusCode.OK;
-            }
-            catch (Exception)
-            {
-            }
-
-            return false;
+            return response.StatusCode == HttpStatusCode.OK;
         }
+        catch (Exception)
+        {
+        }
+
+        return false;
     }
 }

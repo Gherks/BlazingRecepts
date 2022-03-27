@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlazingRecept.Server.Controllers;
 
-
 //[Authorize]
 [ApiController]
 [Route("api/recipes")]

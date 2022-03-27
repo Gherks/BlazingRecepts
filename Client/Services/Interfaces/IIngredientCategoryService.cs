@@ -1,9 +1,8 @@
 ﻿using BlazingRecept.Shared.Dto;
 
-namespace BlazingRecept.Client.Services.Interfaces
+namespace BlazingRecept.Client.Services.Interfaces;
+
+public interface IIngredientCategoryService
 {
-    public interface IIngredientCategoryService
-    {
-        Task<IReadOnlyList<IngredientCategoryDto>?> GetAllAsync();
-    }
+    Task<IReadOnlyList<IngredientCategoryDto>?> GetAllAsync();
 }

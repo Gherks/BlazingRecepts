@@ -4,38 +4,37 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace BlazingRecept.Client.Services
+namespace BlazingRecept.Client.Services;
+
+public class IngredientCategoryService : IIngredientCategoryService
 {
-    public class IngredientCategoryService : IIngredientCategoryService
+    private readonly string _apiAddress = "api/ingredientcategories";
+    private readonly HttpClient _httpClient;
+
+    public IngredientCategoryService(IHttpClientFactory httpClientFactory)
     {
-        private readonly string _apiAddress = "api/ingredientcategories";
-        private readonly HttpClient _httpClient;
+        _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
+    }
 
-        public IngredientCategoryService(IHttpClientFactory httpClientFactory)
+    public async Task<IReadOnlyList<IngredientCategoryDto>?> GetAllAsync()
+    {
+        try
         {
-            _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientCategoryDto>>();
+            }
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<IReadOnlyList<IngredientCategoryDto>?> GetAllAsync()
-        {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientCategoryDto>>();
-                }
-            }
-            catch (AccessTokenNotAvailableException exception)
-            {
-                exception.Redirect();
-            }
-            catch (Exception)
-            {
-            }
-
-            return null;
-        }
+        return null;
     }
 }

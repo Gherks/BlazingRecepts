@@ -4,145 +4,144 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace BlazingRecept.Client.Services
+namespace BlazingRecept.Client.Services;
+
+public class IngredientService : IIngredientService
 {
-    public class IngredientService : IIngredientService
+    private readonly string _apiAddress = "api/ingredients";
+    private readonly HttpClient _httpClient;
+
+    public IngredientService(IHttpClientFactory httpClientFactory)
     {
-        private readonly string _apiAddress = "api/ingredients";
-        private readonly HttpClient _httpClient;
+        _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
+    }
 
-        public IngredientService(IHttpClientFactory httpClientFactory)
+    public async Task<bool> AnyAsync(string name)
+    {
+        try
         {
-            _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
+            Uri uri = new Uri(_httpClient.BaseAddress + _apiAddress + $"/{name}");
+            HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
+            HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+
+            return response.StatusCode == HttpStatusCode.OK;
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<bool> AnyAsync(string name)
+        return false;
+    }
+
+    public async Task<IngredientDto?> GetByIdAsync(Guid id)
+    {
+        try
         {
-            try
-            {
-                Uri uri = new Uri(_httpClient.BaseAddress + _apiAddress + $"/{name}");
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
-                HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + $"/{id}");
 
-                return response.StatusCode == HttpStatusCode.OK;
-            }
-            catch (Exception)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
+                return await response.Content.ReadFromJsonAsync<IngredientDto>();
             }
-
-            return false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<IngredientDto?> GetByIdAsync(Guid id)
+        return null;
+    }
+
+    public async Task<IReadOnlyList<IngredientDto>?> GetAllAsync()
+    {
+        try
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
 
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await response.Content.ReadFromJsonAsync<IngredientDto>();
-                }
-            }
-            catch (AccessTokenNotAvailableException exception)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                exception.Redirect();
+                return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientDto>>();
             }
-            catch (Exception)
-            {
-            }
-
-            return null;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<IReadOnlyList<IngredientDto>?> GetAllAsync()
+        return null;
+    }
+
+    public async Task<IReadOnlyList<IngredientCollectionTypeDto>?> GetAllSortedAsync()
+    {
+        try
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + "/sorted");
 
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientDto>>();
-                }
-            }
-            catch (AccessTokenNotAvailableException exception)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                exception.Redirect();
+                return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientCollectionTypeDto>>();
             }
-            catch (Exception)
-            {
-            }
-
-            return null;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<IReadOnlyList<IngredientCollectionTypeDto>?> GetAllSortedAsync()
+        return null;
+    }
+
+    public async Task<IngredientDto?> SaveAsync(IngredientDto ingredientDto)
+    {
+        if (ingredientDto == null)
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + "/sorted");
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientCollectionTypeDto>>();
-                }
-            }
-            catch (AccessTokenNotAvailableException exception)
-            {
-                exception.Redirect();
-            }
-            catch (Exception)
-            {
-            }
-
-            return null;
+            throw new ArgumentNullException(nameof(ingredientDto));
         }
 
-        public async Task<IngredientDto?> SaveAsync(IngredientDto ingredientDto)
+        try
         {
-            if (ingredientDto == null)
-            {
-                throw new ArgumentNullException(nameof(ingredientDto));
-            }
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_apiAddress, ingredientDto);
 
-            try
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_apiAddress, ingredientDto);
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return await response.Content.ReadFromJsonAsync<IngredientDto>();
-                }
+                return await response.Content.ReadFromJsonAsync<IngredientDto>();
             }
-            catch (AccessTokenNotAvailableException exception)
-            {
-                exception.Redirect();
-            }
-            catch (Exception)
-            {
-            }
-
-            return null;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception)
+        {
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        return null;
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        try
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.DeleteAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _httpClient.DeleteAsync(_apiAddress + $"/{id}");
 
-                return response.StatusCode == HttpStatusCode.OK;
-            }
-            catch (AccessTokenNotAvailableException exception)
-            {
-                exception.Redirect();
-            }
-            catch (Exception)
-            {
-            }
-
-            return false;
+            return response.StatusCode == HttpStatusCode.OK;
         }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception)
+        {
+        }
+
+        return false;
     }
 }
