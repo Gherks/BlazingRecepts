@@ -8,14 +8,14 @@ namespace BlazingRecept.Server.Services
 {
     public class IngredientService : IIngredientService
     {
-        private readonly IIngredientsRepository _ingredientsRepository;
         private readonly IIngredientCategoryService _ingredientCategoryService;
+        private readonly IIngredientRepository _ingredientsRepository;
         private readonly IMapper _mapper;
 
-        public IngredientService(IIngredientsRepository ingredientsRepository, IIngredientCategoryService ingredientCategoryService, IMapper mapper)
+        public IngredientService(IIngredientCategoryService ingredientCategoryService, IIngredientRepository ingredientsRepository, IMapper mapper)
         {
-            _ingredientsRepository = ingredientsRepository;
             _ingredientCategoryService = ingredientCategoryService;
+            _ingredientsRepository = ingredientsRepository;
             _mapper = mapper;
         }
 

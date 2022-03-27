@@ -29,7 +29,7 @@ public static class BlazingReceptServiceCollectionExtensions
     {
         builder.Services.AddScoped(typeof(IAsyncRepository<>), typeof(RepositoryBase<>));
         builder.Services.AddScoped<IIngredientCategoryRepository, IngredientCategoryRepository>();
-        builder.Services.AddScoped<IIngredientsRepository, IngredientsRepository>();
+        builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
         builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 
         return builder;
