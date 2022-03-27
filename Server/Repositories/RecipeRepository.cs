@@ -59,7 +59,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
     {
         try
         {
-            foreach(IngredientMeasurement ingredientMeasurement in recipe.IngredientMeasurements)
+            foreach (IngredientMeasurement ingredientMeasurement in recipe.IngredientMeasurements)
             {
                 _context.Attach(ingredientMeasurement.Ingredient);
                 _context.Attach(ingredientMeasurement.Ingredient.IngredientCategory);

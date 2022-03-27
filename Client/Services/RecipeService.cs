@@ -94,7 +94,7 @@ public class RecipeService : IRecipeService
             }
         }
         catch (AccessTokenNotAvailableException exception)
-        { 
+        {
             exception.Redirect();
         }
         catch (Exception)
