@@ -9,7 +9,7 @@ namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 
 public partial class IngredientInputForm : ComponentBase
 {
-    private readonly Form _form = new();
+    private Form _form = new();
 
     private CustomValidation? _customValidation;
 
@@ -37,12 +37,31 @@ public partial class IngredientInputForm : ComponentBase
         }
     }
 
+    private async Task HandleNameBlur()
+    {
+        if (_customValidation == null) throw new InvalidOperationException("Custom validation object is not available during blur validation.");
+        if (IngredientService == null) throw new InvalidOperationException("Ingredient service is not available during blur validation.");
+
+        Dictionary<string, List<string>> errors = new();
+
+        bool ingredientExists = await IngredientService.AnyAsync(_form.Name);
+
+        if (ingredientExists)
+        {
+            errors.Add(nameof(_form.Name), new List<string>() {
+                "Ingredient with name already exists."
+            });
+        }
+
+        if (errors.Count > 0)
+        {
+            _customValidation.DisplayErrors(errors);
+        }
+    }
+
     private async Task HandleValidFormSubmitted()
     {
-        if (IngredientService == null)
-        {
-            throw new InvalidOperationException();
-        }
+        if (IngredientService == null) throw new InvalidOperationException();
 
         if (await Validate())
         {
@@ -58,6 +77,8 @@ public partial class IngredientInputForm : ComponentBase
 
                 ToastService.ShowSuccess("Ingredient successfully added!");
                 IngredientsPage.AddNewIngredientToCollection(ingredientDto);
+
+                _form = new();
             }
             else
             {
@@ -88,16 +109,16 @@ public partial class IngredientInputForm : ComponentBase
 
             if (ingredientExists)
             {
-                errors.Add(nameof(_form.IngredientCreationErrorMessage), new List<string>() {
+                errors.Add(nameof(_form.Name), new List<string>() {
                     "Ingredient with name already exists."
                 });
             }
         }
 
-        ValidateStringInt(_form.Fat, nameof(_form.Fat), errors);
-        ValidateStringInt(_form.Carbohydrates, nameof(_form.Carbohydrates), errors);
-        ValidateStringInt(_form.Protein, nameof(_form.Protein), errors);
-        ValidateStringInt(_form.Calories, nameof(_form.Calories), errors);
+        ValidateStringDouble(_form.Fat, nameof(_form.Fat), errors);
+        ValidateStringDouble(_form.Carbohydrates, nameof(_form.Carbohydrates), errors);
+        ValidateStringDouble(_form.Protein, nameof(_form.Protein), errors);
+        ValidateStringDouble(_form.Calories, nameof(_form.Calories), errors);
 
         if (_form.IngredientCategoryDtoId == Guid.Empty)
         {
@@ -115,7 +136,7 @@ public partial class IngredientInputForm : ComponentBase
         return true;
     }
 
-    private void ValidateStringInt(string variableValue, string variableName, Dictionary<string, List<string>> errors)
+    private void ValidateStringDouble(string variableValue, string variableName, Dictionary<string, List<string>> errors)
     {
         if (string.IsNullOrWhiteSpace(variableValue))
         {
@@ -123,13 +144,13 @@ public partial class IngredientInputForm : ComponentBase
                 $"{variableName} is required."
             });
         }
-        else if (int.TryParse(variableValue, out int intValue) == false)
+        else if (double.TryParse(variableValue, out double doubleValue) == false)
         {
             errors.Add(variableName, new List<string>() {
                 $"{variableName} must only include numbers."
             });
         }
-        else if (intValue <= 0)
+        else if (doubleValue < 0.0)
         {
             errors.Add(variableName, new List<string>() {
                 $"{variableName} must be a positive number."
@@ -170,6 +191,5 @@ public partial class IngredientInputForm : ComponentBase
         public string Protein { get; set; } = string.Empty;
         public string Calories { get; set; } = string.Empty;
         public Guid IngredientCategoryDtoId { get; set; } = Guid.Empty;
-        public string IngredientCreationErrorMessage { get; set; } = string.Empty;
     }
 }
