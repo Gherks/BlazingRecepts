@@ -32,6 +32,10 @@
                                 <th>Measurement</th>
                                 <th>Grams</th>
                                 <th>Note</th>
+                                <th>Fat</th>
+                                <th>Carbohydrates</th>
+                                <th>Protein</th>
+                                <th>Calories</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,8 +46,42 @@
                                     <td>@GetMeasurement(ingredientMeasurementDto)</td>
                                     <td>@ingredientMeasurementDto.Grams</td>
                                     <td>@ingredientMeasurementDto.Note</td>
+                                    <td>@ingredientMeasurementDto.IngredientDto.Fat</td>
+                                    <td>@ingredientMeasurementDto.IngredientDto.Carbohydrates</td>
+                                    <td>@ingredientMeasurementDto.IngredientDto.Protein</td>
+                                    <td>@ingredientMeasurementDto.IngredientDto.Calories</td>
                                 </tr>
                             }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td><b>Total</b></td>
+                                <td></td>
+                                <td><b>@GetTotalGrams()</b></td>
+                                <td></td>
+                                <td><b>@GetTotalFat()</b></td>
+                                <td><b>@GetTotalCarbohydrates()</b></td>
+                                <td><b>@GetTotalProtein()</b></td>
+                                <td><b>@GetTotalCalories()</b></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <table class="table table-hover table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>Grams per portion</th>
+                                <th>Protein per portion</th>
+                                <th>Calories per portion</th>
+                                <th>Protein per calorie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@GetGramsPerPortion()</td>
+                                <td>@GetProteinPerPortion()</td>
+                                <td>@GetCaloriesPerPortion()</td>
+                                <td>@GetProteinPerCalorie()</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
