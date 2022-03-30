@@ -67,55 +67,26 @@ public partial class AddIngredientMeasurementModal : ComponentBase
 
         if (Validate())
         {
-            if (IngredientAlreadyAdded(_form.IngredientDto))
+            int sortOrder = _form.SortOrder;
+
+            if (sortOrder >= 0)
             {
-                EditExistingIngredient();
+                sortOrder = CreateRecipe.ContainedIngredientMeasurements.Count;
             }
-            else
+
+            CreateRecipe.ContainedIngredientMeasurements.Add(new()
             {
-                AddNewIngredient();
-            }
+                IngredientDto = _form.IngredientDto,
+                Measurement = _form.Measurement,
+                MeasurementUnit = _form.MeasurementUnit,
+                Grams = Convert.ToInt32(_form.Grams),
+                Note = _form.Note,
+                SortOrder = sortOrder
+            });
 
             CreateRecipe.Refresh();
             _modal.Close();
         }
-    }
-
-    private void EditExistingIngredient()
-    {
-        if (CreateRecipe == null) throw new InvalidOperationException();
-
-        IngredientMeasurementDto? ingredientMeasurementDto = CreateRecipe.ContainedIngredientMeasurements
-            .FirstOrDefault(ingredientMeasurement => ingredientMeasurement.IngredientDto.Id == _form.IngredientDto.Id);
-
-        if (ingredientMeasurementDto == null) throw new InvalidOperationException("Failed to find ingredient that was exepcted to exist edited recipe.");
-
-        ingredientMeasurementDto.Measurement = _form.Measurement;
-        ingredientMeasurementDto.MeasurementUnit = _form.MeasurementUnit;
-        ingredientMeasurementDto.Grams = Convert.ToInt32(_form.Grams);
-        ingredientMeasurementDto.Note = _form.Note;
-    }
-
-    private void AddNewIngredient()
-    {
-        if (CreateRecipe == null) throw new InvalidOperationException();
-
-        int sortOrder = _form.SortOrder;
-
-        if (sortOrder >= 0)
-        {
-            sortOrder = CreateRecipe.ContainedIngredientMeasurements.Count;
-        }
-
-        CreateRecipe.ContainedIngredientMeasurements.Add(new()
-        {
-            IngredientDto = _form.IngredientDto,
-            Measurement = _form.Measurement,
-            MeasurementUnit = _form.MeasurementUnit,
-            Grams = Convert.ToInt32(_form.Grams),
-            Note = _form.Note,
-            SortOrder = sortOrder
-        });
     }
 
     private bool Validate()
