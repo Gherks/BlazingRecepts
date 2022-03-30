@@ -1,4 +1,5 @@
 ﻿@using BlazingRecept.Client.Utilities;
+@using BlazingRecept.Shared.Dto
 
 <div class="mb-2">
     <table class="table table-hover table-striped table-sm">
@@ -12,18 +13,24 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (IngredientForm ingredientForm in GetIngredientForms())
+            @foreach (IngredientMeasurementDto ingredientMeasurementDto in GetIngredientForms())
             {
                 <tr>
-                    <td>@ingredientForm.IngredientDto.Name</td>
-                    <td>@ingredientForm.Measurement</td>
-                    <td>@ingredientForm.Grams</td>
-                    <td>@ingredientForm.Note</td>
+                    <td>@ingredientMeasurementDto.IngredientDto.Name</td>
+                    <td>@ingredientMeasurementDto.Measurement</td>
+                    <td>@ingredientMeasurementDto.Grams</td>
+                    <td>@ingredientMeasurementDto.Note</td>
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEdit(ingredientForm)">
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientFormMoveUpInOrder(ingredientMeasurementDto)">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientFormMoveDownInOrder(ingredientMeasurementDto)">
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEdit(ingredientMeasurementDto)">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemoval(ingredientForm)">
+                        <button type="button" class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemoval(ingredientMeasurementDto)">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>

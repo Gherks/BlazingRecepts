@@ -13,11 +13,12 @@ public partial class CreateRecipe : ComponentBase
     private Form _form = new();
 
     private AddIngredientMeasurementModal? _addIngredientMeasurementModal;
+    private EditIngredientMeasurementModal? _editIngredientMeasurementModal;
     private IngredientRemovalConfirmationModal? _ingredientRemovalConfirmationModal;
     private CustomValidation? _customValidation;
 
     public IReadOnlyList<IngredientDto>? Ingredients { get; set; } = new List<IngredientDto>();
-    public List<IngredientForm> IngredientForms { get; set; } = new();
+    public List<IngredientMeasurementDto> ContainedIngredientMeasurements { get; set; } = new();
 
     [Inject]
     public IIngredientService? IngredientService { get; set; }
@@ -33,6 +34,11 @@ public partial class CreateRecipe : ComponentBase
         if (IngredientService == null) throw new InvalidOperationException("Add ingredient modal cannot be opened because ingredient service has not been set.");
 
         Ingredients = await IngredientService.GetAllAsync();
+    }
+
+    public void Refresh()
+    {
+        StateHasChanged();
     }
 
     private async Task HandleValidFormSubmitted()
@@ -52,7 +58,7 @@ public partial class CreateRecipe : ComponentBase
                 ToastService.ShowSuccess("Recipe successfully added!");
 
                 _form = new();
-                IngredientForms.Clear();
+                ContainedIngredientMeasurements.Clear();
             }
         }
     }
@@ -120,45 +126,45 @@ public partial class CreateRecipe : ComponentBase
         recipeDto.Name = _form.Name;
         recipeDto.PortionAmount = Convert.ToInt32(_form.PortionAmount);
         recipeDto.Instructions = _form.Instructions;
+        recipeDto.IngredientMeasurementDtos = ContainedIngredientMeasurements;
 
-        foreach (IngredientForm ingredientForm in IngredientForms)
+        for (int index = 0; index < recipeDto.IngredientMeasurementDtos.Count; ++index)
         {
-            IngredientMeasurementDto ingredientMeasurementDto = new()
-            {
-                IngredientDto = ingredientForm.IngredientDto,
-                Measurement = ingredientForm.Measurement.Trim(),
-                Grams = Convert.ToInt32(ingredientForm.Grams),
-                Note = ingredientForm.Note.Trim()
-            };
-
-            recipeDto.IngredientMeasurementDtos.Add(ingredientMeasurementDto);
+            recipeDto.IngredientMeasurementDtos[index].SortOrder = index;
         }
 
         return recipeDto;
     }
 
-    public void HandleAddIngredientModalOpen(IngredientForm? ingredientForm)
+    public void HandleAddIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
     {
         if (_addIngredientMeasurementModal == null) throw new InvalidOperationException();
 
-        _addIngredientMeasurementModal.Open(ingredientForm);
+        _addIngredientMeasurementModal.Open(ingredientMeasurementDto);
     }
 
-    public void OpenIngredientRemovalModalOpen(IngredientForm ingredientForm)
+    public void HandleEditIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
+    {
+        if (_editIngredientMeasurementModal == null) throw new InvalidOperationException();
+
+        _editIngredientMeasurementModal.Open(ingredientMeasurementDto);
+    }
+
+    public void OpenIngredientRemovalModalOpen(IngredientMeasurementDto ingredientMeasurementDto)
     {
         if (_ingredientRemovalConfirmationModal == null) throw new InvalidOperationException();
 
-        _ingredientRemovalConfirmationModal.Open(ingredientForm.IngredientDto);
+        _ingredientRemovalConfirmationModal.Open(ingredientMeasurementDto.IngredientDto);
     }
 
     public Task HandleIngredientRemovalConfirmed(IngredientDto ingredientDto)
     {
-        IngredientForm? ingredientForm = IngredientForms.FirstOrDefault(ingredientForm =>
-            ingredientForm.IngredientDto.Id == ingredientDto.Id);
+        IngredientMeasurementDto? ingredientMeasurementDto = ContainedIngredientMeasurements.FirstOrDefault(ingredientMeasurementDto =>
+            ingredientMeasurementDto.IngredientDto.Id == ingredientDto.Id);
 
-        if (ingredientForm != null)
+        if (ingredientMeasurementDto != null)
         {
-            IngredientForms.Remove(ingredientForm);
+            ContainedIngredientMeasurements.Remove(ingredientMeasurementDto);
             StateHasChanged();
         }
         else
@@ -167,24 +173,6 @@ public partial class CreateRecipe : ComponentBase
         }
 
         return Task.CompletedTask;
-    }
-
-    private void HandleNewIngredientFromModal(IngredientForm newIngredientForm)
-    {
-        IngredientForm? existingIngredientForm = IngredientForms.FirstOrDefault(ingredientForm =>
-            ingredientForm.IngredientDto.Name == newIngredientForm.IngredientDto.Name);
-
-        if (existingIngredientForm != null)
-        {
-            int index = IngredientForms.IndexOf(newIngredientForm);
-            IngredientForms[index] = newIngredientForm;
-        }
-        else
-        {
-            IngredientForms.Add(newIngredientForm);
-        }
-
-        StateHasChanged();
     }
 
     private class Form

@@ -4,26 +4,10 @@
 
 @inherits ComponentBase
 
-<Modal @ref="_modal" Title="Add ingredient">
+<Modal @ref="_modal" Title="Edit ingredient">
     <Body>
         <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
             <CustomValidation @ref="_customValidation" />
-            <div class="row mb-2">
-                <label for="name" class="col-3 col-form-label">Name</label>
-                <div class="col-9">
-                    <BlazoredTypeahead id="name"
-                                       SearchMethod="SearchForIngredients"
-                                       @bind-Value="_form.IngredientDto">
-                        <SelectedTemplate Context="ingredientDto">
-                            @ingredientDto.Name
-                        </SelectedTemplate>
-                        <ResultTemplate Context="ingredientDto">
-                            @ingredientDto.Name
-                        </ResultTemplate>
-                    </BlazoredTypeahead>
-                    <ValidationMessage For="() => _form.IngredientDto" />
-                </div>
-            </div>
             <div class="row mb-2">
                 <label for="measurement" class="col-3 col-form-label">Measurement</label>
                 <div class="col-9">
@@ -55,7 +39,7 @@
         </EditForm>
     </Body>
     <Buttons>
-        <button form="@_editFormId" class="btn btn-primary" type="submit">Add</button>
+        <button form="@_editFormId" class="btn btn-primary" type="submit">Edit</button>
         <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Cancel</button>
     </Buttons>
 </Modal>

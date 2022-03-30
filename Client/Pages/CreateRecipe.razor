@@ -7,7 +7,8 @@
 
 <PageTitle>Create Recipe</PageTitle>
 <CascadingValue Value=@this>
-    <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" OnIngredientValid="HandleNewIngredientFromModal" />
+    <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" />
+    <EditIngredientMeasurementModal @ref="_editIngredientMeasurementModal" />
     <IngredientRemovalConfirmationModal @ref="_ingredientRemovalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
     <h1>Create recipe</h1>
     <div class="card mb-2">
