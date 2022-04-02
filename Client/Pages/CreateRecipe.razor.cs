@@ -59,6 +59,8 @@ public partial class CreateRecipe : ComponentBase
 
                 _form = new();
                 ContainedIngredientMeasurements.Clear();
+
+                StateHasChanged();
             }
         }
     }
