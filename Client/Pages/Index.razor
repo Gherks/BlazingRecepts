@@ -1,16 +1,11 @@
 ﻿@page "/"
 
+@using BlazingRecept.Client.Components.PageComponents.IndexPage
 @using BlazingRecept.Shared.Dto
 
 <PageTitle>Index</PageTitle>
 
 <h1>Recipes</h1>
 <div class="list-group">
-    @if(_recipeDtos != null)
-    {
-        foreach (RecipeDto recipeDto in _recipeDtos)
-        {
-            <button type="button" class="list-group-item list-group-item-action" @onclick="@(_ => HandleRecipeNavigation(recipeDto))">@recipeDto.Name</button>
-        }
-    }
+    <RecipeCategoryTable />
 </div>
