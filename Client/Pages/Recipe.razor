@@ -10,7 +10,16 @@
 @if (_recipeDto != null)
 {
     <h1>@_recipeDto.Name</h1>
-    <h3>Portions: @_recipeDto.PortionAmount</h3>
+    <div class="d-flex justify-content-between">
+        <div>
+            <h3>Portions: @_recipeDto.PortionAmount</h3>
+        </div>
+        <div class="flex-shrink-1">
+            <button class="btn btn-primary" @onclick="() => HandleNavigationToEditRecipe(_recipeDto)">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+        </div>
+    </div>
     <div class="card mb-2">
         <div class="card-body">
             @if (ContainsInstructions())

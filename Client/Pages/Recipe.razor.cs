@@ -15,11 +15,21 @@ public partial class Recipe : ComponentBase
     [Inject]
     public IRecipeService? RecipeService { get; set; }
 
+    [Inject]
+    public NavigationManager? NavigationManager { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         if (RecipeService == null) throw new InvalidOperationException();
 
         _recipeDto = await RecipeService.GetByIdAsync(RecipeId);
+    }
+
+    private void HandleNavigationToEditRecipe(RecipeDto recipeDto)
+    {
+        if (NavigationManager == null) throw new InvalidOperationException();
+
+        NavigationManager.NavigateTo($"createrecipe/{recipeDto.Id}");
     }
 
     private bool ContainsInstructions()
@@ -35,11 +45,13 @@ public partial class Recipe : ComponentBase
 
         return ingredientMeasurementDto.Measurement.Trim() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
     }
-    private int GetTotalGrams()
+    private double GetTotalGrams()
     {
         if (_recipeDto == null) throw new InvalidOperationException();
 
-        return _recipeDto.IngredientMeasurementDtos.Sum(ingredientMeasurementDto => ingredientMeasurementDto.Grams);
+        double grams = _recipeDto.IngredientMeasurementDtos.Sum(ingredientMeasurementDto => ingredientMeasurementDto.Grams);
+
+        return Math.Round(grams);
     }
 
     private double GetTotalFat()
@@ -53,7 +65,7 @@ public partial class Recipe : ComponentBase
             totalFat += ingredientMeasurementDto.IngredientDto.Fat * ingredientMeasurementDto.IngredientDto.Fat;
         }
 
-        return totalFat;
+        return Math.Round(totalFat);
     }
 
     private double GetTotalCarbohydrates()
@@ -67,7 +79,7 @@ public partial class Recipe : ComponentBase
             totalCarbohydrates += ingredientMeasurementDto.IngredientDto.Carbohydrates * ingredientMeasurementDto.IngredientDto.Carbohydrates;
         }
 
-        return totalCarbohydrates;
+        return Math.Round(totalCarbohydrates);
     }
 
     private double GetTotalProtein()
@@ -81,7 +93,7 @@ public partial class Recipe : ComponentBase
             totalProtein += ingredientMeasurementDto.IngredientDto.Protein * ingredientMeasurementDto.IngredientDto.Protein;
         }
 
-        return totalProtein;
+        return Math.Round(totalProtein);
     }
 
     private double GetTotalCalories()
@@ -95,32 +107,32 @@ public partial class Recipe : ComponentBase
             totalCalories += ingredientMeasurementDto.IngredientDto.Calories * ingredientMeasurementDto.IngredientDto.Calories;
         }
 
-        return totalCalories;
+        return Math.Round(totalCalories);
     }
 
     private double GetGramsPerPortion()
     {
         if (_recipeDto == null) throw new InvalidOperationException();
 
-        return Convert.ToDouble(GetTotalGrams()) / _recipeDto.PortionAmount;
+        return Math.Round(Convert.ToDouble(GetTotalGrams()) / _recipeDto.PortionAmount);
     }
 
     private double GetProteinPerPortion()
     {
         if (_recipeDto == null) throw new InvalidOperationException();
 
-        return Convert.ToDouble(GetTotalProtein()) / _recipeDto.PortionAmount;
+        return Math.Round(Convert.ToDouble(GetTotalProtein()) / _recipeDto.PortionAmount);
     }
 
     private double GetCaloriesPerPortion()
     {
         if (_recipeDto == null) throw new InvalidOperationException();
 
-        return Convert.ToDouble(GetTotalCalories()) / _recipeDto.PortionAmount;
+        return Math.Round(Convert.ToDouble(GetTotalCalories()) / _recipeDto.PortionAmount);
     }
 
     private double GetProteinPerCalorie()
     {
-        return GetTotalProtein() / GetTotalCalories();
+        return Math.Round(GetTotalProtein() / GetTotalCalories());
     }
 }
