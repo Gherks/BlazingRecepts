@@ -1,0 +1,25 @@
+﻿@using BlazingRecept.Client.Components.Utilities;
+@using BlazingRecept.Client.Utilities;
+@using BlazingRecept.Shared.Dto
+
+@inherits ComponentBase
+
+@foreach (char letter in _recipeCategories.Keys)
+{
+    <hr />
+    <div class="d-flex">
+        <div class="flex-shrink-1 me-4">
+            <h2>@char.ToUpperInvariant(letter)</h2>
+        </div>
+        <div>
+            @foreach (RecipeDto recipeDto in _recipeCategories[letter])
+            {
+                <div class="mb-2">
+                    <a href="" class="link-dark text-decoration-none" @onclick="@(_ => HandleRecipeNavigation(recipeDto))" @onclick:preventDefault>@recipeDto.Name</a>
+                    <br />
+                </div>
+            }
+        </div>
+    </div>
+
+}
