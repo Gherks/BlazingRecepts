@@ -62,10 +62,4 @@ public partial class RecipeCategoryTable : ComponentBase
 
         NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
     }
-
-    //private class RecipeCategory
-    //{
-    //    public string Name { get; set; } = string.Empty;
-    //    public List<RecipeDto> RecipeDtos { get; set; } = new List<RecipeDto>();
-    //}
 }
