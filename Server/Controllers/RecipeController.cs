@@ -100,6 +100,6 @@ public class RecipeController : ControllerBase
             return NoContent();
         }
 
-        return BadRequest($"Failed to delelete entity with id: {id}");
+        return BadRequest($"Failed to delete entity with id: {id}");
     }
 }

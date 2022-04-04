@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
 
     public static WebAssemblyHostBuilder AddServices(this WebAssemblyHostBuilder builder)
     {
-        builder.Services.AddScoped<IIngredientCategoryService, IngredientCategoryService>();
+        builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IIngredientService, IngredientService>();
         builder.Services.AddScoped<IRecipeService, RecipeService>();
 

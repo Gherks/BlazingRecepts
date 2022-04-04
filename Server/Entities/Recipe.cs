@@ -1,8 +1,10 @@
-﻿using BlazingRecept.Server.Entities.Base;
+﻿using BlazingRecept.Server.Entities.Bases;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazingRecept.Server.Entities;
 
-public sealed class Recipe : BaseEntity
+[Table("Recipe")]
+public sealed class Recipe : CategorizedEntity
 {
     public string Name { get; set; } = string.Empty;
     public string Instructions { get; set; } = string.Empty;

@@ -1,4 +1,4 @@
-﻿using BlazingRecept.Server.Entities.Base;
+﻿using BlazingRecept.Server.Entities.Bases;
 
 namespace BlazingRecept.Server.Repositories.Interfaces;
 

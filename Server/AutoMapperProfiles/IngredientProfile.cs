@@ -10,12 +10,12 @@ public class IngredientProfile : Profile
     {
         CreateMap<Ingredient, IngredientDto>()
             .ForMember(ingredientDto => ingredientDto.CategoryDto,
-                options => options.MapFrom(ingredient => ingredient.IngredientCategory));
+                options => options.MapFrom(ingredient => ingredient.Category));
 
         CreateMap<IngredientDto, Ingredient>()
-            .ForMember(ingredient => ingredient.IngredientCategoryId,
+            .ForMember(ingredient => ingredient.CategoryId,
                 options => options.MapFrom(ingredientDto => ingredientDto.CategoryDto.Id))
-            .ForMember(ingredient => ingredient.IngredientCategory,
+            .ForMember(ingredient => ingredient.Category,
                 options => options.MapFrom(ingredientDto => ingredientDto.CategoryDto));
     }
 }

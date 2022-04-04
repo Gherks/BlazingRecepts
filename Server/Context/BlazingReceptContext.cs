@@ -17,5 +17,5 @@ public class BlazingReceptContext : DbContext
 
     public DbSet<Recipe> Recipe => Set<Recipe>();
     public DbSet<Ingredient> Ingredient => Set<Ingredient>();
-    public DbSet<IngredientCategory> IngredientCategory => Set<IngredientCategory>();
+    public DbSet<Category> Category => Set<Category>();
 }

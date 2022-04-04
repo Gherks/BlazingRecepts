@@ -3,16 +3,17 @@ using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Services
 {
     public class IngredientService : IIngredientService
     {
-        private readonly IIngredientCategoryService _ingredientCategoryService;
+        private readonly ICategoryService _ingredientCategoryService;
         private readonly IIngredientRepository _ingredientsRepository;
         private readonly IMapper _mapper;
 
-        public IngredientService(IIngredientCategoryService ingredientCategoryService, IIngredientRepository ingredientsRepository, IMapper mapper)
+        public IngredientService(ICategoryService ingredientCategoryService, IIngredientRepository ingredientsRepository, IMapper mapper)
         {
             _ingredientCategoryService = ingredientCategoryService;
             _ingredientsRepository = ingredientsRepository;
@@ -50,14 +51,14 @@ namespace BlazingRecept.Server.Services
 
         public async Task<IReadOnlyList<IngredientCollectionTypeDto>> GetAllSortedAsync()
         {
-            IReadOnlyList<IngredientCategoryDto> ingredientCategoryDtos = await _ingredientCategoryService.GetAllAsync();
+            IReadOnlyList<CategoryDto> categoryDtos = await _ingredientCategoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
 
             List<IngredientCollectionTypeDto> ingredientCollectionTypes = new();
 
-            foreach (IngredientCategoryDto ingredientCategoryDto in ingredientCategoryDtos)
+            foreach (CategoryDto CategoryDto in categoryDtos)
             {
                 IngredientCollectionTypeDto ingredientCollectionTypeDto = new();
-                ingredientCollectionTypeDto.Name = ingredientCategoryDto.Name;
+                ingredientCollectionTypeDto.Name = CategoryDto.Name;
 
                 ingredientCollectionTypes.Add(ingredientCollectionTypeDto);
             }
@@ -66,7 +67,7 @@ namespace BlazingRecept.Server.Services
 
             foreach (Ingredient ingredient in ingredients)
             {
-                ingredientCollectionTypes[ingredient.IngredientCategory.SortOrder].Ingredients.Add(_mapper.Map<IngredientDto>(ingredient));
+                ingredientCollectionTypes[ingredient.Category.SortOrder].Ingredients.Add(_mapper.Map<IngredientDto>(ingredient));
             }
 
             foreach (IngredientCollectionTypeDto ingredientCollectionTypeDto in ingredientCollectionTypes)

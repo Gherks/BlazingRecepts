@@ -1,8 +1,10 @@
-﻿using BlazingRecept.Server.Entities.Base;
+﻿using BlazingRecept.Server.Entities.Bases;
+using System.ComponentModel.DataAnnotations.Schema;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Entities;
 
+[Table("IngredientMeasurement")]
 public sealed class IngredientMeasurement : BaseEntity
 {
     public Guid IngredientId { get; set; } = Guid.Empty;

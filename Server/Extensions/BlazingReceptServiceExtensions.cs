@@ -11,14 +11,18 @@ public static class BlazingReceptServiceCollectionExtensions
 {
     public static WebApplicationBuilder AddBlazingReceptDbContext(this WebApplicationBuilder builder, IConfiguration configuration)
     {
-        builder.Services.AddDbContext<BlazingReceptContext>(options => options.UseSqlServer(configuration["BlazingReceptConnectionString"]));
+        builder.Services.AddDbContext<BlazingReceptContext>(options =>
+        {
+            options.UseSqlServer(configuration["BlazingReceptConnectionString"]);
+            options.EnableSensitiveDataLogging();
+        });
 
         return builder;
     }
 
     public static WebApplicationBuilder AddBlazingReceptServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IIngredientCategoryService, IngredientCategoryService>();
+        builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IIngredientService, IngredientService>();
         builder.Services.AddScoped<IRecipeService, RecipeService>();
 
@@ -28,7 +32,7 @@ public static class BlazingReceptServiceCollectionExtensions
     public static WebApplicationBuilder AddBlazingReceptRepositories(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped(typeof(IAsyncRepository<>), typeof(RepositoryBase<>));
-        builder.Services.AddScoped<IIngredientCategoryRepository, IngredientCategoryRepository>();
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
         builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 

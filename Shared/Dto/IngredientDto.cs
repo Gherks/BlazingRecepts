@@ -9,5 +9,5 @@ public sealed class IngredientDto : DtoBase
     public double Carbohydrates { get; set; } = 0;
     public double Protein { get; set; } = 0;
     public double Calories { get; set; } = 0;
-    public IngredientCategoryDto CategoryDto { get; set; } = new();
+    public CategoryDto CategoryDto { get; set; } = new();
 }

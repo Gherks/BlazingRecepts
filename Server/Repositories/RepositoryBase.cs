@@ -1,5 +1,5 @@
 ﻿using BlazingRecept.Server.Context;
-using BlazingRecept.Server.Entities.Base;
+using BlazingRecept.Server.Entities.Bases;
 using BlazingRecept.Server.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

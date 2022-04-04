@@ -28,7 +28,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         try
         {
             return await _context.Ingredient
-                .Include(ingredient => ingredient.IngredientCategory)
+                .Include(ingredient => ingredient.Category)
                 .ToListAsync();
         }
         catch (Exception)
@@ -41,7 +41,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
     {
         try
         {
-            _context.Attach(ingredient.IngredientCategory);
+            _context.Attach(ingredient.Category);
             _context.Ingredient.Add(ingredient);
 
             await _context.SaveChangesAsync();

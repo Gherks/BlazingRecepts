@@ -4,6 +4,7 @@ using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 
@@ -13,7 +14,7 @@ public partial class IngredientInputForm : ComponentBase
 
     private CustomValidation? _customValidation;
 
-    private IReadOnlyList<IngredientCategoryDto>? _ingredientCategoryDtos = new List<IngredientCategoryDto>();
+    private IReadOnlyList<CategoryDto>? _categoryDtos = new List<CategoryDto>();
 
     [CascadingParameter]
     protected internal Ingredients? IngredientsPage { get; private set; }
@@ -22,7 +23,7 @@ public partial class IngredientInputForm : ComponentBase
     public IIngredientService? IngredientService { get; set; }
 
     [Inject]
-    public IIngredientCategoryService? IngredientCategoryService { get; set; }
+    public ICategoryService? CategoryService { get; set; }
 
     [Inject]
     public IToastService? ToastService { get; set; }
@@ -31,9 +32,9 @@ public partial class IngredientInputForm : ComponentBase
     {
         await base.OnInitializedAsync();
 
-        if (IngredientCategoryService != null)
+        if (CategoryService != null)
         {
-            _ingredientCategoryDtos = await IngredientCategoryService.GetAllAsync();
+            _categoryDtos = await CategoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
         }
     }
 
@@ -120,9 +121,9 @@ public partial class IngredientInputForm : ComponentBase
         ValidateStringDouble(_form.Protein, nameof(_form.Protein), errors);
         ValidateStringDouble(_form.Calories, nameof(_form.Calories), errors);
 
-        if (_form.IngredientCategoryDtoId == Guid.Empty)
+        if (_form.CategoryDtoId == Guid.Empty)
         {
-            errors.Add(nameof(_form.IngredientCategoryDtoId), new List<string>() {
+            errors.Add(nameof(_form.CategoryDtoId), new List<string>() {
                 "Ingredient category is required."
             });
         }
@@ -160,17 +161,11 @@ public partial class IngredientInputForm : ComponentBase
 
     private IngredientDto? CreateIngredientDtoFromForm()
     {
-        if (_ingredientCategoryDtos == null)
-        {
-            throw new InvalidOperationException();
-        }
+        if (_categoryDtos == null) throw new InvalidOperationException();
 
-        IngredientCategoryDto? ingredientCategoryDto = _ingredientCategoryDtos.FirstOrDefault(ingredientCategoryDto => ingredientCategoryDto.Id == _form.IngredientCategoryDtoId);
+        CategoryDto? categoryDto = _categoryDtos.FirstOrDefault(categoryDto => categoryDto.Id == _form.CategoryDtoId);
 
-        if (ingredientCategoryDto == null)
-        {
-            throw new InvalidOperationException();
-        }
+        if (categoryDto == null) throw new InvalidOperationException();
 
         return new IngredientDto()
         {
@@ -179,7 +174,7 @@ public partial class IngredientInputForm : ComponentBase
             Carbohydrates = double.Parse(_form.Carbohydrates),
             Protein = double.Parse(_form.Protein),
             Calories = double.Parse(_form.Calories),
-            CategoryDto = ingredientCategoryDto
+            CategoryDto = categoryDto
         };
     }
 
@@ -190,6 +185,6 @@ public partial class IngredientInputForm : ComponentBase
         public string Carbohydrates { get; set; } = string.Empty;
         public string Protein { get; set; } = string.Empty;
         public string Calories { get; set; } = string.Empty;
-        public Guid IngredientCategoryDtoId { get; set; } = Guid.Empty;
+        public Guid CategoryDtoId { get; set; } = Guid.Empty;
     }
 }

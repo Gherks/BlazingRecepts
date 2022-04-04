@@ -37,19 +37,17 @@
                     <ValidationMessage For="() => _form.Calories" />
                 </div>
                 <div class="form-group mb-2">
-                    <div class="col-lg-9">
-                        <InputSelect id="category-selector" name="category-selector" class="form-control" @bind-Value="_form.IngredientCategoryDtoId">
-                            <option value="@Guid.Empty">Choose a category...</option>
-                            @if (_ingredientCategoryDtos != null)
+                    <InputSelect id="category-selector" name="category-selector" class="form-select" @bind-Value="_form.CategoryDtoId">
+                        <option value="@Guid.Empty">Choose a category...</option>
+                        @if (_categoryDtos != null)
+                        {
+                            foreach (CategoryDto categoryDto in _categoryDtos)
                             {
-                                foreach (IngredientCategoryDto ingredientCategoryDto in _ingredientCategoryDtos)
-                                {
-                                    <option value="@ingredientCategoryDto.Id">@ingredientCategoryDto.Name</option>
-                                }
+                                <option value="@categoryDto.Id">@categoryDto.Name</option>
                             }
-                        </InputSelect>
-                        <ValidationMessage For="() => _form.IngredientCategoryDtoId" />
-                    </div>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => _form.CategoryDtoId" />
                 </div>
                 <button class="btn btn-primary" type="submit">Add ingredient</button>
             </EditForm>
