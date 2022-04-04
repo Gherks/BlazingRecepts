@@ -20,6 +20,9 @@ public partial class CreateRecipe : ComponentBase
     public IReadOnlyList<IngredientDto>? Ingredients { get; set; } = new List<IngredientDto>();
     public List<IngredientMeasurementDto> ContainedIngredientMeasurements { get; set; } = new();
 
+    [Parameter]
+    public Guid RecipeId { get; set; } = Guid.Empty;
+
     [Inject]
     public IIngredientService? IngredientService { get; set; }
 
@@ -31,9 +34,28 @@ public partial class CreateRecipe : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        if (IngredientService == null) throw new InvalidOperationException("Add ingredient modal cannot be opened because ingredient service has not been set.");
+        if (IngredientService == null) throw new InvalidOperationException();
 
         Ingredients = await IngredientService.GetAllAsync();
+
+        if (RecipeId != Guid.Empty)
+        {
+            if (RecipeService == null) throw new InvalidOperationException();
+
+            RecipeDto? recipeDto = await RecipeService.GetByIdAsync(RecipeId);
+
+            if(recipeDto != null)
+            {
+                _form = new()
+                {
+                    Name = recipeDto.Name,
+                    PortionAmount = recipeDto.PortionAmount.ToString(),
+                    Instructions = recipeDto.Instructions
+                };
+
+                ContainedIngredientMeasurements = recipeDto.IngredientMeasurementDtos;
+            }
+        }
     }
 
     public void Refresh()
@@ -175,6 +197,11 @@ public partial class CreateRecipe : ComponentBase
         }
 
         return Task.CompletedTask;
+    }
+
+    private string GetConfirmationButtonLabel()
+    {
+        return RecipeId == Guid.Empty ? "Add recipe" : "Update recipe";
     }
 
     private class Form
