@@ -2,6 +2,13 @@
 
 public static class Enums
 {
+    public enum CategoryType
+    {
+        Unassigned = 0,
+        Ingredient = 1,
+        Recipe = 2
+    }
+
     public enum MeasurementUnit
     {
         Gram = 0,
@@ -14,34 +21,5 @@ public static class Enums
         Centiliters = 7,
         Deciliters = 8,
         Liter = 9
-    }
-
-    public static string ToSymbol(this MeasurementUnit measurementUnit)
-    {
-        switch (measurementUnit)
-        {
-            case MeasurementUnit.Gram:
-                return "g";
-            case MeasurementUnit.Hectogram:
-                return "hg";
-            case MeasurementUnit.Kilogram:
-                return "kg";
-            case MeasurementUnit.SpiceMeasurement:
-                return "krm";
-            case MeasurementUnit.Teaspoon:
-                return "tsk";
-            case MeasurementUnit.Tablespoon:
-                return "msk";
-            case MeasurementUnit.Milliliters:
-                return "ml";
-            case MeasurementUnit.Centiliters:
-                return "cl";
-            case MeasurementUnit.Deciliters:
-                return "dl";
-            case MeasurementUnit.Liter:
-                return "l";
-            default:
-                throw new InvalidOperationException("Unknown measurement given.");
-        }
     }
 }
