@@ -4,14 +4,15 @@
 @using BlazingRecept.Client.Components.PageComponents.CreateRecipePage
 @using BlazingRecept.Client.Components.Utilities
 @using BlazingRecept.Client.Utilities;
+@using BlazingRecept.Shared.Dto
 @using Markdig
 
-<PageTitle>Create Recipe</PageTitle>
+<PageTitle>@GetTitle()</PageTitle>
 <CascadingValue Value=@this>
     <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" />
     <EditIngredientMeasurementModal @ref="_editIngredientMeasurementModal" />
     <IngredientRemovalConfirmationModal @ref="_ingredientRemovalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
-    <h1>Create recipe</h1>
+    <h1>@GetTitle()</h1>
     <div class="card mb-2">
         <div class="card-body">
             <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
@@ -26,6 +27,21 @@
                     <label for="portion-amount">Portion amount</label>
                     <ValidationMessage For="() => _form.PortionAmount" />
                 </div>
+                
+                <div class="form-group mb-2">
+                    <InputSelect id="category-selector" name="category-selector" class="form-select" @bind-Value="_form.CategoryDtoId">
+                        <option value="@Guid.Empty">Choose a category...</option>
+                        @if (_categoryDtos != null)
+                        {
+                            foreach (CategoryDto categoryDto in _categoryDtos)
+                            {
+                                <option value="@categoryDto.Id">@categoryDto.Name</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => _form.CategoryDtoId" />
+                </div>
+
                 <div class="form-floating mb-2">
                     <textarea id="instructions" name="instructions" class="form-control" @bind="_form.Instructions" @bind:event="oninput" placeholder="Enter instructions here" style="height: 200px"></textarea>
                     <label for="instructions">Enter instructions here</label>

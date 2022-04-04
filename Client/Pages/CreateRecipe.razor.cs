@@ -5,6 +5,7 @@ using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Pages;
 
@@ -17,7 +18,10 @@ public partial class CreateRecipe : ComponentBase
     private IngredientRemovalConfirmationModal? _ingredientRemovalConfirmationModal;
     private CustomValidation? _customValidation;
 
+    private IReadOnlyList<CategoryDto>? _categoryDtos = new List<CategoryDto>();
+
     public IReadOnlyList<IngredientDto>? Ingredients { get; set; } = new List<IngredientDto>();
+
     public List<IngredientMeasurementDto> ContainedIngredientMeasurements { get; set; } = new();
 
     [Parameter]
@@ -25,6 +29,9 @@ public partial class CreateRecipe : ComponentBase
 
     [Inject]
     public IIngredientService? IngredientService { get; set; }
+
+    [Inject]
+    public ICategoryService? CategoryService { get; set; }
 
     [Inject]
     public IRecipeService? RecipeService { get; set; }
@@ -35,8 +42,11 @@ public partial class CreateRecipe : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         if (IngredientService == null) throw new InvalidOperationException();
+        if (CategoryService == null) throw new InvalidOperationException();
 
         Ingredients = await IngredientService.GetAllAsync();
+
+        _categoryDtos = await CategoryService.GetAllOfTypeAsync(CategoryType.Recipe);
 
         if (RecipeId != Guid.Empty)
         {
@@ -44,12 +54,13 @@ public partial class CreateRecipe : ComponentBase
 
             RecipeDto? recipeDto = await RecipeService.GetByIdAsync(RecipeId);
 
-            if(recipeDto != null)
+            if (recipeDto != null)
             {
                 _form = new()
                 {
                     Name = recipeDto.Name,
                     PortionAmount = recipeDto.PortionAmount.ToString(),
+                    CategoryDtoId = recipeDto.CategoryDto.Id,
                     Instructions = recipeDto.Instructions
                 };
 
@@ -101,13 +112,13 @@ public partial class CreateRecipe : ComponentBase
                 "Name is required."
             });
         }
-        else
+        else if (IsCreatingNewRecipe())
         {
             if (RecipeService == null) throw new InvalidOperationException("Ingredient service is not available during validation.");
 
-            bool recipeExists = await RecipeService.AnyAsync(_form.Name);
+            bool recipeAlreadyExists = await RecipeService.AnyAsync(_form.Name);
 
-            if (recipeExists)
+            if (recipeAlreadyExists)
             {
                 errors.Add(nameof(_form.RecipeCreationErrorMessage), new List<string>() {
                     "Recipe with name already exists."
@@ -134,6 +145,14 @@ public partial class CreateRecipe : ComponentBase
             });
         }
 
+
+        if (_form.CategoryDtoId == Guid.Empty)
+        {
+            errors.Add(nameof(_form.CategoryDtoId), new List<string>() {
+                "Recipe category is required."
+            });
+        }
+
         if (errors.Count > 0)
         {
             _customValidation.DisplayErrors(errors);
@@ -145,10 +164,18 @@ public partial class CreateRecipe : ComponentBase
 
     private RecipeDto ParseRecipeForm()
     {
+        if (_categoryDtos == null) throw new InvalidOperationException();
+
+        CategoryDto? categoryDto = _categoryDtos.FirstOrDefault(categoryDto => categoryDto.Id == _form.CategoryDtoId);
+
+        if (categoryDto == null) throw new InvalidOperationException();
+
         RecipeDto recipeDto = new();
 
+        recipeDto.Id = RecipeId;
         recipeDto.Name = _form.Name;
         recipeDto.PortionAmount = Convert.ToInt32(_form.PortionAmount);
+        recipeDto.CategoryDto = categoryDto;
         recipeDto.Instructions = _form.Instructions;
         recipeDto.IngredientMeasurementDtos = ContainedIngredientMeasurements;
 
@@ -199,15 +226,26 @@ public partial class CreateRecipe : ComponentBase
         return Task.CompletedTask;
     }
 
+    private string GetTitle()
+    {
+        return IsCreatingNewRecipe() ? "Create recipe" : "Edit recipe";
+    }
+
     private string GetConfirmationButtonLabel()
     {
-        return RecipeId == Guid.Empty ? "Add recipe" : "Update recipe";
+        return IsCreatingNewRecipe() ? "Create recipe" : "Update recipe";
+    }
+
+    private bool IsCreatingNewRecipe()
+    {
+        return RecipeId == Guid.Empty;
     }
 
     private class Form
     {
         public string Name { get; set; } = string.Empty;
         public string PortionAmount { get; set; } = string.Empty;
+        public Guid CategoryDtoId { get; set; } = Guid.Empty;
         public string Instructions { get; set; } = string.Empty;
         public string RecipeCreationErrorMessage { get; set; } = string.Empty;
     }
