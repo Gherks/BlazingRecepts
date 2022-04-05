@@ -42,6 +42,8 @@ public partial class RecipeWorkbench : ComponentBase
     [Inject]
     public NavigationManager? NavigationManager { get; set; }
 
+    private bool IsCreatingNewRecipe => RecipeId == Guid.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         if (IngredientService == null) throw new InvalidOperationException();
@@ -91,7 +93,7 @@ public partial class RecipeWorkbench : ComponentBase
             {
                 if (ToastService == null) throw new InvalidOperationException();
 
-                if (RecipeId == Guid.Empty)
+                if (IsCreatingNewRecipe)
                 {
 
                     ToastService.ShowSuccess("Recipe successfully added!");
@@ -127,7 +129,7 @@ public partial class RecipeWorkbench : ComponentBase
                 "Name is required."
             });
         }
-        else if (IsCreatingNewRecipe())
+        else if (IsCreatingNewRecipe)
         {
             if (RecipeService == null) throw new InvalidOperationException("Ingredient service is not available during validation.");
 
@@ -243,17 +245,12 @@ public partial class RecipeWorkbench : ComponentBase
 
     private string GetTitle()
     {
-        return IsCreatingNewRecipe() ? "Create recipe" : "Edit recipe";
+        return IsCreatingNewRecipe ? "Create recipe" : "Edit recipe";
     }
 
     private string GetConfirmationButtonLabel()
     {
-        return IsCreatingNewRecipe() ? "Create recipe" : "Update recipe";
-    }
-
-    private bool IsCreatingNewRecipe()
-    {
-        return RecipeId == Guid.Empty;
+        return IsCreatingNewRecipe ? "Create recipe" : "Update recipe";
     }
 
     private class Form
