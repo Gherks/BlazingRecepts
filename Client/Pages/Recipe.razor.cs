@@ -29,7 +29,7 @@ public partial class Recipe : ComponentBase
     {
         if (NavigationManager == null) throw new InvalidOperationException();
 
-        NavigationManager.NavigateTo($"createrecipe/{recipeDto.Id}");
+        NavigationManager.NavigateTo($"recipeworkbench/{recipeDto.Id}");
     }
 
     private bool ContainsInstructions()

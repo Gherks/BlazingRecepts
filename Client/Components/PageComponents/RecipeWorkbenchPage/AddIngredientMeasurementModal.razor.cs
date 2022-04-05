@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using static BlazingRecept.Shared.Enums;
 
-namespace BlazingRecept.Client.Components.PageComponents.CreateRecipePage;
+namespace BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 
 public partial class AddIngredientMeasurementModal : ComponentBase
 {
@@ -19,7 +19,7 @@ public partial class AddIngredientMeasurementModal : ComponentBase
     private Form _form = new();
 
     [CascadingParameter]
-    public CreateRecipe? CreateRecipe { get; set; }
+    public RecipeWorkbench? RecipeWorkbench { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,7 +63,7 @@ public partial class AddIngredientMeasurementModal : ComponentBase
     private void HandleValidFormSubmitted()
     {
         if (_modal == null) throw new InvalidOperationException();
-        if (CreateRecipe == null) throw new InvalidOperationException();
+        if (RecipeWorkbench == null) throw new InvalidOperationException();
 
         if (Validate())
         {
@@ -71,10 +71,10 @@ public partial class AddIngredientMeasurementModal : ComponentBase
 
             if (sortOrder >= 0)
             {
-                sortOrder = CreateRecipe.ContainedIngredientMeasurements.Count;
+                sortOrder = RecipeWorkbench.ContainedIngredientMeasurements.Count;
             }
 
-            CreateRecipe.ContainedIngredientMeasurements.Add(new()
+            RecipeWorkbench.ContainedIngredientMeasurements.Add(new()
             {
                 IngredientDto = _form.IngredientDto,
                 Measurement = _form.Measurement,
@@ -84,7 +84,7 @@ public partial class AddIngredientMeasurementModal : ComponentBase
                 SortOrder = sortOrder
             });
 
-            CreateRecipe.Refresh();
+            RecipeWorkbench.Refresh();
             _modal.Close();
         }
     }
@@ -149,10 +149,10 @@ public partial class AddIngredientMeasurementModal : ComponentBase
 
     private async Task<IEnumerable<IngredientDto>> SearchForIngredients(string searchTerm)
     {
-        if (CreateRecipe == null) throw new InvalidOperationException();
-        if (CreateRecipe.Ingredients == null) throw new InvalidOperationException();
+        if (RecipeWorkbench == null) throw new InvalidOperationException();
+        if (RecipeWorkbench.Ingredients == null) throw new InvalidOperationException();
 
-        List<IngredientDto> foundIngredients = CreateRecipe.Ingredients.Where(ingredientDto => ingredientDto.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
+        List<IngredientDto> foundIngredients = RecipeWorkbench.Ingredients.Where(ingredientDto => ingredientDto.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
 
         if (foundIngredients.Count == 1)
         {
@@ -164,9 +164,9 @@ public partial class AddIngredientMeasurementModal : ComponentBase
 
     private bool IngredientAlreadyAdded(IngredientDto IngredientDto)
     {
-        if (CreateRecipe == null) throw new InvalidOperationException();
+        if (RecipeWorkbench == null) throw new InvalidOperationException();
 
-        return CreateRecipe.ContainedIngredientMeasurements.Any(ingredientMeasurement => ingredientMeasurement.IngredientDto.Id == IngredientDto.Id);
+        return RecipeWorkbench.ContainedIngredientMeasurements.Any(ingredientMeasurement => ingredientMeasurement.IngredientDto.Id == IngredientDto.Id);
     }
 
     public class Form

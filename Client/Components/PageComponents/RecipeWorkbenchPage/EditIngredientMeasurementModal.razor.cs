@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using static BlazingRecept.Shared.Enums;
 
-namespace BlazingRecept.Client.Components.PageComponents.CreateRecipePage;
+namespace BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 
 public partial class EditIngredientMeasurementModal : ComponentBase
 {
@@ -20,7 +20,7 @@ public partial class EditIngredientMeasurementModal : ComponentBase
     private IngredientDto? _editIngredientDto;
 
     [CascadingParameter]
-    public CreateRecipe? CreateRecipe { get; set; }
+    public RecipeWorkbench? RecipeWorkbench { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,14 +58,14 @@ public partial class EditIngredientMeasurementModal : ComponentBase
     private void HandleValidFormSubmitted()
     {
         if (_modal == null) throw new InvalidOperationException();
-        if (CreateRecipe == null) throw new InvalidOperationException();
+        if (RecipeWorkbench == null) throw new InvalidOperationException();
 
         if (Validate())
         {
-            if (CreateRecipe == null) throw new InvalidOperationException();
+            if (RecipeWorkbench == null) throw new InvalidOperationException();
             if (_editIngredientDto == null) throw new InvalidOperationException();
 
-            IngredientMeasurementDto? ingredientMeasurementDto = CreateRecipe.ContainedIngredientMeasurements
+            IngredientMeasurementDto? ingredientMeasurementDto = RecipeWorkbench.ContainedIngredientMeasurements
                 .FirstOrDefault(ingredientMeasurement => ingredientMeasurement.IngredientDto.Id == _editIngredientDto.Id);
 
             if (ingredientMeasurementDto == null) throw new InvalidOperationException("Failed to find ingredient that was expected to exist edited recipe.");
@@ -75,7 +75,7 @@ public partial class EditIngredientMeasurementModal : ComponentBase
             ingredientMeasurementDto.Grams = Convert.ToInt32(_form.Grams);
             ingredientMeasurementDto.Note = _form.Note;
 
-            CreateRecipe.Refresh();
+            RecipeWorkbench.Refresh();
             _modal.Close();
         }
     }
