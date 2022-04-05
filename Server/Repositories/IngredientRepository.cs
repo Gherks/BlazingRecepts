@@ -22,35 +22,4 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
             return false;
         }
     }
-
-    public override async Task<IReadOnlyList<Ingredient>?> ListAllAsync()
-    {
-        try
-        {
-            return await _context.Ingredient
-                .Include(ingredient => ingredient.Category)
-                .ToListAsync();
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
-
-    public override async Task<Ingredient> AddAsync(Ingredient ingredient)
-    {
-        try
-        {
-            _context.Attach(ingredient.Category);
-            _context.Ingredient.Add(ingredient);
-
-            await _context.SaveChangesAsync();
-            await _context.Entry(ingredient).ReloadAsync();
-        }
-        catch (Exception)
-        {
-        }
-
-        return ingredient;
-    }
 }

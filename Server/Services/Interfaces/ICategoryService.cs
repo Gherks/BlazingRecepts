@@ -5,7 +5,7 @@ namespace BlazingRecept.Server.Services.Interfaces
 {
     public interface ICategoryService
     {
-        //Task<IReadOnlyList<CategoryDto>> GetAllAsync();
+        Task<CategoryDto?> GetByIdAsync(Guid id);
 
         Task<IReadOnlyList<CategoryDto>> GetAllOfTypeAsync(CategoryType categoryType);
     }

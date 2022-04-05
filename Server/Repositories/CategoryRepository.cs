@@ -16,7 +16,7 @@ public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
         try
         {
             return await _context.Category
-                .Where(category => category.Type == categoryType)
+                .Where(category => category.CategoryType == categoryType)
                 .ToListAsync();
         }
         catch (Exception)

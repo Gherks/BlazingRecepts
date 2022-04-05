@@ -9,14 +9,14 @@ namespace BlazingRecept.Server.Services
 {
     public class IngredientService : IIngredientService
     {
-        private readonly ICategoryService _ingredientCategoryService;
         private readonly IIngredientRepository _ingredientsRepository;
+        private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
 
-        public IngredientService(ICategoryService ingredientCategoryService, IIngredientRepository ingredientsRepository, IMapper mapper)
+        public IngredientService(IIngredientRepository ingredientsRepository, ICategoryService ingredientCategoryService, IMapper mapper)
         {
-            _ingredientCategoryService = ingredientCategoryService;
             _ingredientsRepository = ingredientsRepository;
+            _categoryService = ingredientCategoryService;
             _mapper = mapper;
         }
 
@@ -36,7 +36,11 @@ namespace BlazingRecept.Server.Services
 
             if (ingredient != null)
             {
-                return _mapper.Map<IngredientDto>(ingredient);
+                IngredientDto ingredientDto = _mapper.Map<IngredientDto>(ingredient);
+
+                ingredientDto.CategoryDto = await _categoryService.GetByIdAsync(ingredient.CategoryId) ?? throw new InvalidOperationException();
+
+                return ingredientDto;
             }
 
             return null;
@@ -44,14 +48,23 @@ namespace BlazingRecept.Server.Services
 
         public async Task<IReadOnlyList<IngredientDto>> GetAllAsync()
         {
+            IReadOnlyList<CategoryDto> categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
+
             IReadOnlyList<Ingredient> ingredients = await _ingredientsRepository.ListAllAsync() ?? new List<Ingredient>();
 
-            return ingredients.Select(ingredient => _mapper.Map<IngredientDto>(ingredient)).ToList();
+            List<IngredientDto> ingredientDtos = new List<IngredientDto>();
+
+            foreach (Ingredient ingredient in ingredients)
+            {
+                ingredientDtos.Add(LoadIngredientDtoFromIngredient(ingredient, categoryDtos));
+            }
+
+            return ingredientDtos;
         }
 
         public async Task<IReadOnlyList<IngredientCollectionTypeDto>> GetAllSortedAsync()
         {
-            IReadOnlyList<CategoryDto> categoryDtos = await _ingredientCategoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
+            IReadOnlyList<CategoryDto> categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
 
             List<IngredientCollectionTypeDto> ingredientCollectionTypes = new();
 
@@ -67,7 +80,9 @@ namespace BlazingRecept.Server.Services
 
             foreach (Ingredient ingredient in ingredients)
             {
-                ingredientCollectionTypes[ingredient.Category.SortOrder].Ingredients.Add(_mapper.Map<IngredientDto>(ingredient));
+                IngredientDto ingredientDto = LoadIngredientDtoFromIngredient(ingredient, categoryDtos);
+
+                ingredientCollectionTypes[ingredientDto.CategoryDto.SortOrder].Ingredients.Add(ingredientDto);
             }
 
             foreach (IngredientCollectionTypeDto ingredientCollectionTypeDto in ingredientCollectionTypes)
@@ -93,7 +108,9 @@ namespace BlazingRecept.Server.Services
                 ingredient = await _ingredientsRepository.UpdateAsync(ingredient);
             }
 
-            return _mapper.Map<IngredientDto>(ingredient);
+            IReadOnlyList<CategoryDto> categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
+
+            return LoadIngredientDtoFromIngredient(ingredient, categoryDtos);
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -106,6 +123,15 @@ namespace BlazingRecept.Server.Services
             }
 
             return false;
+        }
+
+        private IngredientDto LoadIngredientDtoFromIngredient(Ingredient ingredient, IReadOnlyList<CategoryDto> categoryDtos)
+        {
+            IngredientDto ingredientDto = _mapper.Map<IngredientDto>(ingredient);
+
+            ingredientDto.CategoryDto = categoryDtos.FirstOrDefault(category => category.Id == ingredient.CategoryId) ?? throw new InvalidOperationException();
+
+            return ingredientDto;
         }
     }
 }

@@ -3,17 +3,22 @@ using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Services
 {
     public class RecipeService : IRecipeService
     {
         private readonly IRecipeRepository _recipeRepository;
+        private readonly IIngredientService _ingredientService;
+        private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
 
-        public RecipeService(IRecipeRepository recipeRepository, IMapper mapper)
+        public RecipeService(IRecipeRepository recipeRepository, IIngredientService ingredientService, ICategoryService categoryService, IMapper mapper)
         {
             _recipeRepository = recipeRepository;
+            _ingredientService = ingredientService;
+            _categoryService = categoryService;
             _mapper = mapper;
         }
 
@@ -33,7 +38,11 @@ namespace BlazingRecept.Server.Services
 
             if (recipe != null)
             {
-                return _mapper.Map<RecipeDto>(recipe);
+                IReadOnlyList<IngredientDto> ingredientDtos = await _ingredientService.GetAllAsync();
+
+                RecipeDto recipeDto = await LoadRecipeDtoFromRecipe(recipe, ingredientDtos);
+
+                return recipeDto;
             }
 
             return null;
@@ -41,9 +50,18 @@ namespace BlazingRecept.Server.Services
 
         public async Task<IReadOnlyList<RecipeDto>> GetAllAsync()
         {
-            IReadOnlyList<Recipe> entities = await _recipeRepository.ListAllAsync() ?? new List<Recipe>();
+            IReadOnlyList<Recipe> recipes = await _recipeRepository.ListAllAsync() ?? new List<Recipe>();
 
-            return entities.Select(recipe => _mapper.Map<RecipeDto>(recipe)).ToArray();
+            IReadOnlyList<IngredientDto> ingredientDtos = await _ingredientService.GetAllAsync();
+
+            List<RecipeDto> recipeDto = new();
+
+            foreach(Recipe recipe in recipes)
+            {
+                recipeDto.Add(await LoadRecipeDtoFromRecipe(recipe, ingredientDtos));
+            }
+
+            return recipeDto;
         }
 
         public async Task<RecipeDto> SaveAsync(RecipeDto recipeDto)
@@ -59,7 +77,9 @@ namespace BlazingRecept.Server.Services
                 await _recipeRepository.UpdateAsync(recipe);
             }
 
-            return _mapper.Map<RecipeDto>(recipe);
+            IReadOnlyList<IngredientDto> ingredientDtos = await _ingredientService.GetAllAsync();
+
+            return await LoadRecipeDtoFromRecipe(recipe, ingredientDtos);
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -72,6 +92,25 @@ namespace BlazingRecept.Server.Services
             }
 
             return false;
+        }
+
+        private async Task<RecipeDto> LoadRecipeDtoFromRecipe(Recipe recipe, IReadOnlyList<IngredientDto> ingredientDtos)
+        {
+            RecipeDto recipeDto = _mapper.Map<RecipeDto>(recipe);
+
+            recipeDto.CategoryDto = await _categoryService.GetByIdAsync(recipe.CategoryId) ?? throw new InvalidOperationException();
+
+            recipeDto.IngredientMeasurementDtos.Clear();
+
+            foreach (IngredientMeasurement ingredientMeasurement in recipe.IngredientMeasurements)
+            {
+                IngredientMeasurementDto ingredientMeasurementDto = _mapper.Map<IngredientMeasurementDto>(ingredientMeasurement);
+                ingredientMeasurementDto.IngredientDto = ingredientDtos.FirstOrDefault(ingredientDto => ingredientDto.Id == ingredientMeasurement.IngredientId) ?? throw new InvalidOperationException("");
+
+                recipeDto.IngredientMeasurementDtos.Add(ingredientMeasurementDto);
+            }
+
+            return recipeDto;
         }
     }
 }

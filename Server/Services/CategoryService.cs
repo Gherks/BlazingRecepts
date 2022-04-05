@@ -12,10 +12,22 @@ namespace BlazingRecept.Server.Services
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public CategoryService(ICategoryRepository ingredientCategoryRepository, IMapper mapper)
+        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
-            _categoryRepository = ingredientCategoryRepository;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
+        }
+
+        public async Task<CategoryDto?> GetByIdAsync(Guid id)
+        {
+            Category? category = await _categoryRepository.GetByIdAsync(id);
+
+            if (category != null)
+            {
+                return _mapper.Map<CategoryDto>(category);
+            }
+
+            return null;
         }
 
         public async Task<IReadOnlyList<CategoryDto>> GetAllOfTypeAsync(CategoryType categoryType)
@@ -24,12 +36,12 @@ namespace BlazingRecept.Server.Services
 
             List<CategoryDto> categoryDtos = categories.Select(ingredientCategory => _mapper.Map<CategoryDto>(ingredientCategory)).ToList();
 
-            categoryDtos.Sort(new IngredientCategoryComparer());
+            categoryDtos.Sort(new CategoryComparer());
 
             return categoryDtos;
         }
 
-        public sealed class IngredientCategoryComparer : IComparer<CategoryDto>
+        public sealed class CategoryComparer : IComparer<CategoryDto>
         {
             public int Compare(CategoryDto? first, CategoryDto? second)
             {
