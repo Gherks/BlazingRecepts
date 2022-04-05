@@ -39,6 +39,9 @@ public partial class RecipeWorkbench : ComponentBase
     [Inject]
     public IToastService? ToastService { get; set; }
 
+    [Inject]
+    public NavigationManager? NavigationManager { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         if (IngredientService == null) throw new InvalidOperationException();
@@ -88,12 +91,24 @@ public partial class RecipeWorkbench : ComponentBase
             {
                 if (ToastService == null) throw new InvalidOperationException();
 
-                ToastService.ShowSuccess("Recipe successfully added!");
+                if (RecipeId == Guid.Empty)
+                {
 
-                _form = new();
-                ContainedIngredientMeasurements.Clear();
+                    ToastService.ShowSuccess("Recipe successfully added!");
 
-                StateHasChanged();
+                    _form = new();
+                    ContainedIngredientMeasurements.Clear();
+
+                    StateHasChanged();
+                }
+                else
+                {
+                    ToastService.ShowSuccess("Recipe successfully updated!");
+
+                    if (NavigationManager == null) throw new InvalidOperationException();
+
+                    NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
+                }
             }
         }
     }
