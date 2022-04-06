@@ -11,15 +11,19 @@ public static class Enums
 
     public enum MeasurementUnit
     {
-        Gram = 0,
-        Hectogram = 1,
-        Kilogram = 2,
-        SpiceMeasurement = 3,
-        Teaspoon = 4,
-        Tablespoon = 5,
-        Milliliters = 6,
-        Centiliters = 7,
-        Deciliters = 8,
-        Liter = 9
+        Unassigned = 0,
+        Gram = 1,
+        Hectogram = 2,
+        Kilogram = 3,
+        SpiceMeasurement = 4,
+        Teaspoon = 5,
+        Tablespoon = 6,
+        Milliliters = 7,
+        Centiliters = 8,
+        Deciliters = 9,
+        Liter = 10,
+        Piece = 11,
+        Small = 12,
+        Big = 13,
     }
 }

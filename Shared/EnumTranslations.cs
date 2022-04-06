@@ -28,6 +28,12 @@ public static class EnumTranslations
                 return "dl";
             case MeasurementUnit.Liter:
                 return "l";
+            case MeasurementUnit.Piece:
+                return "st";
+            case MeasurementUnit.Small:
+                return "liten";
+            case MeasurementUnit.Big:
+                return "stor";
             default:
                 throw new InvalidOperationException("Unknown measurement given.");
         }

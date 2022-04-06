@@ -1,6 +1,7 @@
 ﻿@using BlazingRecept.Client.Components.Utilities;
 @using BlazingRecept.Client.Utilities;
 @using BlazingRecept.Shared
+@using static BlazingRecept.Shared.Enums
 
 @inherits ComponentBase
 
@@ -29,14 +30,22 @@
                 <div class="col-9">
                     <div class="input-group">
                         <input type="text" id="measurement" class="form-control" @bind="_form!.Measurement">
-                        <select class="form-select">
-                            @foreach (Enums.MeasurementUnit measurementUnit in Enum.GetValues(typeof(Enums.MeasurementUnit)))
+                        <select class="form-select" @bind="_form!.MeasurementUnit">
+                            @foreach (MeasurementUnit measurementUnit in Enum.GetValues(typeof(MeasurementUnit)))
                             {
-                                <option value="@measurementUnit">@measurementUnit.ToSymbol()</option>
+                                if (measurementUnit == MeasurementUnit.Unassigned)
+                                {
+                                    <option value="@measurementUnit">Choose...</option>
+                                }
+                                else
+                                {
+                                    <option value="@measurementUnit">@measurementUnit.ToSymbol()</option>
+                                }
                             }
                         </select>
                     </div>
                     <ValidationMessage For="() => _form.Measurement" />
+                    <ValidationMessage For="() => _form.MeasurementUnit" />
                 </div>
             </div>
             <div class="row mb-2">

@@ -118,6 +118,13 @@ public partial class AddIngredientMeasurementModal : ComponentBase
             });
         }
 
+        if(_form.MeasurementUnit == MeasurementUnit.Unassigned)
+        {
+            errors.Add(nameof(_form.MeasurementUnit), new List<string>() {
+                "Measurement unit is required."
+            });
+        }
+
         if (string.IsNullOrWhiteSpace(_form.Grams))
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
@@ -173,7 +180,7 @@ public partial class AddIngredientMeasurementModal : ComponentBase
     {
         public IngredientDto IngredientDto { get; set; } = new();
         public string Measurement { get; set; } = string.Empty;
-        public MeasurementUnit MeasurementUnit { get; set; } = MeasurementUnit.Gram;
+        public MeasurementUnit MeasurementUnit { get; set; } = MeasurementUnit.Unassigned;
         public string Grams { get; set; } = string.Empty;
         public string Note { get; set; } = string.Empty;
         public int SortOrder { get; set; } = -1;
