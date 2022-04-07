@@ -1,4 +1,5 @@
 ﻿@using BlazingRecept.Client.Components.Utilities;
+@using BlazingRecept.Client.Extensions
 @using BlazingRecept.Client.Utilities;
 @using BlazingRecept.Shared.Dto
 
@@ -7,19 +8,49 @@
 @foreach (char letter in _recipeCategories.Keys)
 {
     <hr />
-    <div class="d-flex">
-        <div class="flex-shrink-1 me-4">
-            <h2>@char.ToUpperInvariant(letter)</h2>
-        </div>
-        <div>
-            @foreach (RecipeDto recipeDto in _recipeCategories[letter])
-            {
+    <div class="row">
+        <div class="d-flex">
+            <div class="flex-shrink-1 me-4">
+                <h2>@char.ToUpperInvariant(letter)</h2>
+            </div>
+            <div class="flex-fill">
                 <div class="mb-2">
-                    <a href="" class="link-dark text-decoration-none" @onclick="@(_ => HandleRecipeNavigation(recipeDto))" @onclick:preventDefault>@recipeDto.Name</a>
-                    <br />
+                    <div class="row">
+                        <div class="col">
+                        </div>
+                        <div class="col">
+                            <p>Protein per portion</p>
+                        </div>
+                        <div class="col">
+                            <p>Calories per portion</p>
+                        </div>
+                        <div class="col">
+                            <p>Protein per calorie</p>
+                        </div>
+                    </div>
                 </div>
-            }
+                @foreach (RecipeDto recipeDto in _recipeCategories[letter])
+                {
+                    <div class="mb-2">
+                        <div class="row" @onclick="@(_ => HandleRecipeNavigation(recipeDto))" >
+                            <div class="col">
+                                <a href="" class="link-dark text-decoration-none" @onclick:preventDefault>@recipeDto.Name</a>
+                            </div>
+                            <div class="col">
+                                <a href="" class="link-dark text-decoration-none" @onclick:preventDefault>@recipeDto.GetProteinPerPortion()</a>
+                            </div>
+                            <div class="col">
+                                <a href="" class="link-dark text-decoration-none" @onclick:preventDefault>@recipeDto.GetCaloriesPerPortion()</a>
+                            </div>
+                            <div class="col">
+                                <a href="" class="link-dark text-decoration-none" @onclick:preventDefault>@recipeDto.GetProteinPerCalorie()</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
+
 
 }

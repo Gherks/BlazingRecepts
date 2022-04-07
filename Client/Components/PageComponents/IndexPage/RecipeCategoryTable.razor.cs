@@ -8,8 +8,6 @@ public partial class RecipeCategoryTable : ComponentBase
 {
     private IReadOnlyList<RecipeDto>? _recipeDtos = new List<RecipeDto>();
 
-    //private IReadOnlyList<RecipeCategory>? _recipeCategories = new List<RecipeCategory>();
-
     private Dictionary<char, List<RecipeDto>> _recipeCategories = new();
 
     [Inject]
