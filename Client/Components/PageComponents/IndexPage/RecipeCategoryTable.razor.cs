@@ -1,8 +1,5 @@
-using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
-using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
-using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Components.PageComponents.IndexPage;

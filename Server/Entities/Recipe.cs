@@ -1,5 +1,4 @@
 ﻿using BlazingRecept.Server.Entities.Bases;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazingRecept.Server.Entities;
 

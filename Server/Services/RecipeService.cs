@@ -3,7 +3,6 @@ using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Services
 {
@@ -56,7 +55,7 @@ namespace BlazingRecept.Server.Services
 
             List<RecipeDto> recipeDto = new();
 
-            foreach(Recipe recipe in recipes)
+            foreach (Recipe recipe in recipes)
             {
                 recipeDto.Add(await LoadRecipeDtoFromRecipe(recipe, ingredientDtos));
             }

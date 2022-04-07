@@ -118,7 +118,7 @@ public partial class AddIngredientMeasurementModal : ComponentBase
             });
         }
 
-        if(_form.MeasurementUnit == MeasurementUnit.Unassigned)
+        if (_form.MeasurementUnit == MeasurementUnit.Unassigned)
         {
             errors.Add(nameof(_form.MeasurementUnit), new List<string>() {
                 "Measurement unit is required."
