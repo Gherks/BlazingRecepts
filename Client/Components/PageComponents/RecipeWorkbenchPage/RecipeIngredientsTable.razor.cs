@@ -1,4 +1,5 @@
 using BlazingRecept.Client.Pages;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 
@@ -51,11 +52,18 @@ public partial class RecipeIngredientsTable : ComponentBase
         RecipeWorkbench.OpenIngredientRemovalModalOpen(ingredientMeasurementDto);
     }
 
-    IReadOnlyList<IngredientMeasurementDto> GetIngredientForms()
+    private IReadOnlyList<IngredientMeasurementDto> GetIngredientForms()
     {
         if (RecipeWorkbench == null) throw new InvalidOperationException();
 
         return RecipeWorkbench.ContainedIngredientMeasurements;
+    }
+
+    private string GetMeasurement(IngredientMeasurementDto ingredientMeasurementDto)
+    {
+        if (ingredientMeasurementDto == null) throw new InvalidOperationException();
+
+        return ingredientMeasurementDto.Measurement.Trim() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
     }
 
     private void SwapIngredientMeasurementsPositionInList(int first, int second)
