@@ -1,5 +1,6 @@
 ﻿@page "/recipe/{RecipeId:guid}"
 
+@using BlazingRecept.Client.Extensions
 @using BlazingRecept.Shared.Dto
 @using Markdig
 
@@ -73,12 +74,12 @@
                             <tr>
                                 <td><b>Total</b></td>
                                 <td></td>
-                                <td><b>@GetTotalGrams()</b></td>
+                                <td><b>@_recipeDto.GetTotalGrams()</b></td>
                                 <td></td>
-                                <td><b>@GetTotalFat()</b></td>
-                                <td><b>@GetTotalCarbohydrates()</b></td>
-                                <td><b>@GetTotalProtein()</b></td>
-                                <td><b>@GetTotalCalories()</b></td>
+                                <td><b>@_recipeDto.GetTotalFat()</b></td>
+                                <td><b>@_recipeDto.GetTotalCarbohydrates()</b></td>
+                                <td><b>@_recipeDto.GetTotalProtein()</b></td>
+                                <td><b>@_recipeDto.GetTotalCalories()</b></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -93,10 +94,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>@GetGramsPerPortion()</td>
-                                <td>@GetProteinPerPortion()</td>
-                                <td>@GetCaloriesPerPortion()</td>
-                                <td>@GetProteinPerCalorie()</td>
+                                <td>@_recipeDto.GetGramsPerPortion()</td>
+                                <td>@_recipeDto.GetProteinPerPortion()</td>
+                                <td>@_recipeDto.GetCaloriesPerPortion()</td>
+                                <td>@_recipeDto.GetProteinPerCalorie()</td>
                             </tr>
                         </tbody>
                     </table>
