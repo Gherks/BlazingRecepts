@@ -110,7 +110,7 @@ public class RecipeService : IRecipeService
         {
             HttpResponseMessage response = await _httpClient.DeleteAsync(_apiAddress + $"/{id}");
 
-            return response.StatusCode == HttpStatusCode.OK;
+            return response.StatusCode == HttpStatusCode.NoContent;
         }
         catch (Exception)
         {

@@ -87,7 +87,7 @@ namespace BlazingRecept.Server.Services
 
             if (recipe != null)
             {
-                await _recipeRepository.DeleteAsync(recipe);
+                return await _recipeRepository.DeleteAsync(recipe);
             }
 
             return false;
