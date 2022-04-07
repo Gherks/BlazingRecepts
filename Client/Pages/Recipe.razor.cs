@@ -1,6 +1,8 @@
+using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Pages;
@@ -9,11 +11,16 @@ public partial class Recipe : ComponentBase
 {
     private RecipeDto? _recipeDto = new RecipeDto();
 
+    private RemovalConfirmationModal<RecipeDto>? _removalConfirmationModal;
+
     [Parameter]
     public Guid RecipeId { get; set; }
 
     [Inject]
     public IRecipeService? RecipeService { get; set; }
+
+    [Inject]
+    public IToastService? ToastService { get; set; }
 
     [Inject]
     public NavigationManager? NavigationManager { get; set; }
@@ -30,6 +37,31 @@ public partial class Recipe : ComponentBase
         if (NavigationManager == null) throw new InvalidOperationException();
 
         NavigationManager.NavigateTo($"recipeworkbench/{recipeDto.Id}");
+    }
+
+    private void HandleIngredientRemovalModalOpen(RecipeDto recipeDto)
+    {
+        if (_removalConfirmationModal == null) throw new InvalidOperationException("ConfirmationModal cannot be opened because it has not been set.");
+        if (recipeDto == null) throw new InvalidOperationException();
+
+        _removalConfirmationModal.Open(recipeDto, "Remove recipe", recipeDto.Name);
+    }
+
+    private async Task HandleIngredientRemovalConfirmed(RecipeDto recipeDto)
+    {
+        if (RecipeService == null) throw new InvalidOperationException();
+        if (NavigationManager == null) throw new InvalidOperationException();
+
+        bool removalFromDatabaseSuccessful = await RecipeService.DeleteAsync(recipeDto.Id);
+
+        if (removalFromDatabaseSuccessful)
+        {
+            if (ToastService == null) throw new InvalidOperationException();
+
+            ToastService.ShowInfo("Successfully removed recipe.");
+
+            NavigationManager.NavigateTo("/");
+        }
     }
 
     private bool ContainsInstructions()
