@@ -11,7 +11,7 @@
 <CascadingValue Value=@this>
     <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" />
     <EditIngredientMeasurementModal @ref="_editIngredientMeasurementModal" />
-    <IngredientRemovalConfirmationModal @ref="_ingredientRemovalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
+    <RemovalConfirmationModal Type="IngredientDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
     <h1>@GetTitle()</h1>
     <div class="card mb-2">
         <div class="card-body">

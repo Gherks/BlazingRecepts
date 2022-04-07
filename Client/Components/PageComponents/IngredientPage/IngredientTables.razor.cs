@@ -11,7 +11,7 @@ public partial class IngredientTables : ComponentBase
 {
     private Guid _editingIngredientGuid = Guid.Empty;
 
-    private IngredientRemovalConfirmationModal? _ingredientRemovalConfirmationModal;
+    private RemovalConfirmationModal<IngredientDto>? _removalConfirmationModal;
 
     [CascadingParameter]
     protected internal Ingredients? IngredientsPage { get; private set; }
@@ -35,10 +35,10 @@ public partial class IngredientTables : ComponentBase
 
     private void HandleIngredientRemovalModalOpen(IngredientDto? ingredientDto)
     {
-        if (_ingredientRemovalConfirmationModal == null) throw new InvalidOperationException("ConfirmationModal cannot be opened because it has not been set.");
+        if (_removalConfirmationModal == null) throw new InvalidOperationException("ConfirmationModal cannot be opened because it has not been set.");
         if (ingredientDto == null) throw new InvalidOperationException();
 
-        _ingredientRemovalConfirmationModal.Open(ingredientDto);
+        _removalConfirmationModal.Open(ingredientDto, "Remove ingredient", ingredientDto.Name);
     }
 
     private async Task HandleIngredientEditConfirmed(IngredientDto ingredientDto)

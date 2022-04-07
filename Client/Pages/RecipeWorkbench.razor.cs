@@ -15,7 +15,7 @@ public partial class RecipeWorkbench : ComponentBase
 
     private AddIngredientMeasurementModal? _addIngredientMeasurementModal;
     private EditIngredientMeasurementModal? _editIngredientMeasurementModal;
-    private IngredientRemovalConfirmationModal? _ingredientRemovalConfirmationModal;
+    private RemovalConfirmationModal<IngredientDto>? _removalConfirmationModal;
     private CustomValidation? _customValidation;
 
     private IReadOnlyList<CategoryDto>? _categoryDtos = new List<CategoryDto>();
@@ -220,9 +220,9 @@ public partial class RecipeWorkbench : ComponentBase
 
     public void OpenIngredientRemovalModalOpen(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (_ingredientRemovalConfirmationModal == null) throw new InvalidOperationException();
+        if (_removalConfirmationModal == null) throw new InvalidOperationException();
 
-        _ingredientRemovalConfirmationModal.Open(ingredientMeasurementDto.IngredientDto);
+        _removalConfirmationModal.Open(ingredientMeasurementDto.IngredientDto, "Remove ingredient", ingredientMeasurementDto.IngredientDto.Name);
     }
 
     public Task HandleIngredientRemovalConfirmed(IngredientDto ingredientDto)

@@ -3,7 +3,7 @@
 
 @inherits ComponentBase
 
-<IngredientRemovalConfirmationModal @ref="_ingredientRemovalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
+<RemovalConfirmationModal Type="IngredientDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
 <div class="card mb-2">
     <div class="card-body">
         @for (int index = 0; index < IngredientsPage?.IngredientCollectionTypes?.Count; ++index)
