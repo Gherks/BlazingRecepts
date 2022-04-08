@@ -37,7 +37,7 @@ public partial class AddIngredientMeasurementModal : ComponentBase
             _form = new()
             {
                 IngredientDto = ingredientMeasurementDto.IngredientDto,
-                Measurement = ingredientMeasurementDto.Measurement,
+                Measurement = ingredientMeasurementDto.Measurement.ToString(),
                 MeasurementUnit = ingredientMeasurementDto.MeasurementUnit,
                 Grams = ingredientMeasurementDto.Grams.ToString(),
                 Note = ingredientMeasurementDto.Note,
@@ -65,6 +65,9 @@ public partial class AddIngredientMeasurementModal : ComponentBase
         if (_modal == null) throw new InvalidOperationException();
         if (RecipeWorkbench == null) throw new InvalidOperationException();
 
+        _form.Measurement = _form.Measurement.Replace(',', '.');
+        _form.Grams = _form.Grams.Replace(',', '.');
+
         if (Validate())
         {
             int sortOrder = _form.SortOrder;
@@ -77,9 +80,9 @@ public partial class AddIngredientMeasurementModal : ComponentBase
             RecipeWorkbench.ContainedIngredientMeasurements.Add(new()
             {
                 IngredientDto = _form.IngredientDto,
-                Measurement = _form.Measurement,
+                Measurement = Convert.ToDouble(_form.Measurement),
                 MeasurementUnit = _form.MeasurementUnit,
-                Grams = Convert.ToInt32(_form.Grams),
+                Grams = Convert.ToDouble(_form.Grams),
                 Note = _form.Note,
                 SortOrder = sortOrder
             });
@@ -131,13 +134,13 @@ public partial class AddIngredientMeasurementModal : ComponentBase
                 "Grams is required."
             });
         }
-        else if (int.TryParse(_form.Grams, out int basePortions) == false)
+        else if (double.TryParse(_form.Grams, out double grams) == false)
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
                 "Grams must only include numbers."
             });
         }
-        else if (basePortions <= 0)
+        else if (grams <= 0)
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
                 "Grams must be a positive number."

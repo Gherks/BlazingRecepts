@@ -38,7 +38,7 @@ public partial class EditIngredientMeasurementModal : ComponentBase
 
         _form = new()
         {
-            Measurement = ingredientMeasurementDto.Measurement,
+            Measurement = ingredientMeasurementDto.Measurement.ToString(),
             MeasurementUnit = ingredientMeasurementDto.MeasurementUnit,
             Grams = ingredientMeasurementDto.Grams.ToString(),
             Note = ingredientMeasurementDto.Note,
@@ -60,6 +60,9 @@ public partial class EditIngredientMeasurementModal : ComponentBase
         if (_modal == null) throw new InvalidOperationException();
         if (RecipeWorkbench == null) throw new InvalidOperationException();
 
+        _form.Measurement = _form.Measurement.Replace(',', '.');
+        _form.Grams = _form.Grams.Replace(',', '.');
+
         if (Validate())
         {
             if (RecipeWorkbench == null) throw new InvalidOperationException();
@@ -70,9 +73,9 @@ public partial class EditIngredientMeasurementModal : ComponentBase
 
             if (ingredientMeasurementDto == null) throw new InvalidOperationException("Failed to find ingredient that was expected to exist edited recipe.");
 
-            ingredientMeasurementDto.Measurement = _form.Measurement;
+            ingredientMeasurementDto.Measurement = Convert.ToDouble(_form.Measurement);
             ingredientMeasurementDto.MeasurementUnit = _form.MeasurementUnit;
-            ingredientMeasurementDto.Grams = Convert.ToInt32(_form.Grams);
+            ingredientMeasurementDto.Grams = Convert.ToDouble(_form.Grams);
             ingredientMeasurementDto.Note = _form.Note;
 
             RecipeWorkbench.Refresh();
@@ -95,6 +98,18 @@ public partial class EditIngredientMeasurementModal : ComponentBase
                 "Measurement is required."
             });
         }
+        else if (double.TryParse(_form.Measurement, out double grams) == false)
+        {
+            errors.Add(nameof(_form.Measurement), new List<string>() {
+                "Measurement must only include numbers."
+            });
+        }
+        else if (grams <= 0)
+        {
+            errors.Add(nameof(_form.Measurement), new List<string>() {
+                "Measurement cannot be less than zero."
+            });
+        }
 
         if (_form.MeasurementUnit == MeasurementUnit.Unassigned)
         {
@@ -109,16 +124,16 @@ public partial class EditIngredientMeasurementModal : ComponentBase
                 "Grams is required."
             });
         }
-        else if (int.TryParse(_form.Grams, out int basePortions) == false)
+        else if (double.TryParse(_form.Grams, out double grams) == false)
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
                 "Grams must only include numbers."
             });
         }
-        else if (basePortions <= 0)
+        else if (grams <= 0)
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
-                "Grams must be a positive number."
+                "Grams cannot be less than zero."
             });
         }
 

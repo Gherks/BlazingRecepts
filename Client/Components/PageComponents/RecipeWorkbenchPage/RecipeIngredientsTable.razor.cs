@@ -63,7 +63,7 @@ public partial class RecipeIngredientsTable : ComponentBase
     {
         if (ingredientMeasurementDto == null) throw new InvalidOperationException();
 
-        return ingredientMeasurementDto.Measurement.Trim() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
+        return ingredientMeasurementDto.Measurement.ToString() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
     }
 
     private void SwapIngredientMeasurementsPositionInList(int first, int second)

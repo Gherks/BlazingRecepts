@@ -75,6 +75,6 @@ public partial class Recipe : ComponentBase
     {
         if (ingredientMeasurementDto == null) throw new InvalidOperationException();
 
-        return ingredientMeasurementDto.Measurement.Trim() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
+        return ingredientMeasurementDto.Measurement.ToString() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
     }
 }
