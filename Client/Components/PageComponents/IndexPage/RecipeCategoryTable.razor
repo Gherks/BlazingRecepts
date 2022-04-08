@@ -5,13 +5,13 @@
 
 @inherits ComponentBase
 
-@foreach (char letter in _recipeCategories.Keys)
+@foreach(KeyValuePair<char, List<RecipeDto>> pair in _recipeCategories.OrderBy(pair => pair.Key))
 {
     <hr />
     <div class="row">
         <div class="d-flex">
             <div class="flex-shrink-1 me-4">
-                <h2>@char.ToUpperInvariant(letter)</h2>
+                <h2>@char.ToUpperInvariant(pair.Key)</h2>
             </div>
             <div class="flex-fill">
                 <div class="mb-2">
@@ -29,7 +29,7 @@
                         </div>
                     </div>
                 </div>
-                @foreach (RecipeDto recipeDto in _recipeCategories[letter])
+                @foreach (RecipeDto recipeDto in _recipeCategories[pair.Key])
                 {
                     <div class="mb-2">
                         <div class="row" @onclick="@(_ => HandleRecipeNavigation(recipeDto))" >

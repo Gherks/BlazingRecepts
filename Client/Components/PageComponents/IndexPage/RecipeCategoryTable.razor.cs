@@ -47,7 +47,7 @@ public partial class RecipeCategoryTable : ComponentBase
 
         foreach (char letter in _recipeCategories.Keys)
         {
-            _recipeCategories[letter] = _recipeCategories[letter].OrderBy(recipeDto => recipeDto.Name).ToList();
+            _recipeCategories[letter].Sort((first, second) => string.Compare(first.Name.ToLower(), second.Name.ToLower()));
         }
     }
 
