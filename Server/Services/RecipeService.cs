@@ -109,6 +109,8 @@ namespace BlazingRecept.Server.Services
                 recipeDto.IngredientMeasurementDtos.Add(ingredientMeasurementDto);
             }
 
+            recipeDto.IngredientMeasurementDtos.Sort((first, second) => first.SortOrder > second.SortOrder ? 1 : -1);
+
             return recipeDto;
         }
     }
