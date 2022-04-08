@@ -1,5 +1,4 @@
-﻿using BlazingRecept.Shared.Dto;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Components.Utilities;
 
