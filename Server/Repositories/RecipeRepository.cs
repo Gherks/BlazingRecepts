@@ -69,28 +69,28 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
 
     public override async Task<Recipe> UpdateAsync(Recipe updatedRecipe)
     {
-        Recipe recipe = await GetByIdAsync(updatedRecipe.Id) ?? throw new InvalidOperationException();
+        Recipe currentRecipe = await GetByIdAsync(updatedRecipe.Id) ?? throw new InvalidOperationException();
 
         try
         {
-            UpdateRecipeIngredientMeasurements(recipe, updatedRecipe);
+            UpdateRecipeIngredientMeasurements(currentRecipe, updatedRecipe);
 
-            recipe.Name = updatedRecipe.Name;
-            recipe.Instructions = updatedRecipe.Instructions;
-            recipe.PortionAmount = updatedRecipe.PortionAmount;
-            recipe.CategoryId = updatedRecipe.CategoryId;
+            currentRecipe.Name = updatedRecipe.Name;
+            currentRecipe.Instructions = updatedRecipe.Instructions;
+            currentRecipe.PortionAmount = updatedRecipe.PortionAmount;
+            currentRecipe.CategoryId = updatedRecipe.CategoryId;
 
-            _context.Entry(recipe).State = EntityState.Modified;
+            _context.Entry(currentRecipe).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
-            await _context.Entry(recipe).ReloadAsync();
+            await _context.Entry(currentRecipe).ReloadAsync();
 
         }
         catch (Exception)
         {
         }
 
-        return recipe;
+        return currentRecipe;
     }
 
     private void UpdateRecipeIngredientMeasurements(Recipe currentRecipe, Recipe updatedRecipe)
