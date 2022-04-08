@@ -37,18 +37,6 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
     }
 
-    protected internal override async Task<Recipe?> GetDetachedByIdAsync(Guid id)
-    {
-        Recipe? detachedRecipe = await base.GetDetachedByIdAsync(id) ?? throw new InvalidOperationException();
-
-        foreach (IngredientMeasurement ingredientMeasurement in detachedRecipe.IngredientMeasurements)
-        {
-            _context.Entry(ingredientMeasurement).State = EntityState.Detached;
-        }
-
-        return detachedRecipe;
-    }
-
     public override async Task<IReadOnlyList<Recipe>?> ListAllAsync()
     {
         try
@@ -79,18 +67,24 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         return recipe;
     }
 
-    public override async Task<Recipe> UpdateAsync(Recipe recipe)
+    public override async Task<Recipe> UpdateAsync(Recipe updatedRecipe)
     {
+        Recipe recipe = await GetByIdAsync(updatedRecipe.Id) ?? throw new InvalidOperationException();
+
         try
         {
-            Recipe? oldRecipe = await GetDetachedByIdAsync(recipe.Id) ?? throw new InvalidOperationException();
+            UpdateRecipeIngredientMeasurements(recipe, updatedRecipe);
 
-            UpdateRecipeIngredientMeasurements(oldRecipe, recipe);
+            recipe.Name = updatedRecipe.Name;
+            recipe.Instructions = updatedRecipe.Instructions;
+            recipe.PortionAmount = updatedRecipe.PortionAmount;
+            recipe.CategoryId = updatedRecipe.CategoryId;
 
             _context.Entry(recipe).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
             await _context.Entry(recipe).ReloadAsync();
+
         }
         catch (Exception)
         {
@@ -99,21 +93,40 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         return recipe;
     }
 
-    private void UpdateRecipeIngredientMeasurements(Recipe oldRecipe, Recipe newRecipe)
+    private void UpdateRecipeIngredientMeasurements(Recipe currentRecipe, Recipe updatedRecipe)
     {
-        foreach (IngredientMeasurement ingredientMeasurementInNewRecipe in newRecipe.IngredientMeasurements)
+        for (int index = 0; index < currentRecipe.IngredientMeasurements.Count; ++index)
         {
-            ApplyAddedOrModifiedState(ingredientMeasurementInNewRecipe);
+            IngredientMeasurement ingredientMeasurementInCurrentRecipe = currentRecipe.IngredientMeasurements[index];
+
+            IngredientMeasurement? ingredientMeasurementInUpdatedRecipe = updatedRecipe.IngredientMeasurements
+                .FirstOrDefault(ingredientMeasurement => ingredientMeasurement.Id == ingredientMeasurementInCurrentRecipe.Id);
+
+            if (ingredientMeasurementInUpdatedRecipe != null)
+            {
+                ingredientMeasurementInCurrentRecipe.Measurement = ingredientMeasurementInUpdatedRecipe.Measurement;
+                ingredientMeasurementInCurrentRecipe.MeasurementUnit = ingredientMeasurementInUpdatedRecipe.MeasurementUnit;
+                ingredientMeasurementInCurrentRecipe.Grams = ingredientMeasurementInUpdatedRecipe.Grams;
+                ingredientMeasurementInCurrentRecipe.Note = ingredientMeasurementInUpdatedRecipe.Note;
+                ingredientMeasurementInCurrentRecipe.SortOrder = ingredientMeasurementInUpdatedRecipe.SortOrder;
+                ingredientMeasurementInCurrentRecipe.IngredientId = ingredientMeasurementInUpdatedRecipe.IngredientId;
+
+                _context.Entry(ingredientMeasurementInCurrentRecipe).State = EntityState.Modified;
+            }
+            else
+            {
+                currentRecipe.IngredientMeasurements.Remove(ingredientMeasurementInCurrentRecipe);
+                _context.Entry(ingredientMeasurementInCurrentRecipe).State = EntityState.Deleted;
+
+                --index;
+            }
         }
 
-        foreach (IngredientMeasurement ingredientMeasurementInOldRecipe in oldRecipe.IngredientMeasurements)
+        foreach (IngredientMeasurement ingredientMeasurementInUpdatedRecipe in updatedRecipe.IngredientMeasurements)
         {
-            bool ingredientMeasurementNotPresent = newRecipe.IngredientMeasurements
-            .Any(ingredientMeasurementInNewRecipe => ingredientMeasurementInNewRecipe.Id == ingredientMeasurementInOldRecipe.Id) == false;
-
-            if (ingredientMeasurementNotPresent)
+            if (ingredientMeasurementInUpdatedRecipe.Id == Guid.Empty)
             {
-                _context.Entry(ingredientMeasurementInOldRecipe).State = EntityState.Deleted;
+                currentRecipe.IngredientMeasurements.Add(ingredientMeasurementInUpdatedRecipe);
             }
         }
     }

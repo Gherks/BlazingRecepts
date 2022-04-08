@@ -38,15 +38,6 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
     }
 
-    protected internal virtual async Task<Type?> GetDetachedByIdAsync(Guid id)
-    {
-        Type? detachedEntity = await GetByIdAsync(id) ?? throw new InvalidOperationException();
-
-        _context.Entry(detachedEntity).State = EntityState.Detached;
-
-        return detachedEntity;
-    }
-
     public virtual async Task<IReadOnlyList<Type>?> ListAllAsync()
     {
         try
