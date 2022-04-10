@@ -1,11 +1,12 @@
 using BlazingRecept.Client.Components.PageComponents.IngredientPage;
+using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Pages;
 
-public partial class Ingredients : ComponentBase
+public partial class Ingredients : PageBase
 {
     private IngredientTables? _ingredientTables;
 

@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Components;
+using BlazingRecept.Client.Pages.Base;
 
 namespace BlazingRecept.Client.Pages;
 
-public partial class Index : ComponentBase
+public partial class Index : PageBase
 {
 }

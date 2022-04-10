@@ -1,4 +1,5 @@
 using BlazingRecept.Client.Components.Utilities;
+using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Pages;
 
-public partial class Recipe : ComponentBase
+public partial class Recipe : PageBase
 {
     private RecipeDto? _recipeDto = new RecipeDto();
 

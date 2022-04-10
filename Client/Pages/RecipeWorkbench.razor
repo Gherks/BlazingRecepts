@@ -3,11 +3,15 @@
 
 @using BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage
 @using BlazingRecept.Client.Components.Utilities
+@using BlazingRecept.Client.Pages.Base
 @using BlazingRecept.Client.Utilities;
 @using BlazingRecept.Shared.Dto
 @using Markdig
 
+@inherits PageBase
+
 <PageTitle>@GetTitle()</PageTitle>
+
 <CascadingValue Value=@this>
     <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" />
     <EditIngredientMeasurementModal @ref="_editIngredientMeasurementModal" />
