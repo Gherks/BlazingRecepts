@@ -1,6 +1,5 @@
 ﻿using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using System.Net;
 using System.Net.Http.Json;
 using static BlazingRecept.Shared.Enums;

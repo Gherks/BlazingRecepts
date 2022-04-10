@@ -1,8 +1,6 @@
 ﻿using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Controllers;
