@@ -12,19 +12,22 @@
 
 @if (_recipeDto != null)
 {
-    
+
     <RemovalConfirmationModal Type="RecipeDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
     <div class="d-flex justify-content-between">
         <div>
             <h1>@_recipeDto.Name</h1>
         </div>
         <div class="flex-shrink-1">
-            <button class="btn btn-primary" @onclick="() => HandleNavigationToEditRecipe(_recipeDto)">
-                <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button class="btn btn-danger" @onclick="() => HandleIngredientRemovalModalOpen(_recipeDto)">
-                <i class="fa-solid fa-trash"></i>
-            </button>
+            @if (IsAuthenticated)
+            {
+                <button class="btn btn-primary" @onclick="() => HandleNavigationToEditRecipe(_recipeDto)">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-danger" @onclick="() => HandleIngredientRemovalModalOpen(_recipeDto)">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            }
         </div>
     </div>
     <div class="d-flex justify-content-between">

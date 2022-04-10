@@ -28,6 +28,8 @@ public partial class Recipe : PageBase
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
         if (RecipeService == null) throw new InvalidOperationException();
 
         _recipeDto = await RecipeService.GetByIdAsync(RecipeId);
