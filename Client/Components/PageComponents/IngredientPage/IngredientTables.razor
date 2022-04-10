@@ -12,14 +12,14 @@
             <table class="table table-hover table-striped table-sm">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Fat</th>
-                        <th>Carbohydrates</th>
-                        <th>Protein</th>
-                        <th>Calories</th>
+                        <th class="col-3">Name</th>
+                        <th class="col-2">Fat</th>
+                        <th class="col-2">Carbohydrates</th>
+                        <th class="col-2">Protein</th>
+                        <th class="col-2">Calories</th>
                         @if (IngredientsPage.IsAuthenticated)
                         {
-                            <th>Actions</th>
+                            <th class="col-1">Actions</th>
                         }
                     </tr>
                 </thead>
@@ -29,24 +29,24 @@
                         if (_editingIngredientGuid == ingredientDto.Id)
                         {
                             <tr id="@ingredientDto.Id">
-                                <td>
+                                <td class="col-3">
                                     <input type="text" id="name" name="name" class="form-control" @bind="@ingredientDto.Name" placeholder="@ingredientDto.Name">
                                 </td>
-                                <td>
+                                <td class="col-2">
                                     <input type="text" id="fat" name="fat" class="form-control" @bind="@ingredientDto.Fat" placeholder="@ingredientDto.Fat">
                                 </td>
-                                <td>
+                                <td class="col-2">
                                     <input type="text" id="carbohydrates" name="carbohydrates" class="form-control" @bind="@ingredientDto.Carbohydrates" placeholder="@ingredientDto.Carbohydrates">
                                 </td>
-                                <td>
+                                <td class="col-2">
                                     <input type="text" id="protein" name="protein" class="form-control" @bind="@ingredientDto.Protein" placeholder="@ingredientDto.Protein">
                                 </td>
-                                <td>
+                                <td class="col-2">
                                     <input type="text" id="calories" name="calories" class="form-control" @bind="@ingredientDto.Calories" placeholder="@ingredientDto.Calories">
                                 </td>
                                 @if (IngredientsPage.IsAuthenticated)
                                 {
-                                    <td>
+                                    <td class="col-1">
                                         <button class="btn btn-success btn-sm" @onclick="() => HandleIngredientEditConfirmed(ingredientDto)">
                                             <i class="fa-solid fa-check"></i>
                                         </button>
@@ -60,14 +60,14 @@
                         else
                         {
                             <tr id="@ingredientDto.Id">
-                                <td>@ingredientDto.Name</td>
-                                <td>@ingredientDto.Fat</td>
-                                <td>@ingredientDto.Carbohydrates</td>
-                                <td>@ingredientDto.Protein</td>
-                                <td>@ingredientDto.Calories</td>
+                                <td class="col-3">@ingredientDto.Name</td>
+                                <td class="col-2">@ingredientDto.Fat</td>
+                                <td class="col-2">@ingredientDto.Carbohydrates</td>
+                                <td class="col-2">@ingredientDto.Protein</td>
+                                <td class="col-2">@ingredientDto.Calories</td>
                                 @if (IngredientsPage.IsAuthenticated)
                                 {
-                                    <td>
+                                    <td class="col-1">
                                         <button class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEditClicked(ingredientDto.Id)">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
