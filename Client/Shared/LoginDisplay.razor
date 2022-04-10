@@ -10,11 +10,16 @@
         <button class="nav-link btn btn-link" @onclick="HandleBeginLogout">Log out</button>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+        <a href="" @onclick="() => HandleBeginLogin()" @onclick:preventDefault>Log in</a>
     </NotAuthorized>
 </AuthorizeView>
 
-@code{
+@code {
+    private void HandleBeginLogin()
+    {
+        Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
+    }
+
     private async Task HandleBeginLogout(MouseEventArgs args)
     {
         await SignOutManager.SetSignOutState();
