@@ -17,10 +17,9 @@
                         <th class="col-2">Carbohydrates</th>
                         <th class="col-2">Protein</th>
                         <th class="col-2">Calories</th>
-                        @if (IngredientsPage.IsAuthenticated)
-                        {
+                        <AuthorizeView>
                             <th class="col-1">Actions</th>
-                        }
+                        </AuthorizeView>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,8 +43,7 @@
                                 <td class="col-2">
                                     <input type="text" id="calories" name="calories" class="form-control" @bind="@ingredientDto.Calories" placeholder="@ingredientDto.Calories">
                                 </td>
-                                @if (IngredientsPage.IsAuthenticated)
-                                {
+                                <AuthorizeView>
                                     <td class="col-1">
                                         <button class="btn btn-success btn-sm" @onclick="() => HandleIngredientEditConfirmed(ingredientDto)">
                                             <i class="fa-solid fa-check"></i>
@@ -54,7 +52,7 @@
                                             <i class="fa-solid fa-xmark"></i>
                                         </button>
                                     </td>
-                                }
+                                </AuthorizeView>
                             </tr>
                         }
                         else
@@ -65,8 +63,7 @@
                                 <td class="col-2">@ingredientDto.Carbohydrates</td>
                                 <td class="col-2">@ingredientDto.Protein</td>
                                 <td class="col-2">@ingredientDto.Calories</td>
-                                @if (IngredientsPage.IsAuthenticated)
-                                {
+                                <AuthorizeView>
                                     <td class="col-1">
                                         <button class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEditClicked(ingredientDto.Id)">
                                             <i class="fa-solid fa-pen-to-square"></i>
@@ -75,7 +72,7 @@
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </td>
-                                }
+                                </AuthorizeView>
                             </tr>
                         }
                     }

@@ -3,12 +3,11 @@
 
 @using BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage
 @using BlazingRecept.Client.Components.Utilities
-@using BlazingRecept.Client.Pages.Base
 @using BlazingRecept.Client.Utilities;
 @using BlazingRecept.Shared.Dto
 @using Markdig
 
-@inherits PageBase
+@inherits ComponentBase
 
 <PageTitle>@GetTitle()</PageTitle>
 
@@ -31,7 +30,7 @@
                     <label for="portion-amount">Portion amount</label>
                     <ValidationMessage For="() => _form.PortionAmount" />
                 </div>
-                
+
                 <div class="form-group mb-2">
                     <InputSelect id="category-selector" name="category-selector" class="form-select" @bind-Value="_form.CategoryDtoId">
                         <option value="@Guid.Empty">Choose a category...</option>

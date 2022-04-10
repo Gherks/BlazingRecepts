@@ -1,7 +1,7 @@
-using BlazingRecept.Client.Pages.Base;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazingRecept.Client.Pages;
 
-public partial class DailyIntake : PageBase
+public partial class DailyIntake : ComponentBase
 {
 }
