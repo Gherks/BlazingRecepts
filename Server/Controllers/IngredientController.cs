@@ -1,19 +1,18 @@
 ﻿using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 
 namespace BlazingRecept.Server.Controllers;
 
-//[Authorize]
 [ApiController]
 [Route("api/ingredients")]
-//[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class IngredientController : ControllerBase
 {
-    private readonly IIngredientService _ingredientService;
-
-    // The Web API will only accept tokens 1) for users, and 2) having the "API.Access" scope for this API
     static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
+
+    private readonly IIngredientService _ingredientService;
 
     public IngredientController(IIngredientService ingredientService)
     {
@@ -45,24 +44,18 @@ public class IngredientController : ControllerBase
     [HttpGet]
     public async Task<IReadOnlyList<IngredientDto>> Get()
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
         return await _ingredientService.GetAllAsync();
     }
 
     [HttpGet("sorted")]
     public async Task<IReadOnlyList<IngredientCollectionTypeDto>> GetSorted()
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
         return await _ingredientService.GetAllSortedAsync();
     }
 
     [HttpGet("{ingredientIdentifier}")]
     public async Task<ActionResult<IngredientDto>> Get(string ingredientIdentifier)
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
         if (Guid.TryParse(ingredientIdentifier, out Guid id))
         {
             IngredientDto? ingredientDto = await _ingredientService.GetByIdAsync(id);
@@ -76,10 +69,12 @@ public class IngredientController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpPost]
     public async Task<ActionResult<IngredientDto>> Post(IngredientDto ingredientDto)
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
         try
         {
@@ -96,10 +91,12 @@ public class IngredientController : ControllerBase
         }
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
         bool ingredientRemoved = await _ingredientService.DeleteAsync(id);
 

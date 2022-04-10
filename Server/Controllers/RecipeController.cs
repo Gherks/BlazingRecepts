@@ -1,19 +1,18 @@
 ﻿using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 
 namespace BlazingRecept.Server.Controllers;
 
-//[Authorize]
 [ApiController]
 [Route("api/recipes")]
-//[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class RecipeController : ControllerBase
 {
-    private readonly IRecipeService _recipeService;
-
-    // The Web API will only accept tokens 1) for users, and 2) having the "API.Access" scope for this API
     static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
+
+    private readonly IRecipeService _recipeService;
 
     public RecipeController(IRecipeService recipeService)
     {
@@ -45,16 +44,12 @@ public class RecipeController : ControllerBase
     [HttpGet]
     public async Task<IReadOnlyList<RecipeDto>> Get()
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
         return await _recipeService.GetAllAsync();
     }
 
     [HttpGet("{recipeIdentifier}")]
     public async Task<ActionResult<RecipeDto>> Get(string recipeIdentifier)
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
         if (Guid.TryParse(recipeIdentifier, out Guid id))
         {
             RecipeDto? recipeDto = await _recipeService.GetByIdAsync(id);
@@ -68,10 +63,12 @@ public class RecipeController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpPost]
     public async Task<ActionResult<RecipeDto>> Post(RecipeDto recipeDto)
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
         try
         {
@@ -88,10 +85,12 @@ public class RecipeController : ControllerBase
         }
     }
 
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
         bool recipeRemoved = await _recipeService.DeleteAsync(id);
 

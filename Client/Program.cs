@@ -13,10 +13,10 @@ builder.AddServices();
 
 builder.Services.AddBlazoredToast();
 
-//builder.Services.AddMsalAuthentication(options =>
-//{
-//    builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
-//    options.ProviderOptions.DefaultAccessTokenScopes.Add("api://9fe5670d-f19b-454b-bfd1-1ba2180409d0/API.Access");
-//});
+builder.Services.AddMsalAuthentication(options =>
+{
+    builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
+    options.ProviderOptions.DefaultAccessTokenScopes.Add("api://9fe5670d-f19b-454b-bfd1-1ba2180409d0/API.Access");
+});
 
 await builder.Build().RunAsync();

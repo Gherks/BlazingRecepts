@@ -9,20 +9,22 @@ namespace BlazingRecept.Client.Services;
 public class RecipeService : IRecipeService
 {
     private readonly string _apiAddress = "api/recipes";
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _publicHttpClient;
+    private readonly HttpClient _authenticatedHttpClient;
 
     public RecipeService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
+        _publicHttpClient = httpClientFactory.CreateClient("BlazingRecept.PublicServerAPI");
+        _authenticatedHttpClient = httpClientFactory.CreateClient("BlazingRecept.AuthenticatedServerAPI");
     }
 
     public async Task<bool> AnyAsync(string name)
     {
         try
         {
-            Uri uri = new Uri(_httpClient.BaseAddress + _apiAddress + $"/{name}");
+            Uri uri = new Uri(_publicHttpClient.BaseAddress + _apiAddress + $"/{name}");
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
-            HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+            HttpResponseMessage response = await _publicHttpClient.SendAsync(httpRequestMessage);
 
             return response.StatusCode == HttpStatusCode.OK;
         }
@@ -37,16 +39,12 @@ public class RecipeService : IRecipeService
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress + $"/{id}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return await response.Content.ReadFromJsonAsync<RecipeDto>();
             }
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
         }
         catch (Exception)
         {
@@ -59,16 +57,12 @@ public class RecipeService : IRecipeService
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
+            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return await response.Content.ReadFromJsonAsync<IReadOnlyList<RecipeDto>>();
             }
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
         }
         catch (Exception)
         {
@@ -86,7 +80,7 @@ public class RecipeService : IRecipeService
 
         try
         {
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_apiAddress, recipeDto);
+            HttpResponseMessage response = await _authenticatedHttpClient.PostAsJsonAsync(_apiAddress, recipeDto);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -108,9 +102,13 @@ public class RecipeService : IRecipeService
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.DeleteAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _authenticatedHttpClient.DeleteAsync(_apiAddress + $"/{id}");
 
             return response.StatusCode == HttpStatusCode.NoContent;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
         }
         catch (Exception)
         {

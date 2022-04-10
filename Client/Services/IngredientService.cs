@@ -9,20 +9,22 @@ namespace BlazingRecept.Client.Services;
 public class IngredientService : IIngredientService
 {
     private readonly string _apiAddress = "api/ingredients";
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _publicHttpClient;
+    private readonly HttpClient _authenticatedHttpClient;
 
     public IngredientService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
+        _publicHttpClient = httpClientFactory.CreateClient("BlazingRecept.PublicServerAPI");
+        _authenticatedHttpClient = httpClientFactory.CreateClient("BlazingRecept.AuthenticatedServerAPI");
     }
 
     public async Task<bool> AnyAsync(string name)
     {
         try
         {
-            Uri uri = new Uri(_httpClient.BaseAddress + _apiAddress + $"/{name}");
+            Uri uri = new Uri(_publicHttpClient.BaseAddress + _apiAddress + $"/{name}");
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
-            HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+            HttpResponseMessage response = await _publicHttpClient.SendAsync(httpRequestMessage);
 
             return response.StatusCode == HttpStatusCode.OK;
         }
@@ -37,16 +39,12 @@ public class IngredientService : IIngredientService
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress + $"/{id}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return await response.Content.ReadFromJsonAsync<IngredientDto>();
             }
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
         }
         catch (Exception)
         {
@@ -59,16 +57,12 @@ public class IngredientService : IIngredientService
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
+            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientDto>>();
             }
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
         }
         catch (Exception)
         {
@@ -81,16 +75,12 @@ public class IngredientService : IIngredientService
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + "/sorted");
+            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress + "/sorted");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientCollectionTypeDto>>();
             }
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
         }
         catch (Exception)
         {
@@ -108,7 +98,7 @@ public class IngredientService : IIngredientService
 
         try
         {
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_apiAddress, ingredientDto);
+            HttpResponseMessage response = await _authenticatedHttpClient.PostAsJsonAsync(_apiAddress, ingredientDto);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -130,7 +120,7 @@ public class IngredientService : IIngredientService
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.DeleteAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _authenticatedHttpClient.DeleteAsync(_apiAddress + $"/{id}");
 
             return response.StatusCode == HttpStatusCode.OK;
         }
