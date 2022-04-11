@@ -1,6 +1,7 @@
 using BlazingRecept.Server.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
+using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,11 @@ builder.AddBlazingReceptServices();
 builder.AddBlazingReceptRepositories();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSwaggerGen();
+
+// Configure Serilog
+builder.Host.UseSerilog((hostBuilderContext, serviceProvider, loggerConfiguration) => loggerConfiguration
+    .Enrich.FromLogContext()
+    .ReadFrom.Configuration(hostBuilderContext.Configuration));
 
 var app = builder.Build();
 
