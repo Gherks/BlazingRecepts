@@ -14,7 +14,9 @@ public static class BlazingReceptServiceCollectionExtensions
         builder.Services.AddDbContext<BlazingReceptContext>(options =>
         {
             options.UseSqlServer(configuration["BlazingReceptConnectionString"]);
+#if DEBUG
             options.EnableSensitiveDataLogging();
+#endif
         });
 
         return builder;
