@@ -5,7 +5,7 @@ namespace BlazingRecept.Client.Components.Utilities;
 public partial class Modal
 {
     private string _modalDisplay = "none";
-    private string _modalClass = "";
+    private string _modalClass = string.Empty;
 
     [Parameter]
     public string Title { get; set; } = string.Empty;
@@ -32,7 +32,7 @@ public partial class Modal
     public void Close()
     {
         _modalDisplay = "none";
-        _modalClass = "";
+        _modalClass = string.Empty;
         StateHasChanged();
     }
 }

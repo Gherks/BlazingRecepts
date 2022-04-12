@@ -5,7 +5,7 @@ namespace BlazingRecept.Client.Components.Utilities;
 public partial class CollapsibleComponent : ComponentBase
 {
     private string _buttonText => ShowChildContent ? ExposedButtonText : CollapsedButtonText;
-    private string _class => ShowChildContent ? "mb-2" : "";
+    private string _class => ShowChildContent ? "mb-2" : string.Empty;
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
