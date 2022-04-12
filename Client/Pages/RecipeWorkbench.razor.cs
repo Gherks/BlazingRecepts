@@ -5,12 +5,16 @@ using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Serilog;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Pages;
 
 public partial class RecipeWorkbench : ComponentBase
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "RecipeWorkbenchPage";
+
     private Form _form = new();
 
     private AddIngredientMeasurementModal? _addIngredientMeasurementModal;
@@ -46,17 +50,32 @@ public partial class RecipeWorkbench : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        if (IngredientService == null) throw new InvalidOperationException();
-        if (CategoryService == null) throw new InvalidOperationException();
+        if (RecipeService == null)
+        {
+            string errorMessage = "Cannot fetch recipe because recipe service is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (IngredientService == null)
+        {
+            string errorMessage = "Cannot fetch ingredients because ingredient service is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (CategoryService == null)
+        {
+            string errorMessage = "Cannot fetch categories because category service is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         Ingredients = await IngredientService.GetAllAsync();
-
         _categoryDtos = await CategoryService.GetAllOfTypeAsync(CategoryType.Recipe);
 
         if (RecipeId != Guid.Empty)
         {
-            if (RecipeService == null) throw new InvalidOperationException();
-
             RecipeDto? recipeDto = await RecipeService.GetByIdAsync(RecipeId);
 
             if (recipeDto != null)
@@ -81,43 +100,58 @@ public partial class RecipeWorkbench : ComponentBase
 
     private async Task HandleValidFormSubmitted()
     {
+        if (RecipeService == null)
+        {
+            string errorMessage = "Cannot submit validated recipe because recipe service has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (NavigationManager == null)
+        {
+            string errorMessage = "Cannot submit validated recipe because navigation manager has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (ToastService == null)
+        {
+            string errorMessage = "Cannot submit validated recipe because toast service has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
         if (await Validate())
         {
             RecipeDto? recipeDto = ParseRecipeForm();
-
-            if (RecipeService == null) throw new InvalidOperationException();
 
             recipeDto = await RecipeService.SaveAsync(recipeDto);
 
             if (recipeDto != null && recipeDto.Id != Guid.Empty)
             {
-                if (ToastService == null) throw new InvalidOperationException();
+                string toastMessage = IsCreatingNewRecipe ? "Recipe successfully added!" : "Recipe successfully updated!";
+                ToastService.ShowSuccess(toastMessage);
 
-                if (IsCreatingNewRecipe)
-                {
-
-                    ToastService.ShowSuccess("Recipe successfully added!");
-
-                    _form = new();
-                    ContainedIngredientMeasurements.Clear();
-
-                    StateHasChanged();
-                }
-                else
-                {
-                    ToastService.ShowSuccess("Recipe successfully updated!");
-
-                    if (NavigationManager == null) throw new InvalidOperationException();
-
-                    NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
-                }
+                NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
             }
         }
     }
 
     private async Task<bool> Validate()
     {
-        if (_customValidation == null) throw new InvalidOperationException("Custom validation variable is not set during validation.");
+        if (_customValidation == null)
+        {
+            string errorMessage = "Cannot validate recipe because custom validation object has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (RecipeService == null)
+        {
+            string errorMessage = "Cannot validate recipe because recipe service has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _customValidation.ClearErrors();
 
@@ -131,8 +165,6 @@ public partial class RecipeWorkbench : ComponentBase
         }
         else if (IsCreatingNewRecipe)
         {
-            if (RecipeService == null) throw new InvalidOperationException("Ingredient service is not available during validation.");
-
             bool recipeAlreadyExists = await RecipeService.AnyAsync(_form.Name);
 
             if (recipeAlreadyExists)
@@ -162,7 +194,6 @@ public partial class RecipeWorkbench : ComponentBase
             });
         }
 
-
         if (_form.CategoryDtoId == Guid.Empty)
         {
             errors.Add(nameof(_form.CategoryDtoId), new List<string>() {
@@ -181,11 +212,21 @@ public partial class RecipeWorkbench : ComponentBase
 
     private RecipeDto ParseRecipeForm()
     {
-        if (_categoryDtos == null) throw new InvalidOperationException();
+        if (_categoryDtos == null)
+        {
+            string errorMessage = "Cannot parse recipe form because it has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         CategoryDto? categoryDto = _categoryDtos.FirstOrDefault(categoryDto => categoryDto.Id == _form.CategoryDtoId);
 
-        if (categoryDto == null) throw new InvalidOperationException();
+        if (categoryDto == null)
+        {
+            string errorMessage = "Cannot parse recipe form because it contains an unknown category.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         RecipeDto recipeDto = new();
 
@@ -206,21 +247,36 @@ public partial class RecipeWorkbench : ComponentBase
 
     public void HandleAddIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
     {
-        if (_addIngredientMeasurementModal == null) throw new InvalidOperationException();
+        if (_addIngredientMeasurementModal == null)
+        {
+            string errorMessage = "Cannot open add ingredient modal because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _addIngredientMeasurementModal.Open(ingredientMeasurementDto);
     }
 
     public void HandleEditIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
     {
-        if (_editIngredientMeasurementModal == null) throw new InvalidOperationException();
+        if (_editIngredientMeasurementModal == null)
+        {
+            string errorMessage = "Cannot open edit ingredient modal because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _editIngredientMeasurementModal.Open(ingredientMeasurementDto);
     }
 
     public void OpenIngredientRemovalModalOpen(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (_removalConfirmationModal == null) throw new InvalidOperationException();
+        if (_removalConfirmationModal == null)
+        {
+            string errorMessage = "Cannot open removal confirmation modal because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _removalConfirmationModal.Open(ingredientMeasurementDto.IngredientDto, "Remove ingredient", ingredientMeasurementDto.IngredientDto.Name);
     }
@@ -237,7 +293,8 @@ public partial class RecipeWorkbench : ComponentBase
         }
         else
         {
-            // Log.Warning("Could not remove ingreident from recipe that was supposed to be removed.");
+            const string errorMessage = "Couldn't remove ingredient from edited recipe because sought ingredient doesn't exist in recipe.";
+            Log.ForContext(_logProperty, _logDomainName).Warning(errorMessage);
         }
 
         return Task.CompletedTask;

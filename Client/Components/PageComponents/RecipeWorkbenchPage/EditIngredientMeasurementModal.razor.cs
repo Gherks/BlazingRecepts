@@ -4,13 +4,16 @@ using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Serilog;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 
 public partial class EditIngredientMeasurementModal : ComponentBase
 {
-    private readonly string _editFormId = "EditIngredientMeasurementModalEditForm";
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "EditIngredientMeasurementModal";
+    private static readonly string _editFormId = "EditIngredientMeasurementModalEditForm";
 
     private Modal? _modal;
     private CustomValidation? _customValidation;
@@ -31,8 +34,19 @@ public partial class EditIngredientMeasurementModal : ComponentBase
 
     public void Open(IngredientMeasurementDto? ingredientMeasurementDto)
     {
-        if (_modal == null) throw new InvalidOperationException("Modal cannot be opened because it has not been set.");
-        if (ingredientMeasurementDto == null) throw new InvalidOperationException("Modal cannot be opened because it has no ingredient to edit.");
+        if (_modal == null)
+        {
+            string errorMessage = "Edit ingredient measurement modal cannot be opened because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (ingredientMeasurementDto == null)
+        {
+            string errorMessage = "Edit ingredient measurement modal cannot be opened because it has no ingredient to edit.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new ArgumentNullException(nameof(ingredientMeasurementDto), errorMessage);
+        }
 
         _editIngredientDto = ingredientMeasurementDto.IngredientDto;
 
@@ -50,28 +64,60 @@ public partial class EditIngredientMeasurementModal : ComponentBase
 
     private void HandleCancel()
     {
-        if (_modal == null) throw new InvalidOperationException("Modal cannot be closed because it has not been set.");
+        if (_modal == null)
+        {
+            string errorMessage = "Edit ingredient measurement modal cannot be closed because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _modal.Close();
     }
 
     private void HandleValidFormSubmitted()
     {
-        if (_modal == null) throw new InvalidOperationException();
-        if (RecipeWorkbench == null) throw new InvalidOperationException();
+        if (_modal == null)
+        {
+            string errorMessage = "Edit ingredient measurement modal form cannot be validated because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (RecipeWorkbench == null)
+        {
+            string errorMessage = "Edit ingredient measurement modal form cannot be validated because RecipeWorkbench page reference has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _form.Measurement = _form.Measurement.Replace(',', '.');
         _form.Grams = _form.Grams.Replace(',', '.');
 
         if (Validate())
         {
-            if (RecipeWorkbench == null) throw new InvalidOperationException();
-            if (_editIngredientDto == null) throw new InvalidOperationException();
+            if (RecipeWorkbench == null)
+            {
+                string errorMessage = ".";
+                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
+            }
+
+            if (_editIngredientDto == null)
+            {
+                string errorMessage = ".";
+                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
+            }
 
             IngredientMeasurementDto? ingredientMeasurementDto = RecipeWorkbench.ContainedIngredientMeasurements
                 .FirstOrDefault(ingredientMeasurement => ingredientMeasurement.IngredientDto.Id == _editIngredientDto.Id);
 
-            if (ingredientMeasurementDto == null) throw new InvalidOperationException("Failed to find ingredient that was expected to exist edited recipe.");
+            if (ingredientMeasurementDto == null)
+            {
+                string errorMessage = "Failed to find ingredient measurement that was expected to exist in edited recipe.";
+                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
+            }
 
             ingredientMeasurementDto.Measurement = Convert.ToDouble(_form.Measurement);
             ingredientMeasurementDto.MeasurementUnit = _form.MeasurementUnit;
@@ -85,8 +131,19 @@ public partial class EditIngredientMeasurementModal : ComponentBase
 
     private bool Validate()
     {
-        if (_customValidation == null) throw new InvalidOperationException("Custom validation is not set during validation.");
-        if (_form == null) throw new InvalidOperationException("Form is not set during edit ingredient modal validation.");
+        if (_customValidation == null)
+        {
+            string errorMessage = "Custom validation is not set during edit ingredient measurement modal validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_form == null)
+        {
+            string errorMessage = "Form is not set during edit ingredient measurement modal validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _customValidation.ClearErrors();
 

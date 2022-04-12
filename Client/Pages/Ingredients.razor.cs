@@ -2,11 +2,15 @@ using BlazingRecept.Client.Components.PageComponents.IngredientPage;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
+using Serilog;
 
 namespace BlazingRecept.Client.Pages;
 
 public partial class Ingredients : ComponentBase
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "IngredientsPage";
+
     private IngredientTables? _ingredientTables;
 
     public IReadOnlyList<IngredientCollectionTypeDto>? IngredientCollectionTypes { get; private set; } = new List<IngredientCollectionTypeDto>();
@@ -26,8 +30,19 @@ public partial class Ingredients : ComponentBase
 
     public void AddNewIngredientToCollection(IngredientDto ingredientDto)
     {
-        if (IngredientCollectionTypes == null) throw new InvalidOperationException("Cannot add new ingredient to collection because ingredient collection is null.");
-        if (_ingredientTables == null) throw new InvalidOperationException("Ingredient table reference is null and can therefore not be refreshed.");
+        if (IngredientCollectionTypes == null)
+        {
+            string errorMessage = "Cannot add new ingredient to collection because ingredient collection is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_ingredientTables == null)
+        {
+            string errorMessage = "Ingredient table reference is null and can therefore not be refreshed.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         int categoryIndex = ingredientDto.CategoryDto.SortOrder;
 

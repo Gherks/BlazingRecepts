@@ -1,6 +1,7 @@
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Serilog;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -8,7 +9,10 @@ namespace BlazingRecept.Client.Services;
 
 public class IngredientService : IIngredientService
 {
-    private readonly string _apiAddress = "api/ingredients";
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "IngredientService";
+    private static readonly string _apiAddress = "api/ingredients";
+
     private readonly HttpClient _publicHttpClient;
     private readonly HttpClient _authenticatedHttpClient;
 
@@ -28,8 +32,10 @@ public class IngredientService : IIngredientService
 
             return response.StatusCode == HttpStatusCode.OK;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while checking existence of ingredient with name: {@Name}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, name);
         }
 
         return false;
@@ -46,8 +52,10 @@ public class IngredientService : IIngredientService
                 return await response.Content.ReadFromJsonAsync<IngredientDto>();
             }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while fetching ingredient with id: {@Id}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
         }
 
         return null;
@@ -64,8 +72,10 @@ public class IngredientService : IIngredientService
                 return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientDto>>();
             }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while fetching all ingredients.";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate);
         }
 
         return null;
@@ -82,8 +92,10 @@ public class IngredientService : IIngredientService
                 return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientCollectionTypeDto>>();
             }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while fetching all ingredients in sorted collection.";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate);
         }
 
         return null;
@@ -93,6 +105,8 @@ public class IngredientService : IIngredientService
     {
         if (ingredientDto == null)
         {
+            const string messageTemplate = "Failed to save ingredient because passed ingredient is not set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate);
             throw new ArgumentNullException(nameof(ingredientDto));
         }
 
@@ -109,8 +123,10 @@ public class IngredientService : IIngredientService
         {
             exception.Redirect();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while saving ingredient: {@IngredientDto}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, ingredientDto);
         }
 
         return null;
@@ -128,8 +144,10 @@ public class IngredientService : IIngredientService
         {
             exception.Redirect();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while deleting ingredient with id: {@Id}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
         }
 
         return false;

@@ -4,11 +4,15 @@ using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 
 public partial class IngredientTables : ComponentBase
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "IngredientTables";
+
     private Guid _editingIngredientGuid = Guid.Empty;
 
     private RemovalConfirmationModal<IngredientDto>? _removalConfirmationModal;
@@ -35,21 +39,39 @@ public partial class IngredientTables : ComponentBase
 
     private void HandleIngredientRemovalModalOpen(IngredientDto? ingredientDto)
     {
-        if (_removalConfirmationModal == null) throw new InvalidOperationException("ConfirmationModal cannot be opened because it has not been set.");
-        if (ingredientDto == null) throw new InvalidOperationException();
+        if (_removalConfirmationModal == null)
+        {
+            string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (ingredientDto == null)
+        {
+            string errorMessage = "Cannot start ingredient removal process because ingredient has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new ArgumentNullException(nameof(ingredientDto), errorMessage);
+        }
 
         _removalConfirmationModal.Open(ingredientDto, "Remove ingredient", ingredientDto.Name);
     }
 
     private async Task HandleIngredientEditConfirmed(IngredientDto ingredientDto)
     {
-        if (IngredientService == null) throw new InvalidOperationException("Cannot save edited ingredient because the ingredient service has not been set.");
+        if (IngredientService == null)
+        {
+            string errorMessage = "Cannot save edited ingredient because the ingredient service has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         IngredientDto? savedIngredientDto = await IngredientService.SaveAsync(ingredientDto);
 
         if (savedIngredientDto == null)
         {
-            // Log
+            string errorMessage = "Something went wrong when saving an edited ingredient.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
 
         _editingIngredientGuid = Guid.Empty;
@@ -64,9 +86,33 @@ public partial class IngredientTables : ComponentBase
 
     private async Task HandleIngredientRemovalConfirmed(IngredientDto ingredientDto)
     {
-        if (IngredientService == null) throw new InvalidOperationException();
-        if (IngredientsPage == null) throw new InvalidOperationException("Cannot remove ingredient from ingredient page collection because ingredient page reference is null.");
-        if (IngredientsPage.IngredientCollectionTypes == null) throw new InvalidOperationException("Cannot remove ingredient from ingredient page collection because ingredient page collection is null.");
+        if (IngredientService == null)
+        {
+            string errorMessage = "Ingredient service is not available during ingredient removal.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (IngredientsPage == null)
+        {
+            string errorMessage = "Cannot remove ingredient from ingredient page collection because ingredient page reference is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (IngredientsPage.IngredientCollectionTypes == null)
+        {
+            string errorMessage = "Cannot remove ingredient from ingredient page collection because collection is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (ToastService == null)
+        {
+            string errorMessage = "Toast service is not available during ingredient removal.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         bool removalFromDatabaseSuccessful = await IngredientService.DeleteAsync(ingredientDto.Id);
 
@@ -75,8 +121,6 @@ public partial class IngredientTables : ComponentBase
 
         if (removalFromDatabaseSuccessful && removalFromCollectionSuccessful)
         {
-            if (ToastService == null) throw new InvalidOperationException();
-
             ToastService.ShowInfo("Successfully removed ingredient.");
             StateHasChanged();
         }

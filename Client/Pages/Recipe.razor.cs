@@ -4,11 +4,15 @@ using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Serilog;
 
 namespace BlazingRecept.Client.Pages;
 
 public partial class Recipe : ComponentBase
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "RecipePage";
+
     private RecipeDto? _recipeDto = new RecipeDto();
 
     private RemovalConfirmationModal<RecipeDto>? _removalConfirmationModal;
@@ -29,37 +33,74 @@ public partial class Recipe : ComponentBase
     {
         await base.OnInitializedAsync();
 
-        if (RecipeService == null) throw new InvalidOperationException();
+        if (RecipeService == null)
+        {
+            string errorMessage = "Cannot fetch recipe because recipe service is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _recipeDto = await RecipeService.GetByIdAsync(RecipeId);
     }
 
     private void HandleNavigationToEditRecipe(RecipeDto recipeDto)
     {
-        if (NavigationManager == null) throw new InvalidOperationException();
+        if (NavigationManager == null)
+        {
+            string errorMessage = "Cannot navigate to recipe edit page because navigation manager has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         NavigationManager.NavigateTo($"recipeworkbench/{recipeDto.Id}");
     }
 
-    private void HandleIngredientRemovalModalOpen(RecipeDto recipeDto)
+    private void HandleRecipeRemovalModalOpen(RecipeDto recipeDto)
     {
-        if (_removalConfirmationModal == null) throw new InvalidOperationException("ConfirmationModal cannot be opened because it has not been set.");
-        if (recipeDto == null) throw new InvalidOperationException();
+        if (_removalConfirmationModal == null)
+        {
+            string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (recipeDto == null)
+        {
+            string errorMessage = "Cannot start recipe removal process because passed recipe was not valid.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _removalConfirmationModal.Open(recipeDto, "Remove recipe", recipeDto.Name);
     }
 
-    private async Task HandleIngredientRemovalConfirmed(RecipeDto recipeDto)
+    private async Task HandleRecipeRemovalConfirmed(RecipeDto recipeDto)
     {
-        if (RecipeService == null) throw new InvalidOperationException();
-        if (NavigationManager == null) throw new InvalidOperationException();
+        if (RecipeService == null)
+        {
+            string errorMessage = "Recipe service is not available during ingredient removal.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (NavigationManager == null)
+        {
+            string errorMessage = "Cannot navigate to index page after recipe removal because navigation manager has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (ToastService == null)
+        {
+            string errorMessage = "Cannot remove recipe because toast service has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         bool removalFromDatabaseSuccessful = await RecipeService.DeleteAsync(recipeDto.Id);
 
         if (removalFromDatabaseSuccessful)
         {
-            if (ToastService == null) throw new InvalidOperationException();
-
             ToastService.ShowInfo("Successfully removed recipe.");
 
             NavigationManager.NavigateTo("/");
@@ -68,14 +109,24 @@ public partial class Recipe : ComponentBase
 
     private bool ContainsInstructions()
     {
-        if (_recipeDto == null) throw new InvalidOperationException();
+        if (_recipeDto == null)
+        {
+            string errorMessage = "Cannot access recipe instructions because recipe has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         return string.IsNullOrWhiteSpace(_recipeDto.Instructions) == false;
     }
 
     private string GetMeasurement(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (ingredientMeasurementDto == null) throw new InvalidOperationException();
+        if (ingredientMeasurementDto == null)
+        {
+            string errorMessage = "Cannot access ingredient measurement within recipe because passed ingredient measurement has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         return ingredientMeasurementDto.Measurement.ToString() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
     }

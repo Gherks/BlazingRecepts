@@ -12,7 +12,7 @@
 @if (_recipeDto != null)
 {
 
-    <RemovalConfirmationModal Type="RecipeDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
+    <RemovalConfirmationModal Type="RecipeDto" @ref="_removalConfirmationModal" OnConfirm="HandleRecipeRemovalConfirmed" />
     <div class="d-flex justify-content-between">
         <div>
             <h1>@_recipeDto.Name</h1>
@@ -22,7 +22,7 @@
                 <button class="btn btn-primary" @onclick="() => HandleNavigationToEditRecipe(_recipeDto)">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
-                <button class="btn btn-danger" @onclick="() => HandleIngredientRemovalModalOpen(_recipeDto)">
+                <button class="btn btn-danger" @onclick="() => HandleRecipeRemovalModalOpen(_recipeDto)">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </AuthorizeView>

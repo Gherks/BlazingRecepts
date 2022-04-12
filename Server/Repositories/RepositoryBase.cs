@@ -2,6 +2,7 @@
 using BlazingRecept.Server.Entities.Bases;
 using BlazingRecept.Server.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace BlazingRecept.Server.Repositories;
 
@@ -20,8 +21,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         {
             return await _context.Set<Type>().AnyAsync(entity => entity.Id == id);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to check existence of entity with id: {@Id}", id);
             return false;
         }
     }
@@ -32,8 +34,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         {
             return await _context.Set<Type>().FindAsync(id);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to fetch entity with id: {@Id}", id);
             return null;
         }
     }
@@ -44,8 +47,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         {
             return await _context.Set<Type>().ToListAsync();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to fetch many entities");
             return null;
         }
     }
@@ -59,8 +63,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
             await _context.SaveChangesAsync();
             await _context.Entry(entity).ReloadAsync();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to add entity: {@Entity}", entity);
         }
 
         return entity;
@@ -78,8 +83,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
                 await _context.Entry(entity).ReloadAsync();
             }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to add many entities: {@Entities}", entities);
         }
 
         return entities;
@@ -94,8 +100,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
             await _context.SaveChangesAsync();
             await _context.Entry(entity).ReloadAsync();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to update entity: {@Entity}", entity);
         }
 
         return entity;
@@ -117,8 +124,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
 
             await _context.SaveChangesAsync();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to update many entities: {@Entities}", entities);
         }
     }
 
@@ -131,12 +139,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
 
             return true;
         }
-        catch (DbUpdateException)
+        catch (Exception exception)
         {
-            return false;
-        }
-        catch (Exception)
-        {
+            Log.Error(exception, "Repository failed to delete entity: {@Entity}", entity);
             return false;
         }
     }
@@ -150,12 +155,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
 
             return true;
         }
-        catch (DbUpdateException)
+        catch (Exception exception)
         {
-            return false;
-        }
-        catch (Exception)
-        {
+            Log.Error(exception, "Repository failed to delete many entities: {@Entities}", entities);
             return false;
         }
     }

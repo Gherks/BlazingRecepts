@@ -2,6 +2,7 @@
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace BlazingRecept.Server.Repositories;
 
@@ -17,8 +18,9 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         {
             return await _context.Recipe.AnyAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed check existence of recipe with name: {@Name}", name);
             return false;
         }
     }
@@ -31,8 +33,9 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
                 .Include(recipe => recipe.IngredientMeasurements)
                 .FirstOrDefaultAsync(recipe => recipe.Id == id);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to fetch recipe with id: {@Id}", id);
             return null;
         }
     }
@@ -45,8 +48,9 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
                 .Include(recipe => recipe.IngredientMeasurements)
                 .ToListAsync();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to fetch all recipes.");
             return null;
         }
     }
@@ -60,8 +64,9 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
             await _context.SaveChangesAsync();
             await _context.Entry(recipe).ReloadAsync();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to add recipe: {@Recipe}", recipe);
         }
 
         return recipe;
@@ -86,8 +91,9 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
             await _context.Entry(currentRecipe).ReloadAsync();
 
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Log.Error(exception, "Repository failed to update recipe: {@Recipe}", currentRecipe);
         }
 
         return currentRecipe;

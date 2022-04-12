@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Serilog;
 
 namespace BlazingRecept.Client.Utilities;
 
 public sealed class CustomValidation : ComponentBase
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "CustomValidation";
+
     private ValidationMessageStore? _messageStore;
 
     [CascadingParameter]
@@ -14,11 +18,14 @@ public sealed class CustomValidation : ComponentBase
     {
         if (CurrentEditContext == null)
         {
-            throw new InvalidOperationException(
-                $"{nameof(CustomValidation)} requires a cascading " +
+            string errorMessage = $"{nameof(CustomValidation)} requires a cascading " +
                 $"parameter of type {nameof(EditContext)}. " +
                 $"For example, you can use {nameof(CustomValidation)} " +
-                $"inside an {nameof(EditForm)}.");
+                $"inside an {nameof(EditForm)}.";
+
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+
+            throw new InvalidOperationException(errorMessage);
         }
 
         _messageStore = new(CurrentEditContext);

@@ -1,6 +1,7 @@
 ﻿using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Serilog;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -8,7 +9,10 @@ namespace BlazingRecept.Client.Services;
 
 public class RecipeService : IRecipeService
 {
-    private readonly string _apiAddress = "api/recipes";
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "RecipeService";
+    private static readonly string _apiAddress = "api/recipes";
+
     private readonly HttpClient _publicHttpClient;
     private readonly HttpClient _authenticatedHttpClient;
 
@@ -28,8 +32,10 @@ public class RecipeService : IRecipeService
 
             return response.StatusCode == HttpStatusCode.OK;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while checking existence of recipe with name: {@Name}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, name);
         }
 
         return false;
@@ -46,8 +52,10 @@ public class RecipeService : IRecipeService
                 return await response.Content.ReadFromJsonAsync<RecipeDto>();
             }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while fetching recipe with id: {@Id}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
         }
 
         return null;
@@ -64,8 +72,10 @@ public class RecipeService : IRecipeService
                 return await response.Content.ReadFromJsonAsync<IReadOnlyList<RecipeDto>>();
             }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while fetching all recipes.";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate);
         }
 
         return null;
@@ -75,6 +85,8 @@ public class RecipeService : IRecipeService
     {
         if (recipeDto == null)
         {
+            const string messageTemplate = "Failed to save recipe because passed recipe is not set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate);
             throw new ArgumentNullException(nameof(recipeDto));
         }
 
@@ -91,8 +103,10 @@ public class RecipeService : IRecipeService
         {
             exception.Redirect();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while saving recipe: {@RecipeDto}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, recipeDto);
         }
 
         return null;
@@ -110,8 +124,10 @@ public class RecipeService : IRecipeService
         {
             exception.Redirect();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while deleting recipe with id: {@Id}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
         }
 
         return false;

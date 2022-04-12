@@ -4,12 +4,16 @@ using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Serilog;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 
 public partial class IngredientInputForm : ComponentBase
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "IngredientInputForm";
+
     private Form _form = new();
 
     private CustomValidation? _customValidation;
@@ -40,8 +44,19 @@ public partial class IngredientInputForm : ComponentBase
 
     private async Task HandleNameBlur()
     {
-        if (_customValidation == null) throw new InvalidOperationException("Custom validation object is not available during blur validation.");
-        if (IngredientService == null) throw new InvalidOperationException("Ingredient service is not available during blur validation.");
+        if (_customValidation == null)
+        {
+            string errorMessage = "Custom validation object is not available during blur validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (IngredientService == null)
+        {
+            string errorMessage = "Ingredient service is not available during blur validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         Dictionary<string, List<string>> errors = new();
 
@@ -62,20 +77,34 @@ public partial class IngredientInputForm : ComponentBase
 
     private async Task HandleValidFormSubmitted()
     {
-        if (IngredientService == null) throw new InvalidOperationException();
+        if (IngredientService == null)
+        {
+            string errorMessage = "Ingredient service is not available during form validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (ToastService == null)
+        {
+            string errorMessage = "Toast service is not available during form validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (IngredientsPage == null)
+        {
+            string errorMessage = "Ingredient page reference is not available during form validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         if (await Validate())
         {
             IngredientDto newIngredientDto = CreateIngredientDtoFromForm() ?? throw new InvalidOperationException();
-
             IngredientDto? ingredientDto = await IngredientService.SaveAsync(newIngredientDto);
-
-            if (ToastService == null) throw new InvalidOperationException();
 
             if (ingredientDto != null && ingredientDto.Id != Guid.Empty)
             {
-                if (IngredientsPage == null) throw new InvalidOperationException();
-
                 ToastService.ShowSuccess("Ingredient successfully added!");
                 IngredientsPage.AddNewIngredientToCollection(ingredientDto);
 
@@ -90,7 +119,19 @@ public partial class IngredientInputForm : ComponentBase
 
     private async Task<bool> Validate()
     {
-        if (_customValidation == null) throw new InvalidOperationException("Custom validation object is not available during validation.");
+        if (_customValidation == null)
+        {
+            string errorMessage = "Custom validation object is not available during validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (IngredientService == null)
+        {
+            string errorMessage = "Ingredient service is not available during validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _customValidation.ClearErrors();
 
@@ -104,8 +145,6 @@ public partial class IngredientInputForm : ComponentBase
         }
         else
         {
-            if (IngredientService == null) throw new InvalidOperationException("Ingredient service is not available during validation.");
-
             bool ingredientExists = await IngredientService.AnyAsync(_form.Name);
 
             if (ingredientExists)
@@ -161,11 +200,21 @@ public partial class IngredientInputForm : ComponentBase
 
     private IngredientDto? CreateIngredientDtoFromForm()
     {
-        if (_categoryDtos == null) throw new InvalidOperationException();
+        if (_categoryDtos == null)
+        {
+            string errorMessage = ".";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         CategoryDto? categoryDto = _categoryDtos.FirstOrDefault(categoryDto => categoryDto.Id == _form.CategoryDtoId);
 
-        if (categoryDto == null) throw new InvalidOperationException();
+        if (categoryDto == null)
+        {
+            string errorMessage = ".";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         return new IngredientDto()
         {

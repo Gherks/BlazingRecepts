@@ -3,6 +3,8 @@ using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
+using Serilog;
+using Serilog.Context;
 
 namespace BlazingRecept.Server.Controllers;
 
@@ -17,6 +19,8 @@ public class IngredientController : ControllerBase
     public IngredientController(IIngredientService ingredientService)
     {
         _ingredientService = ingredientService;
+
+        LogContext.PushProperty("Domain", "Ingredient");
     }
 
     [HttpHead("{identifier}")]
@@ -87,7 +91,8 @@ public class IngredientController : ControllerBase
         }
         catch (Exception exception)
         {
-            return BadRequest(exception.Message);
+            Log.Error(exception, "Controller failed while saving ingredient: {@IngredientDto}", ingredientDto);
+            return BadRequest("Failed while saving ingredient.");
         }
     }
 
@@ -105,6 +110,7 @@ public class IngredientController : ControllerBase
             return Ok(ingredientRemoved);
         }
 
-        return BadRequest($"Failed to delelete entity with id: {id}");
+        Log.Error("Controller failed to delete ingredient with id: {@Id}", id);
+        return BadRequest($"Failed to delete ingredient.");
     }
 }

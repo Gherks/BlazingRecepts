@@ -1,11 +1,15 @@
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
+using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.IndexPage;
 
 public partial class RecipeCategoryTable : ComponentBase
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "RecipeCategoryTable";
+
     private IReadOnlyList<RecipeDto>? _recipeDtos = new List<RecipeDto>();
 
     private Dictionary<char, List<RecipeDto>> _recipeCategories = new();
@@ -20,7 +24,12 @@ public partial class RecipeCategoryTable : ComponentBase
     {
         await base.OnInitializedAsync();
 
-        if (RecipeService == null) throw new InvalidOperationException();
+        if (RecipeService == null)
+        {
+            string errorMessage = "Cannot initialize RecipeCategoryTable because recipe service has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _recipeDtos = await RecipeService.GetAllAsync();
 
@@ -29,7 +38,12 @@ public partial class RecipeCategoryTable : ComponentBase
 
     private void CategorizeByName()
     {
-        if (_recipeDtos == null) throw new InvalidOperationException();
+        if (_recipeDtos == null)
+        {
+            string errorMessage = "Cannot categorize recipes because there are no recipes to categorize.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         _recipeCategories.Clear();
 
@@ -53,7 +67,12 @@ public partial class RecipeCategoryTable : ComponentBase
 
     private void HandleRecipeNavigation(RecipeDto recipeDto)
     {
-        if (NavigationManager == null) throw new InvalidOperationException();
+        if (NavigationManager == null)
+        {
+            string errorMessage = "Cannot navigate to recipe page because navigation manager has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
     }

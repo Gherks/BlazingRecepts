@@ -13,11 +13,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (IngredientMeasurementDto ingredientMeasurementDto in GetIngredientForms())
+            @foreach (IngredientMeasurementDto ingredientMeasurementDto in GetIngredientMeasurementContainedInRecipe())
             {
                 <tr>
                     <td>@ingredientMeasurementDto.IngredientDto.Name</td>
-                    <td>@GetMeasurement(ingredientMeasurementDto)</td>
+                    <td>@GetMeasurementText(ingredientMeasurementDto)</td>
                     <td>@ingredientMeasurementDto.Grams</td>
                     <td>@ingredientMeasurementDto.Note</td>
                     <td>

@@ -1,5 +1,6 @@
 ﻿using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Serilog;
 using System.Net;
 using System.Net.Http.Json;
 using static BlazingRecept.Shared.Enums;
@@ -8,7 +9,10 @@ namespace BlazingRecept.Client.Services;
 
 public class CategoryService : ICategoryService
 {
-    private readonly string _apiAddress = "api/categories";
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "CategoryService";
+    private static readonly string _apiAddress = "api/categories";
+
     private readonly HttpClient _publicHttpClient;
 
     public CategoryService(IHttpClientFactory httpClientFactory)
@@ -27,8 +31,10 @@ public class CategoryService : ICategoryService
                 return await response.Content.ReadFromJsonAsync<IReadOnlyList<CategoryDto>>();
             }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            const string messageTemplate = "Failed while fetching categories of certain type: {@CategoryType}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, categoryType);
         }
 
         return null;

@@ -3,6 +3,8 @@ using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
+using Serilog;
+using Serilog.Context;
 
 namespace BlazingRecept.Server.Controllers;
 
@@ -17,6 +19,8 @@ public class RecipeController : ControllerBase
     public RecipeController(IRecipeService recipeService)
     {
         _recipeService = recipeService;
+
+        LogContext.PushProperty("Domain", "Recipe");
     }
 
     [HttpHead("{identifier}")]
@@ -81,7 +85,8 @@ public class RecipeController : ControllerBase
         }
         catch (Exception exception)
         {
-            return BadRequest(exception.Message);
+            Log.Error(exception, "Controller failed while saving recipe: {@RecipeDto}", recipeDto);
+            return BadRequest("Failed while saving recipe.");
         }
     }
 
@@ -99,6 +104,7 @@ public class RecipeController : ControllerBase
             return NoContent();
         }
 
-        return BadRequest($"Failed to delete entity with id: {id}");
+        Log.Error("Controller failed to delete recipe with id: {@Id}", id);
+        return BadRequest($"Failed to delete recipe.");
     }
 }

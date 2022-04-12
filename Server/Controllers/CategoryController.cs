@@ -1,6 +1,8 @@
 ﻿using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using Serilog.Context;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Controllers;
@@ -14,6 +16,8 @@ public class CategoryController : ControllerBase
     public CategoryController(ICategoryService categoryService)
     {
         _categoryService = categoryService;
+
+        LogContext.PushProperty("Domain", "Category");
     }
 
     [HttpGet("{categoryType:int}")]
@@ -25,6 +29,7 @@ public class CategoryController : ControllerBase
         }
         else
         {
+            Log.Error("Controller couldn't fetch category because given integer({@CategoryType}) doesn't map to a category type.", categoryType);
             return BadRequest(new List<CategoryDto>());
         }
     }
