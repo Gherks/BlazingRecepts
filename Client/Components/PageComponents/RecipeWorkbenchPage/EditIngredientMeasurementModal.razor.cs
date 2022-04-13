@@ -157,45 +157,45 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
         if (string.IsNullOrWhiteSpace(_form.Measurement))
         {
             errors.Add(nameof(_form.Measurement), new List<string>() {
-                "Measurement is required."
+                "Mätning måste anges."
             });
         }
         else if (double.TryParse(_form.Measurement, out double grams) == false)
         {
             errors.Add(nameof(_form.Measurement), new List<string>() {
-                "Measurement must only include numbers."
+                "Mätning kan ej innehålla icke-numeriska tecken."
             });
         }
         else if (grams <= 0)
         {
             errors.Add(nameof(_form.Measurement), new List<string>() {
-                "Measurement cannot be less than zero."
+                "Mätning kan inte vara mindre än noll."
             });
         }
 
         if (_form.MeasurementUnit == MeasurementUnit.Unassigned)
         {
             errors.Add(nameof(_form.MeasurementUnit), new List<string>() {
-                "Measurement unit is required."
+                "Mätningstyp måste anges."
             });
         }
 
         if (string.IsNullOrWhiteSpace(_form.Grams))
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
-                "Grams is required."
+                "Gram måste anges."
             });
         }
         else if (double.TryParse(_form.Grams, out double grams) == false)
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
-                "Grams must only include numbers."
+                "Gram kan ej innehålla icke-numeriska tecken."
             });
         }
         else if (grams <= 0)
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
-                "Grams cannot be less than zero."
+                "Gram kan inte vara mindre än noll."
             });
         }
 

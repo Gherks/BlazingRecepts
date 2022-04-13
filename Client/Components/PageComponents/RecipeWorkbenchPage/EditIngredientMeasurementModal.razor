@@ -6,12 +6,12 @@
 
 @inherits PageComponentBase
 
-<Modal @ref="_modal" Title="Edit ingredient">
+<Modal @ref="_modal" Title="Editera ingrediens">
     <Body>
         <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
             <CustomValidation @ref="_customValidation" />
             <div class="row mb-2">
-                <label for="measurement" class="col-3 col-form-label">Measurement</label>
+                <label for="measurement" class="col-3 col-form-label">Mätning</label>
                 <div class="col-9">
                     <div class="input-group">
                         <input type="text" id="measurement" class="form-control" @bind="_form!.Measurement">
@@ -20,7 +20,7 @@
                             {
                                 if (measurementUnit == MeasurementUnit.Unassigned)
                                 {
-                                    <option value="@measurementUnit">Choose...</option>
+                                    <option value="@measurementUnit">Välj mätningstyp...</option>
                                 }
                                 else
                                 {
@@ -34,14 +34,14 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <label for="grams" class="col-3 col-form-label">Grams</label>
+                <label for="grams" class="col-3 col-form-label">Gram</label>
                 <div class="col-9">
                     <input type="text" id="grams" class="form-control" @bind="_form!.Grams">
                     <ValidationMessage For="() => _form.Grams" />
                 </div>
             </div>
             <div class="row mb-2">
-                <label for="note" class="col-3 col-form-label">Note</label>
+                <label for="note" class="col-3 col-form-label">Anteckning</label>
                 <div class="col-9">
                     <input type="text" id="note" class="form-control" @bind="_form!.Note">
                 </div>
@@ -49,7 +49,7 @@
         </EditForm>
     </Body>
     <Buttons>
-        <button form="@_editFormId" class="btn btn-primary" type="submit">Edit</button>
-        <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Cancel</button>
+        <button form="@_editFormId" class="btn btn-primary" type="submit">Editera</button>
+        <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Ångra</button>
     </Buttons>
 </Modal>

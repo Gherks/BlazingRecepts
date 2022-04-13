@@ -93,7 +93,7 @@ public partial class Recipe : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _removalConfirmationModal.Open(recipeDto, "Remove recipe", recipeDto.Name);
+        _removalConfirmationModal.Open(recipeDto, "Ta bort recept", recipeDto.Name);
     }
 
     private async Task HandleRecipeRemovalConfirmed(RecipeDto recipeDto)
@@ -123,7 +123,7 @@ public partial class Recipe : PageComponentBase
 
         if (removalFromDatabaseSuccessful)
         {
-            ToastService.ShowInfo("Successfully removed recipe.");
+            ToastService.ShowInfo("Recept borttagen.");
 
             NavigationManager.NavigateTo("/");
         }

@@ -134,7 +134,7 @@ public partial class RecipeWorkbench : PageComponentBase
 
             if (recipeDto != null && recipeDto.Id != Guid.Empty)
             {
-                string toastMessage = IsCreatingNewRecipe ? "Recipe successfully added!" : "Recipe successfully updated!";
+                string toastMessage = IsCreatingNewRecipe ? "Recept tillagd!" : "Recept uppdaterat!";
                 ToastService.ShowSuccess(toastMessage);
 
                 NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
@@ -165,7 +165,7 @@ public partial class RecipeWorkbench : PageComponentBase
         if (string.IsNullOrWhiteSpace(_form.Name))
         {
             errors.Add(nameof(_form.Name), new List<string>() {
-                "Name is required."
+                "Namn måste anges."
             });
         }
         else if (IsCreatingNewRecipe)
@@ -175,7 +175,7 @@ public partial class RecipeWorkbench : PageComponentBase
             if (recipeAlreadyExists)
             {
                 errors.Add(nameof(_form.RecipeCreationErrorMessage), new List<string>() {
-                    "Recipe with name already exists."
+                    "Recept med angivet namn finns redan."
                 });
             }
         }
@@ -183,26 +183,26 @@ public partial class RecipeWorkbench : PageComponentBase
         if (string.IsNullOrWhiteSpace(_form.PortionAmount))
         {
             errors.Add(nameof(_form.PortionAmount), new List<string>() {
-                "Amount of portions is required."
+                "Antalet portioner måste anges."
             });
         }
         else if (int.TryParse(_form.PortionAmount, out int basePortions) == false)
         {
             errors.Add(nameof(_form.PortionAmount), new List<string>() {
-                "Portions must only include numbers."
+                "Antalet portioner kan ej innehålla icke-numeriska tecken."
             });
         }
         else if (basePortions <= 0)
         {
             errors.Add(nameof(_form.PortionAmount), new List<string>() {
-                "Portions must be a positive number."
+                "Antalet portioner ska vara en positiv siffra."
             });
         }
 
         if (_form.CategoryDtoId == Guid.Empty)
         {
             errors.Add(nameof(_form.CategoryDtoId), new List<string>() {
-                "Recipe category is required."
+                "Kategori för recept måste anges."
             });
         }
 
@@ -283,7 +283,7 @@ public partial class RecipeWorkbench : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _removalConfirmationModal.Open(ingredientMeasurementDto.IngredientDto, "Remove ingredient", ingredientMeasurementDto.IngredientDto.Name);
+        _removalConfirmationModal.Open(ingredientMeasurementDto.IngredientDto, "Ta bort ingrediens", ingredientMeasurementDto.IngredientDto.Name);
     }
 
     public Task HandleIngredientRemovalConfirmed(IngredientDto ingredientDto)
@@ -307,12 +307,12 @@ public partial class RecipeWorkbench : PageComponentBase
 
     private string GetTitle()
     {
-        return IsCreatingNewRecipe ? "Create recipe" : "Edit recipe";
+        return IsCreatingNewRecipe ? "Skapa recept" : "Editera recept";
     }
 
     private string GetConfirmationButtonLabel()
     {
-        return IsCreatingNewRecipe ? "Create recipe" : "Update recipe";
+        return IsCreatingNewRecipe ? "Skapa recept" : "Uppdatera recept";
     }
 
     private class Form

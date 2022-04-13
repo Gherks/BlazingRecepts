@@ -144,46 +144,46 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
         if (_form.IngredientDto.Id == Guid.Empty)
         {
             errors.Add(nameof(_form.IngredientDto), new List<string>() {
-                "Ingredient is required."
+                "Ingrediens måste anges."
             });
         }
         else if (IngredientAlreadyAdded(_form.IngredientDto))
         {
             errors.Add(nameof(_form.IngredientDto), new List<string>() {
-                "Ingredient has already been added to recipe."
+                "Ingrediens har redan tillagts."
             });
         }
 
         if (string.IsNullOrWhiteSpace(_form.Measurement))
         {
             errors.Add(nameof(_form.Measurement), new List<string>() {
-                "Measurement is required."
+                "Mätning måste anges."
             });
         }
 
         if (_form.MeasurementUnit == MeasurementUnit.Unassigned)
         {
             errors.Add(nameof(_form.MeasurementUnit), new List<string>() {
-                "Measurement unit is required."
+                "Mätningstyp måste anges."
             });
         }
 
         if (string.IsNullOrWhiteSpace(_form.Grams))
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
-                "Grams is required."
+                "Gram måste anges."
             });
         }
         else if (double.TryParse(_form.Grams, out double grams) == false)
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
-                "Grams must only include numbers."
+                "Gram kan ej innehålla icke-numeriska tecken."
             });
         }
         else if (grams <= 0)
         {
             errors.Add(nameof(_form.Grams), new List<string>() {
-                "Grams must be a positive number."
+                "Gram ska vara en positiv siffra."
             });
         }
 

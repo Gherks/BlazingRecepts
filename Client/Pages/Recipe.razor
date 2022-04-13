@@ -8,11 +8,11 @@
 
 @inherits PageComponentBase
 
-<PageTitle>Recipe</PageTitle>
+<PageTitle>Recept</PageTitle>
 
 @if (IsLoading || _recipeDto == null)
 {
-    <LoadingSpinner Text="Loading..." />
+    <LoadingSpinner Text="Laddar..." />
 }
 else
 {
@@ -34,7 +34,7 @@ else
     </div>
     <div class="d-flex justify-content-between">
         <div>
-            <h3>Portions: @_recipeDto.PortionAmount</h3>
+            <h3>Portioner: @_recipeDto.PortionAmount</h3>
         </div>
         <div class="flex-shrink-1">
             <h3>@_recipeDto.CategoryDto.Name</h3>
@@ -44,28 +44,28 @@ else
         <div class="card-body">
             @if (ContainsInstructions())
             {
-                <h2>Instructions</h2>
+                <h2>Instruktioner</h2>
                 <div class="card mb-2">
                     <div class="card-body">
                         @((MarkupString) Markdown.ToHtml(_recipeDto.Instructions))
                     </div>
                 </div>
             }
-            <h2>Ingredients</h2>
+            <h2>Ingredienser</h2>
             <div class="card mb-2">
                 <div class="card-body">
                     <table class="table table-hover table-striped table-sm">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Name</th>
-                                <th>Measurement</th>
-                                <th>Grams</th>
-                                <th>Note</th>
-                                <th>Fat</th>
-                                <th>Carbohydrates</th>
+                                <th>Namn</th>
+                                <th>Mätning</th>
+                                <th>Gram</th>
+                                <th>Anteckning</th>
+                                <th>Fett</th>
+                                <th>Kolhydrater</th>
                                 <th>Protein</th>
-                                <th>Calories</th>
+                                <th>Kalorier</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -102,10 +102,10 @@ else
                     <table class="table table-hover table-striped table-sm">
                         <thead>
                             <tr>
-                                <th>Grams per portion</th>
+                                <th>Gram per portion</th>
                                 <th>Protein per portion</th>
-                                <th>Calories per portion</th>
-                                <th>Protein per calorie</th>
+                                <th>Kalorier per portion</th>
+                                <th>Protein per kalori</th>
                             </tr>
                         </thead>
                         <tbody>

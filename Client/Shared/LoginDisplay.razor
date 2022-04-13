@@ -3,10 +3,10 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity?.Name!
-        <button class="nav-link btn btn-link" @onclick="HandleBeginLogout">Log out</button>
+        Hej @context.User.Identity?.Name!
+        <button class="nav-link btn btn-link" @onclick="HandleBeginLogout">Logga ut</button>
     </Authorized>
     <NotAuthorized>
-        <a href="" @onclick="() => HandleBeginLogin()" @onclick:preventDefault>Log in</a>
+        <a href="" @onclick="() => HandleBeginLogin()" @onclick:preventDefault>Logga in</a>
     </NotAuthorized>
 </AuthorizeView>

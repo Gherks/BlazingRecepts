@@ -14,7 +14,7 @@
 
 @if (IsLoading)
 {
-    <LoadingSpinner Text="Loading..." />
+    <LoadingSpinner Text="Laddar..." />
 }
 else
 {
@@ -29,17 +29,17 @@ else
                     <CustomValidation @ref="_customValidation" />
                     <div class="form-floating mb-2">
                         <input type="text" id="name" name="name" class="form-control" @bind="_form.Name" placeholder="Name">
-                        <label for="name">Name</label>
+                        <label for="name">Namn</label>
                         <ValidationMessage For="() => _form.Name" />
                     </div>
                     <div class="form-floating mb-2">
                         <input type="text" id="portion-amount" name="portion-amount" class="form-control" @bind="_form.PortionAmount" placeholder="Portion amount">
-                        <label for="portion-amount">Portion amount</label>
+                        <label for="portion-amount">Antal portioner</label>
                         <ValidationMessage For="() => _form.PortionAmount" />
                     </div>
                     <div class="form-group mb-2">
                         <select id="category-selector" name="category-selector" class="form-select" @bind="_form.CategoryDtoId">
-                            <option value="@Guid.Empty">Choose a category...</option>
+                            <option value="@Guid.Empty">Välj kategori...</option>
                             @if (_categoryDtos != null)
                             {
                                 foreach (CategoryDto categoryDto in _categoryDtos)
@@ -52,13 +52,13 @@ else
                     </div>
                     <div class="form-floating mb-2">
                         <textarea id="instructions" name="instructions" class="form-control" @bind="_form.Instructions" @bind:event="oninput" placeholder="Enter instructions here" style="height: 200px"></textarea>
-                        <label for="instructions">Enter instructions here</label>
+                        <label for="instructions">Ange instruktioner här</label>
                     </div>
                     <div class="card mb-2">
                         <div class="card-body">
                             @if (string.IsNullOrWhiteSpace(_form.Instructions))
                             {
-                                <p>Markdown text based upon instructions entered above will end up here</p>
+                                <p>Markdown baserat på angivna instruktioner ovan kommer synas här</p>
                             }
                             else
                             {
@@ -72,7 +72,7 @@ else
                     <div class="card mb-2">
                         <RecipeIngredientsTable />
                         <div class="ms-2 mb-2">
-                            <button type="button" class="btn btn-primary" @onclick="@(_ => HandleAddIngredientModalOpen(null))">Add ingredient</button>
+                            <button type="button" class="btn btn-primary" @onclick="@(_ => HandleAddIngredientModalOpen(null))">Lägg till ingrediens</button>
                         </div>
                     </div>
                     <div class="mb-2">

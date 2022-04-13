@@ -54,7 +54,7 @@ public partial class IngredientTables : PageComponentBase
             throw new ArgumentNullException(nameof(ingredientDto), errorMessage);
         }
 
-        _removalConfirmationModal.Open(ingredientDto, "Remove ingredient", ingredientDto.Name);
+        _removalConfirmationModal.Open(ingredientDto, "Ta bort recept", ingredientDto.Name);
     }
 
     private async Task HandleIngredientEditConfirmed(IngredientDto ingredientDto)
@@ -122,7 +122,7 @@ public partial class IngredientTables : PageComponentBase
 
         if (removalFromDatabaseSuccessful && removalFromCollectionSuccessful)
         {
-            ToastService.ShowInfo("Successfully removed ingredient.");
+            ToastService.ShowInfo("Ingrediens borttagen.");
             StateHasChanged();
         }
     }

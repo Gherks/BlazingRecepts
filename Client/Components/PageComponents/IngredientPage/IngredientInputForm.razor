@@ -5,26 +5,26 @@
 
 @inherits PageComponentBase
 
-<PageTitle>Ingredients</PageTitle>
+<PageTitle>Ingredienser</PageTitle>
 
 <div class="card mb-2">
     <div class="card-body">
-        <CollapsibleComponent CollapsedButtonText="Show ingredient form" ExposedButtonText="Hide ingredient form">
+        <CollapsibleComponent CollapsedButtonText="Visa ingrediensformulär" ExposedButtonText="Göm ingrediensformulär">
             <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
                 <CustomValidation @ref="_customValidation" />
                 <div class="form-floating mb-2">
-                    <input type="text" id="name" name="name" class="form-control" @bind="_form.Name" @onblur="@(_ => HandleNameBlur())" placeholder="Name">
-                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" @bind="_form.Name" @onblur="@(_ => HandleNameBlur())" placeholder="Namn">
+                    <label for="name">Namn</label>
                     <ValidationMessage For="() => _form.Name" />
                 </div>
                 <div class="form-floating mb-2">
-                    <input type="text" id="fat" name="fat" class="form-control" @bind="_form.Fat" placeholder="Fat">
-                    <label for="fat">Fat</label>
+                    <input type="text" id="fat" name="fat" class="form-control" @bind="_form.Fat" placeholder="Fett">
+                    <label for="fat">Fett</label>
                     <ValidationMessage For="() => _form.Fat" />
                 </div>
                 <div class="form-floating mb-2">
-                    <input type="text" id="carbohydrates" name="carbohydrates" class="form-control" @bind="_form.Carbohydrates" placeholder="Carbohydrates">
-                    <label for="carbohydrates">Carbohydrates</label>
+                    <input type="text" id="carbohydrates" name="carbohydrates" class="form-control" @bind="_form.Carbohydrates" placeholder="Kolhydrater">
+                    <label for="carbohydrates">Kolhydrater</label>
                     <ValidationMessage For="() => _form.Carbohydrates" />
                 </div>
                 <div class="form-floating mb-2">
@@ -33,13 +33,13 @@
                     <ValidationMessage For="() => _form.Protein" />
                 </div>
                 <div class="form-floating mb-2">
-                    <input type="text" id="calories" name="calories" class="form-control" @bind="_form.Calories" placeholder="Calories">
-                    <label for="calories">Calories</label>
+                    <input type="text" id="calories" name="calories" class="form-control" @bind="_form.Calories" placeholder="Kalorier">
+                    <label for="calories">Kalorier</label>
                     <ValidationMessage For="() => _form.Calories" />
                 </div>
                 <div class="form-group mb-2">
                     <select id="category-selector" name="category-selector" class="form-select" @bind="_form.CategoryDtoId">
-                        <option value="@Guid.Empty">Choose a category...</option>
+                        <option value="@Guid.Empty">Ange kategori...</option>
                         @if (_categoryDtos != null)
                         {
                             foreach (CategoryDto categoryDto in _categoryDtos)
@@ -50,7 +50,7 @@
                     </select>
                     <ValidationMessage For="() => _form.CategoryDtoId" />
                 </div>
-                <button class="btn btn-primary" type="submit">Add ingredient</button>
+                <button class="btn btn-primary" type="submit">Lägg till ingrediens</button>
             </EditForm>
         </CollapsibleComponent>
     </div>

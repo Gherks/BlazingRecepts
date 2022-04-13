@@ -70,7 +70,7 @@ public partial class IngredientInputForm : PageComponentBase
         if (ingredientExists)
         {
             errors.Add(nameof(_form.Name), new List<string>() {
-                "Ingredient with name already exists."
+                "Ingrediens med angivet namn finns redan."
             });
         }
 
@@ -110,14 +110,14 @@ public partial class IngredientInputForm : PageComponentBase
 
             if (ingredientDto != null && ingredientDto.Id != Guid.Empty)
             {
-                ToastService.ShowSuccess("Ingredient successfully added!");
+                ToastService.ShowSuccess("Ingrediens tillagd!");
                 IngredientsPage.AddNewIngredientToCollection(ingredientDto);
 
                 _form = new();
             }
             else
             {
-                ToastService.ShowError("Failed to add new ingredient.");
+                ToastService.ShowError("Kunde ej lägga till ingrediens.");
             }
         }
     }
@@ -145,7 +145,7 @@ public partial class IngredientInputForm : PageComponentBase
         if (string.IsNullOrWhiteSpace(_form.Name))
         {
             errors.Add(nameof(_form.Name), new List<string>() {
-                "Name is required."
+                "Namn måste anges."
             });
         }
         else
@@ -155,20 +155,20 @@ public partial class IngredientInputForm : PageComponentBase
             if (ingredientExists)
             {
                 errors.Add(nameof(_form.Name), new List<string>() {
-                    "Ingredient with name already exists."
+                    "Ingrediens med angivet namn finns redan."
                 });
             }
         }
 
-        ValidateStringDouble(_form.Fat, nameof(_form.Fat), errors);
-        ValidateStringDouble(_form.Carbohydrates, nameof(_form.Carbohydrates), errors);
-        ValidateStringDouble(_form.Protein, nameof(_form.Protein), errors);
-        ValidateStringDouble(_form.Calories, nameof(_form.Calories), errors);
+        ValidateStringDouble(_form.Fat, nameof(_form.Fat), "Fett", errors);
+        ValidateStringDouble(_form.Carbohydrates, nameof(_form.Carbohydrates), "Kolhydrater", errors);
+        ValidateStringDouble(_form.Protein, nameof(_form.Protein), "Protein", errors);
+        ValidateStringDouble(_form.Calories, nameof(_form.Calories), "Kalorier", errors);
 
         if (_form.CategoryDtoId == Guid.Empty)
         {
             errors.Add(nameof(_form.CategoryDtoId), new List<string>() {
-                "Ingredient category is required."
+                "Ingredienskategori måste anges."
             });
         }
 
@@ -181,24 +181,24 @@ public partial class IngredientInputForm : PageComponentBase
         return true;
     }
 
-    private void ValidateStringDouble(string variableValue, string variableName, Dictionary<string, List<string>> errors)
+    private void ValidateStringDouble(string variableValue, string variableName, string displayName, Dictionary<string, List<string>> errors)
     {
         if (string.IsNullOrWhiteSpace(variableValue))
         {
             errors.Add(variableName, new List<string>() {
-                $"{variableName} is required."
+                $"{displayName} måste anges."
             });
         }
         else if (double.TryParse(variableValue, out double doubleValue) == false)
         {
             errors.Add(variableName, new List<string>() {
-                $"{variableName} must only include numbers."
+                $"{displayName} kan bara innehålla icke-numeriska tecken."
             });
         }
         else if (doubleValue < 0.0)
         {
             errors.Add(variableName, new List<string>() {
-                $"{variableName} must be a positive number."
+                $"{displayName} måste vara en positiv siffra."
             });
         }
     }
