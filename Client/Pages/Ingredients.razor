@@ -1,16 +1,24 @@
 ﻿@page "/ingredients"
 
+@using BlazingRecept.Client.Components.PageComponents.Base
 @using BlazingRecept.Client.Components.PageComponents.IngredientPage
+@using BlazingRecept.Client.Components.Utilities
 
-@inherits ComponentBase
+@inherits PageComponentBase
 
 <PageTitle>Ingredients</PageTitle>
 
 <h1>Ingredients</h1>
-
-<CascadingValue Value="this">
-    <AuthorizeView>
-        <IngredientInputForm />
-    </AuthorizeView>
-    <IngredientTables @ref="_ingredientTables" />
-</CascadingValue>
+@if (IsLoading)
+{
+    <LoadingSpinner Text="Loading..." />
+}
+else
+{
+    <CascadingValue Value="this">
+        <AuthorizeView>
+            <IngredientInputForm />
+        </AuthorizeView>
+        <IngredientTables @ref="_ingredientTables" />
+    </CascadingValue>
+}

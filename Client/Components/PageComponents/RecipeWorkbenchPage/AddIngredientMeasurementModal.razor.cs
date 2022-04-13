@@ -1,4 +1,5 @@
-﻿using BlazingRecept.Client.Components.Utilities;
+﻿using BlazingRecept.Client.Components.PageComponents.Base;
+using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
@@ -9,7 +10,7 @@ using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 
-public partial class AddIngredientMeasurementModal : ComponentBase
+public partial class AddIngredientMeasurementModal : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "AddIngredientMeasurementModal";
@@ -26,9 +27,13 @@ public partial class AddIngredientMeasurementModal : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        IsLoading = true;
+
         await base.OnInitializedAsync();
 
         _editContext = new(_form);
+
+        IsLoading = false;
     }
 
     public void Open(IngredientMeasurementDto? ingredientMeasurementDto)

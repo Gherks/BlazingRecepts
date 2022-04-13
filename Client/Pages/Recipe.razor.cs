@@ -1,3 +1,4 @@
+using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared;
@@ -8,7 +9,7 @@ using Serilog;
 
 namespace BlazingRecept.Client.Pages;
 
-public partial class Recipe : ComponentBase
+public partial class Recipe : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "RecipePage";
@@ -31,6 +32,8 @@ public partial class Recipe : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        IsLoading = true;
+
         await base.OnInitializedAsync();
 
         if (RecipeService == null)
@@ -41,6 +44,8 @@ public partial class Recipe : ComponentBase
         }
 
         _recipeDto = await RecipeService.GetByIdAsync(RecipeId);
+
+        IsLoading = false;
     }
 
     private void HandleNavigationToEditRecipe(RecipeDto recipeDto)

@@ -1,17 +1,21 @@
 ﻿@page "/recipe/{RecipeId:guid}"
 
+@using BlazingRecept.Client.Components.PageComponents.Base
 @using BlazingRecept.Client.Components.Utilities
 @using BlazingRecept.Client.Extensions
 @using BlazingRecept.Shared.Dto
 @using Markdig
 
-@inherits ComponentBase
+@inherits PageComponentBase
 
 <PageTitle>Recipe</PageTitle>
 
-@if (_recipeDto != null)
+@if (IsLoading || _recipeDto == null)
 {
-
+    <LoadingSpinner Text="Loading..." />
+}
+else
+{
     <RemovalConfirmationModal Type="RecipeDto" @ref="_removalConfirmationModal" OnConfirm="HandleRecipeRemovalConfirmed" />
     <div class="d-flex justify-content-between">
         <div>
@@ -113,8 +117,4 @@
             </div>
         </div>
     </div>
-}
-else
-{
-    <h1>Something went wrong...</h1>
 }

@@ -1,41 +1,49 @@
-﻿@using BlazingRecept.Client.Components.Utilities;
+﻿@using BlazingRecept.Client.Components.PageComponents.Base
+@using BlazingRecept.Client.Components.Utilities;
 @using BlazingRecept.Client.Extensions
 @using BlazingRecept.Client.Utilities;
 @using BlazingRecept.Shared.Dto
 
-@inherits ComponentBase
+@inherits PageComponentBase
 
-@foreach(KeyValuePair<char, List<RecipeDto>> pair in _recipeCategories.OrderBy(pair => pair.Key))
+@if (IsLoading)
 {
-    <hr />
-    <div class="row">
-        <div class="d-flex">
-            <div class="flex-shrink-1" style="width: 50px;">
-                <h2>@char.ToUpperInvariant(pair.Key)</h2>
-            </div>
-            <div class="flex-fill">
-                <table class="table table-hover table-striped table-sm">
-                <thead>
-                    <tr>
-                        <th class="col-3"></th>
-                        <th class="col-3">Protein per portion</th>
-                        <th class="col-3">Calories per portion</th>
-                        <th class="col-3">Protein per calorie</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (RecipeDto recipeDto in _recipeCategories[pair.Key])
-                    {
-                        <tr id="@recipeDto.Id" style="cursor: pointer;" @onclick="@(_ => HandleRecipeNavigation(recipeDto))" >
-                            <td class="col-3">@recipeDto.Name</td>
-                            <td class="col-3">@recipeDto.GetProteinPerPortion()</td>
-                            <td class="col-3">@recipeDto.GetProteinPerPortion()</td>
-                            <td class="col-3">@recipeDto.GetProteinPerCalorie()</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <LoadingSpinner Text="Loading..." />
+}
+else
+{
+    foreach (KeyValuePair<char, List<RecipeDto>> pair in _recipeCategories.OrderBy(pair => pair.Key))
+    {
+        <hr />
+        <div class="row">
+            <div class="d-flex">
+                <div class="flex-shrink-1" style="width: 50px;">
+                    <h2>@char.ToUpperInvariant(pair.Key)</h2>
+                </div>
+                <div class="flex-fill">
+                    <table class="table table-hover table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th class="col-3"></th>
+                                <th class="col-3">Protein per portion</th>
+                                <th class="col-3">Calories per portion</th>
+                                <th class="col-3">Protein per calorie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (RecipeDto recipeDto in _recipeCategories[pair.Key])
+                            {
+                                <tr id="@recipeDto.Id" style="cursor: pointer;" @onclick="@(_ => HandleRecipeNavigation(recipeDto))">
+                                    <td class="col-3">@recipeDto.Name</td>
+                                    <td class="col-3">@recipeDto.GetProteinPerPortion()</td>
+                                    <td class="col-3">@recipeDto.GetProteinPerPortion()</td>
+                                    <td class="col-3">@recipeDto.GetProteinPerCalorie()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    }
 }

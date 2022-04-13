@@ -1,3 +1,4 @@
+using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
@@ -9,7 +10,7 @@ using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 
-public partial class IngredientInputForm : ComponentBase
+public partial class IngredientInputForm : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "IngredientInputForm";
@@ -34,12 +35,16 @@ public partial class IngredientInputForm : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        IsLoading = true;
+
         await base.OnInitializedAsync();
 
         if (CategoryService != null)
         {
             _categoryDtos = await CategoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
         }
+
+        IsLoading = false;
     }
 
     private async Task HandleNameBlur()

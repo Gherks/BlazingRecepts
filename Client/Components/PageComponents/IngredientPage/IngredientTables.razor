@@ -1,7 +1,8 @@
-﻿@using BlazingRecept.Client.Components.Utilities
+﻿@using BlazingRecept.Client.Components.PageComponents.Base
+@using BlazingRecept.Client.Components.Utilities
 @using BlazingRecept.Shared.Dto
 
-@inherits ComponentBase
+@inherits PageComponentBase
 
 <RemovalConfirmationModal Type="IngredientDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
 <div class="card mb-2">

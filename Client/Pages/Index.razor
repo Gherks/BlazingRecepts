@@ -1,13 +1,22 @@
 ﻿@page "/"
 
+@using BlazingRecept.Client.Components.PageComponents.Base
 @using BlazingRecept.Client.Components.PageComponents.IndexPage
+@using BlazingRecept.Client.Components.Utilities
 @using BlazingRecept.Shared.Dto
 
-@inherits ComponentBase
+@inherits PageComponentBase
 
 <PageTitle>Index</PageTitle>
 
 <h1>Recipes</h1>
-<div class="list-group">
-    <RecipeCategoryTable />
-</div>
+@if (IsLoading)
+{
+    <LoadingSpinner Text="Loading..." />
+}
+else
+{
+    <div class="list-group">
+        <RecipeCategoryTable />
+    </div>
+}

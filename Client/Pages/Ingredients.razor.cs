@@ -1,3 +1,4 @@
+using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Components.PageComponents.IngredientPage;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
@@ -6,7 +7,7 @@ using Serilog;
 
 namespace BlazingRecept.Client.Pages;
 
-public partial class Ingredients : ComponentBase
+public partial class Ingredients : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "IngredientsPage";
@@ -20,12 +21,16 @@ public partial class Ingredients : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        IsLoading = true;
+
         await base.OnInitializedAsync();
 
         if (IngredientService != null)
         {
             IngredientCollectionTypes = await IngredientService.GetAllSortedAsync();
         }
+
+        IsLoading = false;
     }
 
     public void AddNewIngredientToCollection(IngredientDto ingredientDto)

@@ -1,3 +1,4 @@
+using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
@@ -5,7 +6,7 @@ using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.IndexPage;
 
-public partial class RecipeCategoryTable : ComponentBase
+public partial class RecipeCategoryTable : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "RecipeCategoryTable";
@@ -22,6 +23,8 @@ public partial class RecipeCategoryTable : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        IsLoading = true;
+
         await base.OnInitializedAsync();
 
         if (RecipeService == null)
@@ -34,6 +37,8 @@ public partial class RecipeCategoryTable : ComponentBase
         _recipeDtos = await RecipeService.GetAllAsync();
 
         CategorizeByName();
+
+        IsLoading = false;
     }
 
     private void CategorizeByName()

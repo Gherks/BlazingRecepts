@@ -1,3 +1,4 @@
+using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Services.Interfaces;
@@ -10,7 +11,7 @@ using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Pages;
 
-public partial class RecipeWorkbench : ComponentBase
+public partial class RecipeWorkbench : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "RecipeWorkbenchPage";
@@ -50,6 +51,8 @@ public partial class RecipeWorkbench : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        IsLoading = true;
+
         if (RecipeService == null)
         {
             string errorMessage = "Cannot fetch recipe because recipe service is null.";
@@ -91,6 +94,8 @@ public partial class RecipeWorkbench : ComponentBase
                 ContainedIngredientMeasurements = recipeDto.IngredientMeasurementDtos;
             }
         }
+
+        IsLoading = false;
     }
 
     public void Refresh()

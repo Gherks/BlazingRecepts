@@ -1,3 +1,4 @@
+using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
@@ -8,7 +9,7 @@ using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 
-public partial class IngredientTables : ComponentBase
+public partial class IngredientTables : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "IngredientTables";

@@ -1,16 +1,23 @@
 ﻿@page "/recipeworkbench"
 @page "/recipeworkbench/{RecipeId:guid}"
 
+@using BlazingRecept.Client.Components.PageComponents.Base
 @using BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage
 @using BlazingRecept.Client.Components.Utilities
 @using BlazingRecept.Client.Utilities;
 @using BlazingRecept.Shared.Dto
 @using Markdig
 
-@inherits ComponentBase
+@inherits PageComponentBase
 
 <PageTitle>@GetTitle()</PageTitle>
 
+@if (IsLoading)
+{
+    <LoadingSpinner Text="Loading..." />
+}
+else
+{
 <CascadingValue Value=@this>
     <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" />
     <EditIngredientMeasurementModal @ref="_editIngredientMeasurementModal" />
@@ -78,3 +85,5 @@
         </div>
     </div>
 </CascadingValue>
+}
+
