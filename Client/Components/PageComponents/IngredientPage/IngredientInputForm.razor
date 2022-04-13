@@ -38,7 +38,7 @@
                     <ValidationMessage For="() => _form.Calories" />
                 </div>
                 <div class="form-group mb-2">
-                    <InputSelect id="category-selector" name="category-selector" class="form-select" @bind-Value="_form.CategoryDtoId">
+                    <select id="category-selector" name="category-selector" class="form-select" @bind="_form.CategoryDtoId">
                         <option value="@Guid.Empty">Choose a category...</option>
                         @if (_categoryDtos != null)
                         {
@@ -47,7 +47,7 @@
                                 <option value="@categoryDto.Id">@categoryDto.Name</option>
                             }
                         }
-                    </InputSelect>
+                    </select>
                     <ValidationMessage For="() => _form.CategoryDtoId" />
                 </div>
                 <button class="btn btn-primary" type="submit">Add ingredient</button>

@@ -18,72 +18,70 @@
 }
 else
 {
-<CascadingValue Value=@this>
-    <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" />
-    <EditIngredientMeasurementModal @ref="_editIngredientMeasurementModal" />
-    <RemovalConfirmationModal Type="IngredientDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
-    <h1>@GetTitle()</h1>
-    <div class="card mb-2">
-        <div class="card-body">
-            <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
-                <CustomValidation @ref="_customValidation" />
-                <div class="form-floating mb-2">
-                    <input type="text" id="name" name="name" class="form-control" @bind="_form.Name" placeholder="Name">
-                    <label for="name">Name</label>
-                    <ValidationMessage For="() => _form.Name" />
-                </div>
-                <div class="form-floating mb-2">
-                    <input type="text" id="portion-amount" name="portion-amount" class="form-control" @bind="_form.PortionAmount" placeholder="Portion amount">
-                    <label for="portion-amount">Portion amount</label>
-                    <ValidationMessage For="() => _form.PortionAmount" />
-                </div>
-
-                <div class="form-group mb-2">
-                    <InputSelect id="category-selector" name="category-selector" class="form-select" @bind-Value="_form.CategoryDtoId">
-                        <option value="@Guid.Empty">Choose a category...</option>
-                        @if (_categoryDtos != null)
-                        {
-                            foreach (CategoryDto categoryDto in _categoryDtos)
+    <CascadingValue Value=@this>
+        <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" />
+        <EditIngredientMeasurementModal @ref="_editIngredientMeasurementModal" />
+        <RemovalConfirmationModal Type="IngredientDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
+        <h1>@GetTitle()</h1>
+        <div class="card mb-2">
+            <div class="card-body">
+                <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
+                    <CustomValidation @ref="_customValidation" />
+                    <div class="form-floating mb-2">
+                        <input type="text" id="name" name="name" class="form-control" @bind="_form.Name" placeholder="Name">
+                        <label for="name">Name</label>
+                        <ValidationMessage For="() => _form.Name" />
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="text" id="portion-amount" name="portion-amount" class="form-control" @bind="_form.PortionAmount" placeholder="Portion amount">
+                        <label for="portion-amount">Portion amount</label>
+                        <ValidationMessage For="() => _form.PortionAmount" />
+                    </div>
+                    <div class="form-group mb-2">
+                        <select id="category-selector" name="category-selector" class="form-select" @bind="_form.CategoryDtoId">
+                            <option value="@Guid.Empty">Choose a category...</option>
+                            @if (_categoryDtos != null)
                             {
-                                <option value="@categoryDto.Id">@categoryDto.Name</option>
+                                foreach (CategoryDto categoryDto in _categoryDtos)
+                                {
+                                    <option value="@categoryDto.Id">@categoryDto.Name</option>
+                                }
                             }
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="() => _form.CategoryDtoId" />
-                </div>
-
-                <div class="form-floating mb-2">
-                    <textarea id="instructions" name="instructions" class="form-control" @bind="_form.Instructions" @bind:event="oninput" placeholder="Enter instructions here" style="height: 200px"></textarea>
-                    <label for="instructions">Enter instructions here</label>
-                </div>
-                <div class="card mb-2">
-                    <div class="card-body">
-                        @if (string.IsNullOrWhiteSpace(_form.Instructions))
-                        {
-                            <p>Markdown text based upon instructions entered above will end up here</p>
-                        }
-                        else
-                        {
-                            @((MarkupString) Markdown.ToHtml(_form.Instructions))
-                        }
+                        </select>
+                        <ValidationMessage For="() => _form.CategoryDtoId" />
                     </div>
-                </div>
-                <p>
-                    <a class="link-primary" href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown Cheat Sheet</a>
-                </p>
-                <div class="card mb-2">
-                    <RecipeIngredientsTable />
-                    <div class="ms-2 mb-2">
-                        <button type="button" class="btn btn-primary" @onclick="@(_ => HandleAddIngredientModalOpen(null))">Add ingredient</button>
+                    <div class="form-floating mb-2">
+                        <textarea id="instructions" name="instructions" class="form-control" @bind="_form.Instructions" @bind:event="oninput" placeholder="Enter instructions here" style="height: 200px"></textarea>
+                        <label for="instructions">Enter instructions here</label>
                     </div>
-                </div>
-                <div class="mb-2">
-                    <button type="submit" class="btn btn-primary">@GetConfirmationButtonLabel()</button>
-                </div>
-                <ValidationMessage For="() => _form.RecipeCreationErrorMessage" />
-            </EditForm>
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            @if (string.IsNullOrWhiteSpace(_form.Instructions))
+                            {
+                                <p>Markdown text based upon instructions entered above will end up here</p>
+                            }
+                            else
+                            {
+                                @((MarkupString) Markdown.ToHtml(_form.Instructions))
+                            }
+                        </div>
+                    </div>
+                    <p>
+                        <a class="link-primary" href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown Cheat Sheet</a>
+                    </p>
+                    <div class="card mb-2">
+                        <RecipeIngredientsTable />
+                        <div class="ms-2 mb-2">
+                            <button type="button" class="btn btn-primary" @onclick="@(_ => HandleAddIngredientModalOpen(null))">Add ingredient</button>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <button type="submit" class="btn btn-primary">@GetConfirmationButtonLabel()</button>
+                    </div>
+                    <ValidationMessage For="() => _form.RecipeCreationErrorMessage" />
+                </EditForm>
+            </div>
         </div>
-    </div>
-</CascadingValue>
+    </CascadingValue>
 }
 
