@@ -34,6 +34,8 @@ public static class EnumTranslations
                 return "liten";
             case MeasurementUnit.Big:
                 return "stor";
+            case MeasurementUnit.Clove:
+                return "klyfta";
             default:
                 throw new InvalidOperationException("Unknown measurement given.");
         }

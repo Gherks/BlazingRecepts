@@ -25,5 +25,6 @@ public static class Enums
         Piece = 11,
         Small = 12,
         Big = 13,
+        Clove = 14
     }
 }
