@@ -7,6 +7,6 @@
         <button class="nav-link btn btn-link" @onclick="HandleBeginLogout">Logga ut</button>
     </Authorized>
     <NotAuthorized>
-        <a href="" @onclick="() => HandleBeginLogin()" @onclick:preventDefault>Logga in</a>
+        <button class="nav-link btn btn-link" @onclick="HandleBeginLogin">Logga in</button>
     </NotAuthorized>
 </AuthorizeView>
