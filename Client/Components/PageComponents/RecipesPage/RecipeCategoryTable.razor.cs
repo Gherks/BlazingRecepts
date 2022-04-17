@@ -4,7 +4,7 @@ using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
-namespace BlazingRecept.Client.Components.PageComponents.IndexPage;
+namespace BlazingRecept.Client.Components.PageComponents.RecipesPage;
 
 public partial class RecipeCategoryTable : PageComponentBase
 {
