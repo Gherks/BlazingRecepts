@@ -52,72 +52,72 @@ else
                 </div>
             }
             <h2>Ingredienser</h2>
-            <div class="card mb-2">
-                <div class="card-body">
-                    <table class="table table-hover table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Namn</th>
-                                <th>Mätning</th>
-                                <th>Gram</th>
-                                <th>Anteckning</th>
-                                <th>Fett</th>
-                                <th>Kolhydrater</th>
-                                <th>Protein</th>
-                                <th>Kalorier</th>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Namn</th>
+                            <th>Mätning</th>
+                            <th>Gram</th>
+                            <th>Anteckning</th>
+                            <th>Fett</th>
+                            <th>Kolhydrater</th>
+                            <th>Protein</th>
+                            <th>Kalorier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (CheckableIngredientMeasurement checkableIngredientMeasurement in _checkableIngredientMeasurements)
+                        {
+                            IngredientMeasurementDto ingredientMeasurementDto = checkableIngredientMeasurement.IngredientMeasurementDto;
+                            <tr class=@GetIngredientMeasurementRowClass(checkableIngredientMeasurement)>
+                                <td><input class="form-check-input" type="checkbox" @bind="@checkableIngredientMeasurement.IsChecked"></td>
+                                <td>@ingredientMeasurementDto.IngredientDto.Name</td>
+                                <td>@GetMeasurement(ingredientMeasurementDto)</td>
+                                <td>@ingredientMeasurementDto.Grams</td>
+                                <td>@ingredientMeasurementDto.Note</td>
+                                <td>@ingredientMeasurementDto.IngredientDto.Fat</td>
+                                <td>@ingredientMeasurementDto.IngredientDto.Carbohydrates</td>
+                                <td>@ingredientMeasurementDto.IngredientDto.Protein</td>
+                                <td>@ingredientMeasurementDto.IngredientDto.Calories</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (CheckableIngredientMeasurement checkableIngredientMeasurement in _checkableIngredientMeasurements)
-                            {
-                                IngredientMeasurementDto ingredientMeasurementDto = checkableIngredientMeasurement.IngredientMeasurementDto;
-                                <tr class=@GetIngredientMeasurementRowClass(checkableIngredientMeasurement)>
-                                    <td><input class="form-check-input" type="checkbox" @bind="@checkableIngredientMeasurement.IsChecked"></td>
-                                    <td>@ingredientMeasurementDto.IngredientDto.Name</td>
-                                    <td>@GetMeasurement(ingredientMeasurementDto)</td>
-                                    <td>@ingredientMeasurementDto.Grams</td>
-                                    <td>@ingredientMeasurementDto.Note</td>
-                                    <td>@ingredientMeasurementDto.IngredientDto.Fat</td>
-                                    <td>@ingredientMeasurementDto.IngredientDto.Carbohydrates</td>
-                                    <td>@ingredientMeasurementDto.IngredientDto.Protein</td>
-                                    <td>@ingredientMeasurementDto.IngredientDto.Calories</td>
-                                </tr>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td></td>
-                                <td><b>Total</b></td>
-                                <td></td>
-                                <td><b>@_recipeDto.GetTotalGrams()</b></td>
-                                <td></td>
-                                <td><b>@_recipeDto.GetTotalFat()</b></td>
-                                <td><b>@_recipeDto.GetTotalCarbohydrates()</b></td>
-                                <td><b>@_recipeDto.GetTotalProtein()</b></td>
-                                <td><b>@_recipeDto.GetTotalCalories()</b></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <table class="table table-hover table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>Gram per portion</th>
-                                <th>Protein per portion</th>
-                                <th>Kalorier per portion</th>
-                                <th>Protein per kalori</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>@_recipeDto.GetGramsPerPortion()</td>
-                                <td>@_recipeDto.GetProteinPerPortion()</td>
-                                <td>@_recipeDto.GetCaloriesPerPortion()</td>
-                                <td>@_recipeDto.GetProteinPerCalorie()</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td><b>Total</b></td>
+                            <td></td>
+                            <td><b>@_recipeDto.GetTotalGrams()</b></td>
+                            <td></td>
+                            <td><b>@_recipeDto.GetTotalFat()</b></td>
+                            <td><b>@_recipeDto.GetTotalCarbohydrates()</b></td>
+                            <td><b>@_recipeDto.GetTotalProtein()</b></td>
+                            <td><b>@_recipeDto.GetTotalCalories()</b></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div>
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>Gram per portion</th>
+                            <th>Protein per portion</th>
+                            <th>Kalorier per portion</th>
+                            <th>Protein per kalori</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@_recipeDto.GetGramsPerPortion()</td>
+                            <td>@_recipeDto.GetProteinPerPortion()</td>
+                            <td>@_recipeDto.GetCaloriesPerPortion()</td>
+                            <td>@_recipeDto.GetProteinPerCalorie()</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
