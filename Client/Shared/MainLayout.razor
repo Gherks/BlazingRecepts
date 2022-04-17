@@ -2,7 +2,7 @@
 
 @inherits LayoutComponentBase
 
-<div class="page">
+<div class="container">
     <BlazoredToasts Timeout="5"
                     IconType="IconType.FontAwesome"
                     ErrorIcon="fa-solid fa-xmark"
@@ -12,15 +12,27 @@
     <main>
         <div class="top-row mt-2 px-4 auth">
             <div class="d-flex justify-content-between mx-4">
-                <div>
-                    <button class="btn btn-primary" type="button" @onclick="@(_ => HandleNavigationToRecipes())"><span class="fa-solid fa-book fa-2xl"></span>Recept</button>
+                <div class="d-flex justify-content-start">
+                    <button class="btn btn-primary d-flex justify-content-between align-items-center me-2" type="button" @onclick="@(_ => HandleNavigationToRecipes())">
+                        <span class="fa-solid fa-book fa-2xl"></span>
+                        <span class="d-none d-md-block ms-2 pt-1">Recept</span>
+                    </button>
                     <AuthorizeView>
-                        <button class="btn btn-primary" type="button" @onclick="@(_ => HandleNavigationToRecipeWorkbench())"><span class="fa-solid fa-screwdriver-wrench fa-2xl"></span>Skapa recept</button>
+                        <button class="btn btn-primary d-flex justify-content-between align-items-center me-2" type="button" @onclick="@(_ => HandleNavigationToRecipeWorkbench())">
+                            <span class="fa-solid fa-screwdriver-wrench fa-2xl"></span>
+                            <span class="d-none d-md-block ms-2 pt-1">Skapa recept</span>
+                        </button>
                     </AuthorizeView>
-                    <button class="btn btn-primary" type="button" @onclick="@(_ => HandleNavigationToIngredients())"><span class="fa-solid fa-apple-whole fa-2xl"></span>Ingredienser</button>
-                    <button class="btn btn-primary" type="button" @onclick="@(_ => HandleNavigationToDailyIntake())"><span class="fa-solid fa-calendar-days fa-2xl"></span>Daily Intake</button>
+                    <button class="btn btn-primary d-flex justify-content-between align-items-center me-2" type="button" @onclick="@(_ => HandleNavigationToIngredients())">
+                        <span class="fa-solid fa-apple-whole fa-2xl"></span>
+                        <span class="d-none d-md-block ms-2 pt-1">Ingredienser</span>
+                    </button>
+                    <button class="btn btn-primary d-flex justify-content-between align-items-center me-2" type="button" @onclick="@(_ => HandleNavigationToDailyIntake())">
+                        <span class="fa-solid fa-calendar-days fa-2xl"></span>
+                        <span class="d-none d-md-block ms-2 pt-1">Daily Intake</span>
+                    </button>
                 </div>
-                <div>
+                <div class="d-flex justify-content-end">
                     <LoginDisplay />
                 </div>
             </div>
