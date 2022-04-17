@@ -9,7 +9,7 @@ main {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-color: #525252;
 }
 
 .top-row {
@@ -36,7 +36,7 @@ main {
         text-overflow: ellipsis;
     }
 
-@media (max-width: 640.98px) {
+@media (max-width: 900px) {
     .top-row:not(.auth) {
         display: none;
     }
@@ -50,7 +50,7 @@ main {
     }
 }
 
-@media (min-width: 641px) {
+@media (min-width: 900px) {
     .page {
         flex-direction: row;
     }
@@ -68,11 +68,11 @@ main {
         z-index: 1;
     }
 
-    .top-row.auth ::deep a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
-    }
+        .top-row.auth ::deep a:first-child {
+            flex: 1;
+            text-align: right;
+            width: 0;
+        }
 
     .top-row, article {
         padding-left: 2rem !important;
