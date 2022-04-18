@@ -1,5 +1,6 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Components.Utilities;
+using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
@@ -16,6 +17,7 @@ public partial class Recipe : PageComponentBase
 
     private RecipeDto? _recipeDto = new RecipeDto();
     private List<CheckableIngredientMeasurement> _checkableIngredientMeasurements = new();
+    private NutritionalChartItem[]? _nutritionalChartItems = null;
 
     private RemovalConfirmationModal<RecipeDto>? _removalConfirmationModal;
 
@@ -62,7 +64,37 @@ public partial class Recipe : PageComponentBase
             });
         }
 
+        LoadChartItems();
+
         IsLoading = false;
+    }
+
+    private void LoadChartItems()
+    {
+        if (_recipeDto == null)
+        {
+            string errorMessage = "Cannot construct nutritional chart items because recipe has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        _nutritionalChartItems = new NutritionalChartItem[] {
+            new()
+            {
+                Label = "Fett",
+                Value = _recipeDto.GetTotalFat()
+            },
+            new()
+            {
+                Label = "Kolhydrater",
+                Value = _recipeDto.GetTotalCarbohydrates()
+            },
+            new()
+            {
+                Label = "Protein",
+                Value = _recipeDto.GetTotalProtein()
+            }
+        };
     }
 
     private void HandleNavigationToEditRecipe(RecipeDto recipeDto)
@@ -169,5 +201,11 @@ public partial class Recipe : PageComponentBase
     {
         public bool IsChecked { get; set; } = false;
         public IngredientMeasurementDto IngredientMeasurementDto { get; set; } = new();
+    }
+
+    private class NutritionalChartItem
+    {
+        public string Label { get; set; } = string.Empty;
+        public double Value { get; set; } = 0.0;
     }
 }

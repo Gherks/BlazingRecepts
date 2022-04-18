@@ -5,6 +5,8 @@
 @using BlazingRecept.Client.Extensions
 @using BlazingRecept.Shared.Dto
 @using Markdig
+@using Radzen
+@using Radzen.Blazor
 
 @inherits PageComponentBase
 
@@ -121,4 +123,20 @@ else
             </div>
         </div>
     </div>
+    @if (_nutritionalChartItems != null && _nutritionalChartItems.Length > 0)
+    {
+        <div class="row">
+            <RadzenChart>
+                <RadzenPieSeries Data="@_nutritionalChartItems" CategoryProperty="Label" ValueProperty="Value" >
+                    <TooltipTemplate Context="data">
+                        <div>
+                            <span>@data.Label</span>:
+                            <strong>@data.Value</strong>
+                        </div>
+                    </TooltipTemplate>
+                </RadzenPieSeries>
+                <RadzenLegend Position="LegendPosition.Top" />
+            </RadzenChart>
+        </div>
+    }
 }
