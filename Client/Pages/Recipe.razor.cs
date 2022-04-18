@@ -15,11 +15,10 @@ public partial class Recipe : PageComponentBase
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "RecipePage";
 
-    private RecipeDto? _recipeDto = new RecipeDto();
-    private List<CheckableIngredientMeasurement> _checkableIngredientMeasurements = new();
     private NutritionalChartItem[]? _nutritionalChartItems = null;
-
     private RemovalConfirmationModal<RecipeDto>? _removalConfirmationModal;
+
+    public RecipeDto? RecipeDto { get; set; } = new RecipeDto();
 
     [Parameter]
     public Guid RecipeId { get; set; }
@@ -46,22 +45,13 @@ public partial class Recipe : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _recipeDto = await RecipeService.GetByIdAsync(RecipeId);
+        RecipeDto = await RecipeService.GetByIdAsync(RecipeId);
 
-        if (_recipeDto == null)
+        if (RecipeDto == null)
         {
             string errorMessage = "Cannot properly present recipe because sought recipe coulnd't be fetched.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
-        }
-
-        foreach (IngredientMeasurementDto ingredientMeasurementDto in _recipeDto.IngredientMeasurementDtos)
-        {
-            _checkableIngredientMeasurements.Add(new()
-            {
-                IsChecked = false,
-                IngredientMeasurementDto = ingredientMeasurementDto
-            });
         }
 
         LoadChartItems();
@@ -71,7 +61,7 @@ public partial class Recipe : PageComponentBase
 
     private void LoadChartItems()
     {
-        if (_recipeDto == null)
+        if (RecipeDto == null)
         {
             string errorMessage = "Cannot construct nutritional chart items because recipe has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
@@ -82,17 +72,17 @@ public partial class Recipe : PageComponentBase
             new()
             {
                 Label = "Fett",
-                Value = _recipeDto.GetTotalFat()
+                Value = RecipeDto.GetTotalFat()
             },
             new()
             {
                 Label = "Kolhydrater",
-                Value = _recipeDto.GetTotalCarbohydrates()
+                Value = RecipeDto.GetTotalCarbohydrates()
             },
             new()
             {
                 Label = "Protein",
-                Value = _recipeDto.GetTotalProtein()
+                Value = RecipeDto.GetTotalProtein()
             }
         };
     }
@@ -163,44 +153,14 @@ public partial class Recipe : PageComponentBase
 
     private bool ContainsInstructions()
     {
-        if (_recipeDto == null)
+        if (RecipeDto == null)
         {
             string errorMessage = "Cannot access recipe instructions because recipe has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        return string.IsNullOrWhiteSpace(_recipeDto.Instructions) == false;
-    }
-
-    private string GetMeasurement(IngredientMeasurementDto ingredientMeasurementDto)
-    {
-        if (ingredientMeasurementDto == null)
-        {
-            string errorMessage = "Cannot access ingredient measurement within recipe because passed ingredient measurement has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        return ingredientMeasurementDto.Measurement.ToString() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
-    }
-
-    private string GetIngredientMeasurementRowClass(CheckableIngredientMeasurement checkableIngredientMeasurement)
-    {
-        if (checkableIngredientMeasurement == null)
-        {
-            string errorMessage = "Cannot set class on ingredient measurement table row because checkable ingredient measurement has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        return checkableIngredientMeasurement.IsChecked ? "table-primary" : "";
-    }
-
-    private class CheckableIngredientMeasurement
-    {
-        public bool IsChecked { get; set; } = false;
-        public IngredientMeasurementDto IngredientMeasurementDto { get; set; } = new();
+        return string.IsNullOrWhiteSpace(RecipeDto.Instructions) == false;
     }
 
     private class NutritionalChartItem
