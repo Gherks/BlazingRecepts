@@ -25,7 +25,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
 
         if (RecipePage == null)
         {
-            string errorMessage = "Cannot ingredient measurement table rows because recipe page has not been set.";
+            string errorMessage = "Cannot ingredient measurement table rows because recipe page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
