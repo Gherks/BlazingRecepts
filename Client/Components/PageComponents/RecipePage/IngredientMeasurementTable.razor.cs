@@ -7,10 +7,10 @@ using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipePage;
 
-public partial class RecipeIngredientMeasurementTable : PageComponentBase
+public partial class IngredientMeasurementTable : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeIngredientMeasurementTable";
+    private static readonly string _logDomainName = "IngredientMeasurementTable";
 
     private List<CheckableIngredientMeasurement> _checkableIngredientMeasurements = new();
 
