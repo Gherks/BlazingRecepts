@@ -1,6 +1,5 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Pages;
-using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
@@ -8,10 +7,10 @@ using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipePage;
 
-public partial class RecipeIngredientTable : PageComponentBase
+public partial class RecipeIngredientMeasurementTable : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeIngredientTable";
+    private static readonly string _logDomainName = "RecipeIngredientMeasurementTable";
 
     private List<CheckableIngredientMeasurement> _checkableIngredientMeasurements = new();
 
