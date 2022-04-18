@@ -7,10 +7,10 @@ using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 
-public partial class RecipeIngredientsTable : PageComponentBase
+public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeIngredientsTable";
+    private static readonly string _logDomainName = "IngredientMeasurementWorkbenchTable";
 
     [CascadingParameter]
     public RecipeWorkbench? RecipeWorkbench { get; set; }
