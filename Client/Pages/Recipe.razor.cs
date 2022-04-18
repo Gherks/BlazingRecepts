@@ -1,8 +1,6 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Components.Utilities;
-using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Services.Interfaces;
-using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
@@ -15,7 +13,6 @@ public partial class Recipe : PageComponentBase
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "RecipePage";
 
-    private NutritionalChartItem[]? _nutritionalChartItems = null;
     private RemovalConfirmationModal<RecipeDto>? _removalConfirmationModal;
 
     public RecipeDto? RecipeDto { get; set; } = new RecipeDto();
@@ -54,37 +51,7 @@ public partial class Recipe : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        LoadChartItems();
-
         IsLoading = false;
-    }
-
-    private void LoadChartItems()
-    {
-        if (RecipeDto == null)
-        {
-            string errorMessage = "Cannot construct nutritional chart items because recipe has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        _nutritionalChartItems = new NutritionalChartItem[] {
-            new()
-            {
-                Label = "Fett",
-                Value = RecipeDto.GetTotalFat()
-            },
-            new()
-            {
-                Label = "Kolhydrater",
-                Value = RecipeDto.GetTotalCarbohydrates()
-            },
-            new()
-            {
-                Label = "Protein",
-                Value = RecipeDto.GetTotalProtein()
-            }
-        };
     }
 
     private void HandleNavigationToEditRecipe(RecipeDto recipeDto)
@@ -161,11 +128,5 @@ public partial class Recipe : PageComponentBase
         }
 
         return string.IsNullOrWhiteSpace(RecipeDto.Instructions) == false;
-    }
-
-    private class NutritionalChartItem
-    {
-        public string Label { get; set; } = string.Empty;
-        public double Value { get; set; } = 0.0;
     }
 }
