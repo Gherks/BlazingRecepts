@@ -1,0 +1,111 @@
+﻿@using BlazingRecept.Client.Components.PageComponents.Base
+@using BlazingRecept.Client.Components.Utilities
+@using BlazingRecept.Shared.Dto
+@using static BlazingRecept.Client.Pages.DailyIntake
+
+@inherits PageComponentBase
+
+<RemovalConfirmationModal Type="DailyIntakeEntryDto" @ref="_removalConfirmationModal" OnConfirm="HandleDailyIntakeEntryRemovalConfirmed" />
+
+@if (IsLoading || DailyIntakePage == null || DailyIntakePage.DailyIntakeEntryDtoCollections == null)
+{
+    <LoadingSpinner Text="Laddar..." />
+}
+else
+{
+    @*foreach (List<DailyIntakeEntryDto> dailyIntakeEntryDtos in DailyIntakePage.DailyIntakeEntryDtoCollections.Values)*@
+    foreach (KeyValuePair<Guid, List<DailyIntakeEntryDto>> pair in DailyIntakePage.DailyIntakeEntryDtoCollections)
+    {
+        Guid collectionId = pair.Key;
+        List<DailyIntakeEntryDto> dailyIntakeEntryDtos = pair.Value;
+        <div class="card mb-2">
+            <div class="card-body">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th class="col-3">Namn</th>
+                            <th class="col-3">Mängd</th>
+                            <th class="col-1">Fett</th>
+                            <th class="col-1">Kolhydrater</th>
+                            <th class="col-1">Protein</th>
+                            <th class="col-1">Kalorier</th>
+                            <th class="col-1">Protein/kalorie</th>
+                            <AuthorizeView>
+                                <th class="col-1">Åtgärder</th>
+                            </AuthorizeView>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (DailyIntakeEntryDto dailyIntakeEntryDto in dailyIntakeEntryDtos)
+                        {
+                            <tr id="@dailyIntakeEntryDto.Id">
+                                <td class="col-3">@dailyIntakeEntryDto.ProductName</td>
+                                @if (_editingDailyIntakeEntryGuid == dailyIntakeEntryDto.Id)
+                                {
+                                    <td class="col-3">
+                                        <input type="text" id="amount" name="amount" class="form-control" @bind="@dailyIntakeEntryDto.Amount" placeholder="@dailyIntakeEntryDto.Amount">
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="col-3">@GetAmount(dailyIntakeEntryDto)</td>
+                                }
+                                <td class="col-1">@GetFat(dailyIntakeEntryDto)</td>
+                                <td class="col-1">@GetCarbohydrates(dailyIntakeEntryDto)</td>
+                                <td class="col-1">@GetProtein(dailyIntakeEntryDto)</td>
+                                <td class="col-1">@GetCalories(dailyIntakeEntryDto)</td>
+                                <td class="col-1">@GetProteinPerCalorie(dailyIntakeEntryDto)</td>
+                                @if (_editingDailyIntakeEntryGuid == dailyIntakeEntryDto.Id)
+                                {
+                                    <AuthorizeView>
+                                        <td class="col-1">
+                                            <button class="btn btn-success btn-sm" @onclick="() => HandleDailyIntakeEntryEditConfirmed(dailyIntakeEntryDto)">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" @onclick="() => HandleDailyIntakeEntryEditCancel()">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </td>
+                                    </AuthorizeView>
+                                }
+                                else
+                                {
+                                    <AuthorizeView>
+                                        <td class="col-1">
+                                            <button class="btn btn-primary btn-sm" @onclick="() => HandleDailyIntakeEntryEditClicked(dailyIntakeEntryDto.Id)">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" @onclick="() => HandleDailyIntakeEntryRemovalModalOpen(dailyIntakeEntryDto)">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </AuthorizeView>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="col-3">Total</th>
+                            <th class="col-3"></th>
+                            <th class="col-1">@GetFatTotal(dailyIntakeEntryDtos)</th>
+                            <th class="col-1">@GetCarbohydrateTotal(dailyIntakeEntryDtos)</th>
+                            <th class="col-1">@GetProteinTotal(dailyIntakeEntryDtos)</th>
+                            <th class="col-1">@GetCalorieTotal(dailyIntakeEntryDtos)</th>
+                            <th class="col-1">@GetAverageProteinPerCalorie(dailyIntakeEntryDtos)</th>
+                            <AuthorizeView>
+                                <th class="col-1"></th>
+                            </AuthorizeView>
+                        </tr>
+                    </tfoot>
+                </table>
+                <AuthorizeView>
+                    <DailyIntakeEntryInputForm CollectionId="@collectionId" />
+                </AuthorizeView>
+            </div>
+        </div>
+    }
+    <AuthorizeView>
+        <button class="btn btn-primary" @onclick="() => HandleAddNewCollection()">Lägg till tabell</button>
+    </AuthorizeView>
+}
