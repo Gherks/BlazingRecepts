@@ -27,11 +27,6 @@ public partial class IngredientTables : PageComponentBase
     [Inject]
     public IToastService? ToastService { get; set; }
 
-    public void Refresh()
-    {
-        StateHasChanged();
-    }
-
     private void HandleIngredientEditClicked(Guid editingIngredientGuid)
     {
         _editingIngredientGuid = editingIngredientGuid;
