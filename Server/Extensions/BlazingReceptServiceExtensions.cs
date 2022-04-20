@@ -25,6 +25,7 @@ public static class BlazingReceptServiceCollectionExtensions
     public static WebApplicationBuilder AddBlazingReceptServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<ICategoryService, CategoryService>();
+        builder.Services.AddScoped<IDailyIntakeEntryService, DailyIntakeEntryService>();
         builder.Services.AddScoped<IIngredientService, IngredientService>();
         builder.Services.AddScoped<IRecipeService, RecipeService>();
 
@@ -35,6 +36,7 @@ public static class BlazingReceptServiceCollectionExtensions
     {
         builder.Services.AddScoped(typeof(IAsyncRepository<>), typeof(RepositoryBase<>));
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+        builder.Services.AddScoped<IDailyIntakeEntryRepository, DailyIntakeEntryRepository>();
         builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
         builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 
