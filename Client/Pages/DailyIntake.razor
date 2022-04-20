@@ -1,7 +1,21 @@
 ﻿@page "/dailyintake"
 
-@inherits ComponentBase
+@using BlazingRecept.Client.Components.PageComponents.DailyIntakePage
+@using BlazingRecept.Client.Components.Utilities
+@using BlazingRecept.Client.Pages.Base
 
-<PageTitle>Daily Intake</PageTitle>
+@inherits PageBase
 
-<h1>Daily Intake</h1>
+<PageTitle>Dagligt intag</PageTitle>
+
+<h1>Dagligt intag</h1>
+@if (IsLoading)
+{
+    <LoadingSpinner Text="Laddar..." />
+}
+else
+{
+    <CascadingValue Value="this">
+        <DailyIntakeTable @ref="_dailyIntakeTable" />
+    </CascadingValue>
+}
