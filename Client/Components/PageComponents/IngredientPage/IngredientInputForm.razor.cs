@@ -160,10 +160,10 @@ public partial class IngredientInputForm : PageComponentBase
             }
         }
 
-        ValidateStringDouble(_form.Fat, nameof(_form.Fat), "Fett", errors);
-        ValidateStringDouble(_form.Carbohydrates, nameof(_form.Carbohydrates), "Kolhydrater", errors);
-        ValidateStringDouble(_form.Protein, nameof(_form.Protein), "Protein", errors);
-        ValidateStringDouble(_form.Calories, nameof(_form.Calories), "Kalorier", errors);
+        InputValidation.ValidateStringToDouble(_form.Fat, nameof(_form.Fat), "Fett", errors);
+        InputValidation.ValidateStringToDouble(_form.Carbohydrates, nameof(_form.Carbohydrates), "Kolhydrater", errors);
+        InputValidation.ValidateStringToDouble(_form.Protein, nameof(_form.Protein), "Protein", errors);
+        InputValidation.ValidateStringToDouble(_form.Calories, nameof(_form.Calories), "Kalorier", errors);
 
         if (_form.CategoryDtoId == Guid.Empty)
         {
@@ -179,28 +179,6 @@ public partial class IngredientInputForm : PageComponentBase
         }
 
         return true;
-    }
-
-    private void ValidateStringDouble(string variableValue, string variableName, string displayName, Dictionary<string, List<string>> errors)
-    {
-        if (string.IsNullOrWhiteSpace(variableValue))
-        {
-            errors.Add(variableName, new List<string>() {
-                $"{displayName} måste anges."
-            });
-        }
-        else if (double.TryParse(variableValue, out double doubleValue) == false)
-        {
-            errors.Add(variableName, new List<string>() {
-                $"{displayName} kan bara innehålla icke-numeriska tecken."
-            });
-        }
-        else if (doubleValue < 0.0)
-        {
-            errors.Add(variableName, new List<string>() {
-                $"{displayName} måste vara en positiv siffra."
-            });
-        }
     }
 
     private IngredientDto? CreateIngredientDtoFromForm()

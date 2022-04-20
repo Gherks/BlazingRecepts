@@ -168,24 +168,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
             });
         }
 
-        if (string.IsNullOrWhiteSpace(_form.Grams))
-        {
-            errors.Add(nameof(_form.Grams), new List<string>() {
-                "Gram måste anges."
-            });
-        }
-        else if (double.TryParse(_form.Grams, out double grams) == false)
-        {
-            errors.Add(nameof(_form.Grams), new List<string>() {
-                "Gram kan ej innehålla icke-numeriska tecken."
-            });
-        }
-        else if (grams <= 0)
-        {
-            errors.Add(nameof(_form.Grams), new List<string>() {
-                "Gram ska vara en positiv siffra."
-            });
-        }
+        InputValidation.ValidateStringToDouble(_form.Grams, nameof(_form.Grams), "Gram", errors);
 
         if (errors.Count > 0)
         {

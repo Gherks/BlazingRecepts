@@ -154,25 +154,6 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
 
         Dictionary<string, List<string>> errors = new();
 
-        if (string.IsNullOrWhiteSpace(_form.Measurement))
-        {
-            errors.Add(nameof(_form.Measurement), new List<string>() {
-                "Mätning måste anges."
-            });
-        }
-        else if (double.TryParse(_form.Measurement, out double grams) == false)
-        {
-            errors.Add(nameof(_form.Measurement), new List<string>() {
-                "Mätning kan ej innehålla icke-numeriska tecken."
-            });
-        }
-        else if (grams <= 0)
-        {
-            errors.Add(nameof(_form.Measurement), new List<string>() {
-                "Mätning kan inte vara mindre än noll."
-            });
-        }
-
         if (_form.MeasurementUnit == MeasurementUnit.Unassigned)
         {
             errors.Add(nameof(_form.MeasurementUnit), new List<string>() {
@@ -180,24 +161,8 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
             });
         }
 
-        if (string.IsNullOrWhiteSpace(_form.Grams))
-        {
-            errors.Add(nameof(_form.Grams), new List<string>() {
-                "Gram måste anges."
-            });
-        }
-        else if (double.TryParse(_form.Grams, out double grams) == false)
-        {
-            errors.Add(nameof(_form.Grams), new List<string>() {
-                "Gram kan ej innehålla icke-numeriska tecken."
-            });
-        }
-        else if (grams <= 0)
-        {
-            errors.Add(nameof(_form.Grams), new List<string>() {
-                "Gram kan inte vara mindre än noll."
-            });
-        }
+        InputValidation.ValidateStringToDouble(_form.Measurement, nameof(_form.Measurement), "Mätning", errors);
+        InputValidation.ValidateStringToDouble(_form.Grams, nameof(_form.Grams), "Gram", errors);
 
         if (errors.Count > 0)
         {
