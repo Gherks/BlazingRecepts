@@ -36,17 +36,9 @@ namespace BlazingRecept.Server.Services
 
             List<CategoryDto> categoryDtos = categories.Select(ingredientCategory => _mapper.Map<CategoryDto>(ingredientCategory)).ToList();
 
-            categoryDtos.Sort(new CategoryComparer());
+            categoryDtos.Sort((first, second) => first.SortOrder > second.SortOrder ? 1 : -1);
 
             return categoryDtos;
-        }
-
-        public sealed class CategoryComparer : IComparer<CategoryDto>
-        {
-            public int Compare(CategoryDto? first, CategoryDto? second)
-            {
-                return first?.SortOrder > second?.SortOrder ? 1 : -1;
-            }
         }
     }
 }
