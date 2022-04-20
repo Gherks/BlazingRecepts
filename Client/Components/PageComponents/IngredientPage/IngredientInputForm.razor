@@ -5,11 +5,9 @@
 
 @inherits PageComponentBase
 
-<PageTitle>Ingredienser</PageTitle>
-
 <div class="card mb-2">
     <div class="card-body">
-        <CollapsibleComponent CollapsedButtonText="Visa ingrediensformulär" ExposedButtonText="Göm ingrediensformulär">
+        <CollapsibleComponent CollapsedButtonText="Visa ingrediensformulär" ExposedButtonText="Dölj ingrediensformulär">
             <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
                 <CustomValidation @ref="_customValidation" />
                 <div class="form-floating mb-2">
