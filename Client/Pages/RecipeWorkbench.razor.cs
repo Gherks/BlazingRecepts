@@ -195,7 +195,7 @@ public partial class RecipeWorkbench : PageComponentBase
         else if (basePortions <= 0)
         {
             errors.Add(nameof(_form.PortionAmount), new List<string>() {
-                "Antalet portioner ska vara en positiv siffra."
+                "Antalet portioner måste vara en positiv siffra."
             });
         }
 

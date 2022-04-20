@@ -12,6 +12,7 @@
 
 <PageTitle>@GetTitle()</PageTitle>
 
+<h1>@GetTitle()</h1>
 @if (IsLoading)
 {
     <LoadingSpinner Text="Laddar..." />
@@ -22,7 +23,6 @@ else
         <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" />
         <EditIngredientMeasurementModal @ref="_editIngredientMeasurementModal" />
         <RemovalConfirmationModal Type="IngredientDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
-        <h1>@GetTitle()</h1>
         <div class="card mb-2">
             <div class="card-body">
                 <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
