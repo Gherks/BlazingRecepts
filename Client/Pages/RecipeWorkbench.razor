@@ -1,14 +1,14 @@
 ﻿@page "/recipeworkbench"
 @page "/recipeworkbench/{RecipeId:guid}"
 
-@using BlazingRecept.Client.Components.PageComponents.Base
 @using BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage
 @using BlazingRecept.Client.Components.Utilities
+@using BlazingRecept.Client.Pages.Base
 @using BlazingRecept.Client.Utilities;
 @using BlazingRecept.Shared.Dto
 @using Markdig
 
-@inherits PageComponentBase
+@inherits PageBase
 
 <PageTitle>@GetTitle()</PageTitle>
 

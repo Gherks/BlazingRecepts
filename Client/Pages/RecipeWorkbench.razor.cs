@@ -1,6 +1,6 @@
-using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 using BlazingRecept.Client.Components.Utilities;
+using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
@@ -11,7 +11,7 @@ using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Pages;
 
-public partial class RecipeWorkbench : PageComponentBase
+public partial class RecipeWorkbench : PageBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "RecipeWorkbenchPage";

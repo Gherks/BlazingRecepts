@@ -1,5 +1,5 @@
-using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Components.Utilities;
+using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
@@ -8,7 +8,7 @@ using Serilog;
 
 namespace BlazingRecept.Client.Pages;
 
-public partial class Recipe : PageComponentBase
+public partial class Recipe : PageBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "RecipePage";
