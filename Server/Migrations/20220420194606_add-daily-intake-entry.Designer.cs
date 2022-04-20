@@ -4,6 +4,7 @@ using BlazingRecept.Server.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazingRecept.Server.Migrations
 {
     [DbContext(typeof(BlazingReceptContext))]
-    partial class BlazingReceptContextModelSnapshot : ModelSnapshot
+    [Migration("20220420194606_add-daily-intake-entry")]
+    partial class adddailyintakeentry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
