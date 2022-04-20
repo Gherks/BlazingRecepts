@@ -13,7 +13,11 @@ namespace BlazingRecept.Server.Services
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
 
-        public RecipeService(IRecipeRepository recipeRepository, IIngredientService ingredientService, ICategoryService categoryService, IMapper mapper)
+        public RecipeService(
+            IRecipeRepository recipeRepository,
+            IIngredientService ingredientService,
+            ICategoryService categoryService,
+            IMapper mapper)
         {
             _recipeRepository = recipeRepository;
             _ingredientService = ingredientService;
