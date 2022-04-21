@@ -250,7 +250,7 @@ public partial class RecipeWorkbench : PageBase
         return recipeDto;
     }
 
-    public void HandleAddIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
+    public void HandleAddIngredientModalOpen()
     {
         if (_addIngredientMeasurementModal == null)
         {
@@ -259,7 +259,7 @@ public partial class RecipeWorkbench : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _addIngredientMeasurementModal.Open(ingredientMeasurementDto);
+        _addIngredientMeasurementModal.Open();
     }
 
     public void HandleEditIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)

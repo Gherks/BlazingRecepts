@@ -36,7 +36,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
         IsLoading = false;
     }
 
-    public void Open(IngredientMeasurementDto? ingredientMeasurementDto)
+    public void Open()
     {
         if (_modal == null)
         {
@@ -44,24 +44,8 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
-
-        if (ingredientMeasurementDto != null)
-        {
-            _form = new()
-            {
-                IngredientDto = ingredientMeasurementDto.IngredientDto,
-                Measurement = ingredientMeasurementDto.Measurement.ToString(),
-                MeasurementUnit = ingredientMeasurementDto.MeasurementUnit,
-                Grams = ingredientMeasurementDto.Grams.ToString(),
-                Note = ingredientMeasurementDto.Note,
-                SortOrder = ingredientMeasurementDto.SortOrder,
-            };
-        }
-        else
-        {
-            _form = new();
-        }
-
+        
+        _form = new();
         _editContext = new(_form);
         _modal.Open();
     }
