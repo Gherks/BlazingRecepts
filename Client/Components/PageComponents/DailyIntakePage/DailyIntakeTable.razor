@@ -13,7 +13,7 @@
 }
 else
 {
-    @*foreach (List<DailyIntakeEntryDto> dailyIntakeEntryDtos in DailyIntakePage.DailyIntakeEntryDtoCollections.Values)*@
+    <AddDailyIntakeEntryModal @ref="_addDailyIntakeEntryModal" />
     foreach (KeyValuePair<Guid, List<DailyIntakeEntryDto>> pair in DailyIntakePage.DailyIntakeEntryDtoCollections)
     {
         Guid collectionId = pair.Key;
@@ -100,7 +100,9 @@ else
                     </tfoot>
                 </table>
                 <AuthorizeView>
-                    <DailyIntakeEntryInputForm CollectionId="@collectionId" />
+                    <div>
+                        <button type="button" class="btn btn-primary" @onclick="@(_ => HandleDailyIntakeEntryModalOpen(collectionId))">Lägg till produkt</button>
+                    </div>
                 </AuthorizeView>
             </div>
         </div>

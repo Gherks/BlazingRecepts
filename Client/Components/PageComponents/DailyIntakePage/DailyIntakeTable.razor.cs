@@ -17,6 +17,7 @@ public partial class DailyIntakeTable : PageComponentBase
 
     private Guid _editingDailyIntakeEntryGuid = Guid.Empty;
 
+    private AddDailyIntakeEntryModal? _addDailyIntakeEntryModal;
     private RemovalConfirmationModal<DailyIntakeEntryDto>? _removalConfirmationModal;
 
     [CascadingParameter]
@@ -33,6 +34,18 @@ public partial class DailyIntakeTable : PageComponentBase
 
     [Inject]
     public IToastService? ToastService { get; private set; }
+
+    public void HandleDailyIntakeEntryModalOpen(Guid collectionId)
+    {
+        if (_addDailyIntakeEntryModal == null)
+        {
+            string errorMessage = "Cannot open add daily intake entry modal because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        _addDailyIntakeEntryModal.Open(collectionId);
+    }
 
     private void HandleDailyIntakeEntryEditClicked(Guid editingDailyIntakeEntryGuid)
     {

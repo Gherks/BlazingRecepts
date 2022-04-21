@@ -1,4 +1,5 @@
-using BlazingRecept.Client.Components.PageComponents.Base;
+ï»¿using BlazingRecept.Client.Components.PageComponents.Base;
+using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
@@ -6,24 +7,27 @@ using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Serilog;
+using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.DailyIntakePage;
 
-public partial class DailyIntakeEntryInputForm : PageComponentBase
+public partial class AddDailyIntakeEntryModal : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "DailyIntakeEntryInputForm";
+    private static readonly string _logDomainName = "AddDailyIntakeEntryModal";
+    private static readonly string _editFormId = "AddDailyIntakeEntryModalEditForm";
 
-    private Form _form = new();
-
+    private Modal? _modal;
     private CustomValidation? _customValidation;
+    private EditContext? _editContext;
+
+    private Guid _collectionId;
+    private Form _form = new();
 
     [CascadingParameter]
     protected internal DailyIntake? DailyIntakePage { get; private set; }
-
-    [Parameter]
-    public Guid CollectionId { get; set; }
 
     [Inject]
     public IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
@@ -37,7 +41,37 @@ public partial class DailyIntakeEntryInputForm : PageComponentBase
 
         await base.OnInitializedAsync();
 
+        _editContext = new(_form);
+
         IsLoading = false;
+    }
+
+    public void Open(Guid collectionId)
+    {
+        if (_modal == null)
+        {
+            string errorMessage = "Add ingredient measurement modal cannot be opened because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        _collectionId = collectionId;
+        _form = new();
+
+        _editContext = new(_form);
+        _modal.Open();
+    }
+
+    private void HandleCancel()
+    {
+        if (_modal == null)
+        {
+            string errorMessage = "Add ingredient measurement modal cannot be closed because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        _modal.Close();
     }
 
     private async Task<IEnumerable<string>> SearchForRecipeOrIngredient(string searchTerm)
@@ -88,6 +122,13 @@ public partial class DailyIntakeEntryInputForm : PageComponentBase
 
     private async Task HandleValidFormSubmitted()
     {
+        if (_modal == null)
+        {
+            string errorMessage = "Add ingredient measurement modal form cannot be validated because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
         if (DailyIntakePage == null)
         {
             string errorMessage = "Daily intake page reference is not available during form validation.";
@@ -119,13 +160,14 @@ public partial class DailyIntakeEntryInputForm : PageComponentBase
                 DailyIntakePage.UpsertDailyIntakeEntryIntoCollection(savedDailyIntakeEntryDto);
 
                 _form = new();
-                ToastService.ShowSuccess("Post för dagligt intag tillagd!");
+                ToastService.ShowSuccess("Post fÃ¶r dagligt intag tillagd!");
 
                 StateHasChanged();
+                _modal.Close();
             }
             else
             {
-                ToastService.ShowError("Kunde ej lägga till post för dagligt intag.");
+                ToastService.ShowError("Kunde ej lÃ¤gga till post fÃ¶r dagligt intag.");
             }
         }
     }
@@ -146,11 +188,11 @@ public partial class DailyIntakeEntryInputForm : PageComponentBase
         if (string.IsNullOrWhiteSpace(_form.ProductName))
         {
             errors.Add(nameof(_form.ProductName), new List<string>() {
-                "Namn måste anges."
+                "Namn mÃ¥ste anges."
             });
         }
 
-        InputValidation.ValidateStringToDouble(_form.Amount, nameof(_form.Amount), "Mängd", errors);
+        InputValidation.ValidateStringToDouble(_form.Amount, nameof(_form.Amount), "MÃ¤ngd", errors);
 
         if (errors.Count > 0)
         {
@@ -174,7 +216,7 @@ public partial class DailyIntakeEntryInputForm : PageComponentBase
         {
             ProductName = _form.ProductName.Trim(),
             Amount = double.Parse(_form.Amount),
-            CollectionId = CollectionId
+            CollectionId = _collectionId
         };
 
         dailyIntakeEntryDto.LoadFromProductListsByName(DailyIntakePage.Ingredients, DailyIntakePage.Recipes);
