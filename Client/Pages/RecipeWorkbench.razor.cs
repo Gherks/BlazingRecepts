@@ -25,27 +25,27 @@ public partial class RecipeWorkbench : PageBase
 
     private IReadOnlyList<CategoryDto>? _categoryDtos = new List<CategoryDto>();
 
-    public IReadOnlyList<IngredientDto>? Ingredients { get; set; } = new List<IngredientDto>();
+    public IReadOnlyList<IngredientDto>? Ingredients { get; private set; } = new List<IngredientDto>();
 
-    public List<IngredientMeasurementDto> ContainedIngredientMeasurements { get; set; } = new();
+    public List<IngredientMeasurementDto> ContainedIngredientMeasurements { get; private set; } = new();
 
     [Parameter]
     public Guid RecipeId { get; set; } = Guid.Empty;
 
     [Inject]
-    public IIngredientService? IngredientService { get; set; }
+    public IIngredientService? IngredientService { get; private set; }
 
     [Inject]
-    public ICategoryService? CategoryService { get; set; }
+    public ICategoryService? CategoryService { get; private set; }
 
     [Inject]
-    public IRecipeService? RecipeService { get; set; }
+    public IRecipeService? RecipeService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; set; }
+    public IToastService? ToastService { get; private set; }
 
     [Inject]
-    public NavigationManager? NavigationManager { get; set; }
+    public NavigationManager? NavigationManager { get; private set; }
 
     private bool IsCreatingNewRecipe => RecipeId == Guid.Empty;
 

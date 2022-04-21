@@ -11,10 +11,10 @@ public partial class LoginDisplay
     private static readonly string _logDomainName = "LoginDisplay";
 
     [Inject]
-    public NavigationManager? NavigationManager { get; set; }
+    public NavigationManager? NavigationManager { get; private set; }
 
     [Inject]
-    public SignOutSessionStateManager? SignOutSessionStateManager { get; set; }
+    public SignOutSessionStateManager? SignOutSessionStateManager { get; private set; }
 
     private void HandleBeginLogin()
     {

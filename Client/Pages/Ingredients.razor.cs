@@ -17,7 +17,7 @@ public partial class Ingredients : PageBase
     public IReadOnlyList<IngredientCollectionTypeDto>? IngredientCollectionTypes { get; private set; } = new List<IngredientCollectionTypeDto>();
 
     [Inject]
-    public IIngredientService? IngredientService { get; set; }
+    public IIngredientService? IngredientService { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

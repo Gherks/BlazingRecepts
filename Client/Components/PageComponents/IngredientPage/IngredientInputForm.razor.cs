@@ -25,13 +25,13 @@ public partial class IngredientInputForm : PageComponentBase
     protected internal Ingredients? IngredientsPage { get; private set; }
 
     [Inject]
-    public IIngredientService? IngredientService { get; set; }
+    public IIngredientService? IngredientService { get; private set; }
 
     [Inject]
-    public ICategoryService? CategoryService { get; set; }
+    public ICategoryService? CategoryService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; set; }
+    public IToastService? ToastService { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

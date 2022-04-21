@@ -26,10 +26,10 @@ public partial class DailyIntakeEntryInputForm : PageComponentBase
     public Guid CollectionId { get; set; }
 
     [Inject]
-    public IDailyIntakeEntryService? DailyIntakeEntryService { get; set; }
+    public IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; set; }
+    public IToastService? ToastService { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

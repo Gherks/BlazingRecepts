@@ -14,7 +14,7 @@ public partial class RecipeNutritionChart : PageComponentBase
     private NutritionalChartItem[]? _nutritionalChartItems = null;
 
     [CascadingParameter]
-    public Recipe? RecipePage { get; set; }
+    public Recipe? RecipePage { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

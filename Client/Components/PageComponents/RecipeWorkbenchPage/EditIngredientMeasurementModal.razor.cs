@@ -24,7 +24,7 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
     private IngredientDto? _editIngredientDto;
 
     [CascadingParameter]
-    public RecipeWorkbench? RecipeWorkbench { get; set; }
+    public RecipeWorkbench? RecipeWorkbench { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

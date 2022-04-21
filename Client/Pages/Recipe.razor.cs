@@ -15,19 +15,19 @@ public partial class Recipe : PageBase
 
     private RemovalConfirmationModal<RecipeDto>? _removalConfirmationModal;
 
-    public RecipeDto? RecipeDto { get; set; } = new RecipeDto();
+    public RecipeDto? RecipeDto { get; private set; } = new RecipeDto();
 
     [Parameter]
     public Guid RecipeId { get; set; }
 
     [Inject]
-    public IRecipeService? RecipeService { get; set; }
+    public IRecipeService? RecipeService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; set; }
+    public IToastService? ToastService { get; private set; }
 
     [Inject]
-    public NavigationManager? NavigationManager { get; set; }
+    public NavigationManager? NavigationManager { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

@@ -14,18 +14,18 @@ public partial class DailyIntake : PageBase
 
     private DailyIntakeTable? _dailyIntakeTable;
 
-    internal Dictionary<Guid, List<DailyIntakeEntryDto>> DailyIntakeEntryDtoCollections { get; set; } = new();
-    public IReadOnlyList<IngredientDto> Ingredients { get; set; } = new List<IngredientDto>();
-    public IReadOnlyList<RecipeDto> Recipes { get; set; } = new List<RecipeDto>();
+    internal Dictionary<Guid, List<DailyIntakeEntryDto>> DailyIntakeEntryDtoCollections { get; private set; } = new();
+    public IReadOnlyList<IngredientDto> Ingredients { get; private set; } = new List<IngredientDto>();
+    public IReadOnlyList<RecipeDto> Recipes { get; private set; } = new List<RecipeDto>();
 
     [Inject]
-    public IDailyIntakeEntryService? DailyIntakeEntryService { get; set; }
+    public IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
 
     [Inject]
-    public IIngredientService? IngredientService { get; set; }
+    public IIngredientService? IngredientService { get; private set; }
 
     [Inject]
-    public IRecipeService? RecipeService { get; set; }
+    public IRecipeService? RecipeService { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

@@ -13,7 +13,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
     private static readonly string _logDomainName = "IngredientMeasurementWorkbenchTable";
 
     [CascadingParameter]
-    public RecipeWorkbench? RecipeWorkbench { get; set; }
+    public RecipeWorkbench? RecipeWorkbench { get; private set; }
 
     private void HandleIngredientFormMoveUpInOrder(IngredientMeasurementDto ingredientMeasurementDto)
     {
