@@ -174,7 +174,7 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
         return true;
     }
 
-    public class Form
+    private class Form
     {
         public string Measurement { get; set; } = string.Empty;
         public MeasurementUnit MeasurementUnit { get; set; } = MeasurementUnit.Unassigned;

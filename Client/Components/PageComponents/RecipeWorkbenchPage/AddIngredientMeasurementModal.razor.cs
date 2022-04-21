@@ -218,7 +218,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
         return RecipeWorkbench.ContainedIngredientMeasurements.Any(ingredientMeasurement => ingredientMeasurement.IngredientDto.Id == IngredientDto.Id);
     }
 
-    public class Form
+    private class Form
     {
         public IngredientDto IngredientDto { get; set; } = new();
         public string Measurement { get; set; } = string.Empty;
