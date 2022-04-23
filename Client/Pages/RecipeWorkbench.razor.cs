@@ -22,6 +22,8 @@ public partial class RecipeWorkbench : PageBase
     private EditIngredientMeasurementModal? _editIngredientMeasurementModal;
     private RemovalConfirmationModal<IngredientDto>? _removalConfirmationModal;
     private CustomValidation? _customValidation;
+    private ElementReference _nameInput;
+    private bool _shouldMoveFocusToNameElement = false;
 
     private IReadOnlyList<CategoryDto>? _categoryDtos = new List<CategoryDto>();
 
@@ -86,7 +88,7 @@ public partial class RecipeWorkbench : PageBase
                 _form = new()
                 {
                     Name = recipeDto.Name,
-                    PortionAmount = recipeDto.PortionAmount.ToString(),
+                    PortionAmount = recipeDto.PortionAmount,
                     CategoryDtoId = recipeDto.CategoryDto.Id,
                     Instructions = recipeDto.Instructions
                 };
@@ -95,7 +97,19 @@ public partial class RecipeWorkbench : PageBase
             }
         }
 
+        _shouldMoveFocusToNameElement = true;
         IsLoading = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (_shouldMoveFocusToNameElement)
+        {
+            _shouldMoveFocusToNameElement = false;
+            await _nameInput.FocusAsync();
+        }
     }
 
     public void Refresh()
@@ -128,7 +142,7 @@ public partial class RecipeWorkbench : PageBase
 
         if (await Validate())
         {
-            RecipeDto? recipeDto = ParseRecipeForm();
+            RecipeDto? recipeDto = CreateRecipeDtoFromForm();
 
             recipeDto = await RecipeService.SaveAsync(recipeDto);
 
@@ -180,24 +194,7 @@ public partial class RecipeWorkbench : PageBase
             }
         }
 
-        if (string.IsNullOrWhiteSpace(_form.PortionAmount))
-        {
-            errors.Add(nameof(_form.PortionAmount), new List<string>() {
-                "Antalet portioner måste anges."
-            });
-        }
-        else if (int.TryParse(_form.PortionAmount, out int basePortions) == false)
-        {
-            errors.Add(nameof(_form.PortionAmount), new List<string>() {
-                "Antalet portioner kan ej innehålla icke-numeriska tecken."
-            });
-        }
-        else if (basePortions <= 0)
-        {
-            errors.Add(nameof(_form.PortionAmount), new List<string>() {
-                "Antalet portioner måste vara en positiv siffra."
-            });
-        }
+        InputValidation.ValidateNullableInt(_form.PortionAmount, nameof(_form.PortionAmount), "Antalet portioner", errors);
 
         if (_form.CategoryDtoId == Guid.Empty)
         {
@@ -215,11 +212,11 @@ public partial class RecipeWorkbench : PageBase
         return true;
     }
 
-    private RecipeDto ParseRecipeForm()
+    private RecipeDto CreateRecipeDtoFromForm()
     {
         if (_categoryDtos == null)
         {
-            string errorMessage = "Cannot parse recipe form because it has not been set.";
+            string errorMessage = "Cannot create recipe dto from form because category list has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -228,19 +225,27 @@ public partial class RecipeWorkbench : PageBase
 
         if (categoryDto == null)
         {
-            string errorMessage = "Cannot parse recipe form because it contains an unknown category.";
+            string errorMessage = "Cannot create recipe dto from form because selected category in form does not exist.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        RecipeDto recipeDto = new();
+        if (_form.PortionAmount == null)
+        {
+            string errorMessage = "Cannot create recipe dto from form because portion amount in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
-        recipeDto.Id = RecipeId;
-        recipeDto.Name = _form.Name;
-        recipeDto.PortionAmount = Convert.ToInt32(_form.PortionAmount);
-        recipeDto.CategoryDto = categoryDto;
-        recipeDto.Instructions = _form.Instructions;
-        recipeDto.IngredientMeasurementDtos = ContainedIngredientMeasurements;
+        RecipeDto recipeDto = new()
+        {
+            Id = RecipeId,
+            Name = _form.Name,
+            PortionAmount = _form.PortionAmount.Value,
+            CategoryDto = categoryDto,
+            Instructions = _form.Instructions,
+            IngredientMeasurementDtos = ContainedIngredientMeasurements
+        };
 
         for (int index = 0; index < recipeDto.IngredientMeasurementDtos.Count; ++index)
         {
@@ -307,7 +312,7 @@ public partial class RecipeWorkbench : PageBase
 
     private string GetTitle()
     {
-        return IsCreatingNewRecipe ? "Skapa recept" : "Editera recept";
+        return IsCreatingNewRecipe ? "Skapa recept" : "Uppdatera recept";
     }
 
     private string GetConfirmationButtonLabel()
@@ -318,7 +323,7 @@ public partial class RecipeWorkbench : PageBase
     private class Form
     {
         public string Name { get; set; } = string.Empty;
-        public string PortionAmount { get; set; } = string.Empty;
+        public int? PortionAmount { get; set; } = null;
         public Guid CategoryDtoId { get; set; } = Guid.Empty;
         public string Instructions { get; set; } = string.Empty;
         public string RecipeCreationErrorMessage { get; set; } = string.Empty;
