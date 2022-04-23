@@ -11,13 +11,16 @@
         <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
             <CustomValidation @ref="_customValidation" />
             <div class="row mb-2">
-                <label for="name" class="col-3 col-form-label">Namn</label>
-                <div class="col-9">
+                <div class="col">
                     <BlazoredTypeahead id="name"
+                                       placeholder="Ange namn"
                                        SearchMethod="SearchForIngredients"
                                        @bind-Value="_form.IngredientDto">
                         <SelectedTemplate Context="ingredientDto">
-                            @ingredientDto.Name
+                            @if(ingredientDto != null)
+                            {
+                                @ingredientDto.Name
+                            }
                         </SelectedTemplate>
                         <ResultTemplate Context="ingredientDto">
                             @ingredientDto.Name
@@ -27,16 +30,15 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <label for="measurement" class="col-3 col-form-label">Mätning</label>
-                <div class="col-9">
-                    <div class="input-group">
-                        <input type="text" id="measurement" class="form-control" @bind="_form!.Measurement">
+                <div class="col">
+                    <div class="input-group"> 
+                        <input type="text" id="measurement" class="form-control" placeholder="Ange mängd" @bind="_form!.Measurement">
                         <select class="form-select" @bind="_form!.MeasurementUnit">
                             @foreach (MeasurementUnit measurementUnit in Enum.GetValues(typeof(MeasurementUnit)))
                             {
                                 if (measurementUnit == MeasurementUnit.Unassigned)
                                 {
-                                    <option value="@measurementUnit">Välj mätningstyp...</option>
+                                    <option value="@measurementUnit">Ange mätningstyp</option>
                                 }
                                 else
                                 {
@@ -50,22 +52,20 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <label for="grams" class="col-3 col-form-label">Gram</label>
-                <div class="col-9">
-                    <input type="text" id="grams" class="form-control" @bind="_form!.Grams">
+                <div class="col">
+                    <input type="text" id="grams" class="form-control" placeholder="Ange gram" @bind="_form!.Grams">
                     <ValidationMessage For="() => _form.Grams" />
                 </div>
             </div>
             <div class="row mb-2">
-                <label for="note" class="col-3 col-form-label">Anteckning</label>
-                <div class="col-9">
-                    <input type="text" id="note" class="form-control" @bind="_form!.Note">
+                <div class="col">
+                    <input type="text" id="note" class="form-control" placeholder="Ange anteckning" @bind="_form!.Note">
                 </div>
             </div>
         </EditForm>
     </Body>
     <Buttons>
         <button form="@_editFormId" class="btn btn-primary" type="submit">Lägg till</button>
-        <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Ångra</button>
+        <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Avbryt</button>
     </Buttons>
 </Modal>

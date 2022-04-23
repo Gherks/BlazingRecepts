@@ -44,7 +44,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
-        
+
         _form = new();
         _editContext = new(_form);
         _modal.Open();
@@ -78,27 +78,10 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _form.Measurement = _form.Measurement.Replace(',', '.');
-        _form.Grams = _form.Grams.Replace(',', '.');
-
         if (Validate())
         {
-            int sortOrder = _form.SortOrder;
-
-            if (sortOrder >= 0)
-            {
-                sortOrder = RecipeWorkbench.ContainedIngredientMeasurements.Count;
-            }
-
-            RecipeWorkbench.ContainedIngredientMeasurements.Add(new()
-            {
-                IngredientDto = _form.IngredientDto,
-                Measurement = Convert.ToDouble(_form.Measurement),
-                MeasurementUnit = _form.MeasurementUnit,
-                Grams = Convert.ToDouble(_form.Grams),
-                Note = _form.Note,
-                SortOrder = sortOrder
-            });
+            IngredientMeasurementDto newIngredientMeasurementDto = CreateIngredientMeasurementDtoFromForm();
+            RecipeWorkbench.ContainedIngredientMeasurements.Add(newIngredientMeasurementDto);
 
             RecipeWorkbench.Refresh();
             _modal.Close();
@@ -125,7 +108,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
         Dictionary<string, List<string>> errors = new();
 
-        if (_form.IngredientDto.Id == Guid.Empty)
+        if (_form.IngredientDto == null)
         {
             errors.Add(nameof(_form.IngredientDto), new List<string>() {
                 "Ingrediens måste anges."
@@ -138,13 +121,6 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
             });
         }
 
-        if (string.IsNullOrWhiteSpace(_form.Measurement))
-        {
-            errors.Add(nameof(_form.Measurement), new List<string>() {
-                "Mätning måste anges."
-            });
-        }
-
         if (_form.MeasurementUnit == MeasurementUnit.Unassigned)
         {
             errors.Add(nameof(_form.MeasurementUnit), new List<string>() {
@@ -152,7 +128,8 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
             });
         }
 
-        InputValidation.ValidateStringToDouble(_form.Grams, nameof(_form.Grams), "Gram", errors);
+        InputValidation.ValidateNullableDouble(_form.Measurement, nameof(_form.Measurement), "Gram", errors);
+        InputValidation.ValidateNullableDouble(_form.Grams, nameof(_form.Grams), "Gram", errors);
 
         if (errors.Count > 0)
         {
@@ -162,6 +139,55 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
         StateHasChanged();
         return true;
+    }
+
+    private IngredientMeasurementDto CreateIngredientMeasurementDtoFromForm()
+    {
+        //if (RecipeWorkbench == null)
+        //{
+        //    string errorMessage = "Add ingredient measurement modal form cannot be validated because RecipeWorkbench page reference has not been set.";
+        //    Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+        //    throw new InvalidOperationException(errorMessage);
+        //}
+
+        int sortOrder = _form.SortOrder;
+
+        // huh?
+        //if (sortOrder >= 0)
+        //{
+        //    sortOrder = RecipeWorkbench.ContainedIngredientMeasurements.Count;
+        //}
+
+        if (_form.IngredientDto == null)
+        {
+            string errorMessage = "Cannot create ingredient measurement dto from form because ingredient dto in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_form.Measurement == null)
+        {
+            string errorMessage = "Cannot create ingredient measurement dto from form because measurement in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_form.Grams == null)
+        {
+            string errorMessage = "Cannot create ingredient measurement dto from form because grams in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        return new()
+        {
+            IngredientDto = _form.IngredientDto,
+            Measurement = _form.Measurement.Value,
+            MeasurementUnit = _form.MeasurementUnit,
+            Grams = _form.Grams.Value,
+            Note = _form.Note,
+            SortOrder = sortOrder
+        };
     }
 
     private async Task<IEnumerable<IngredientDto>> SearchForIngredients(string searchTerm)
@@ -204,10 +230,10 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
     private class Form
     {
-        public IngredientDto IngredientDto { get; set; } = new();
-        public string Measurement { get; set; } = string.Empty;
+        public IngredientDto? IngredientDto { get; set; } = null;
+        public double? Measurement { get; set; } = null;
         public MeasurementUnit MeasurementUnit { get; set; } = MeasurementUnit.Unassigned;
-        public string Grams { get; set; } = string.Empty;
+        public double? Grams { get; set; } = null;
         public string Note { get; set; } = string.Empty;
         public int SortOrder { get; set; } = -1;
     }
