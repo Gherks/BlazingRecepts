@@ -192,7 +192,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
             });
         }
 
-        InputValidation.ValidateStringToDouble(_form.Amount, nameof(_form.Amount), "Mängd", errors);
+        InputValidation.ValidateNullableDouble(_form.Amount, nameof(_form.Amount), "Mängd", errors);
 
         if (errors.Count > 0)
         {
@@ -207,7 +207,21 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     {
         if (DailyIntakePage == null)
         {
-            string errorMessage = "Daily intake page reference is not available during daily intake entry construction.";
+            string errorMessage = "Cannot create daily intake entry dto from form because daily intake page reference has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_form.ProductName == null)
+        {
+            string errorMessage = "Cannot create daily intake entry dto from form because name in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_form.Amount == null)
+        {
+            string errorMessage = "Cannot create daily intake entry dto from form because amount in form has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -215,7 +229,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
         DailyIntakeEntryDto dailyIntakeEntryDto = new()
         {
             ProductName = _form.ProductName.Trim(),
-            Amount = double.Parse(_form.Amount),
+            Amount = _form.Amount.Value,
             CollectionId = _collectionId
         };
 
@@ -226,7 +240,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
 
     private class Form
     {
-        public string ProductName { get; set; } = string.Empty;
-        public string Amount { get; set; } = string.Empty;
+        public string? ProductName { get; set; } = null;
+        public double? Amount { get; set; } = null;
     }
 }

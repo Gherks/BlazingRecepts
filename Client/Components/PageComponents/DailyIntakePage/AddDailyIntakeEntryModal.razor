@@ -11,9 +11,9 @@
         <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
             <CustomValidation @ref="_customValidation" />
             <div class="row mb-2">
-                <label for="product-name" class="col-3 col-form-label">Produkt</label>
-                <div class="col-9">
+                <div class="col">
                     <BlazoredTypeahead id="product-name"
+                                       placeholder="Ange namn"
                                        SearchMethod="SearchForRecipeOrIngredient"
                                        @bind-Value="_form.ProductName">
                         <SelectedTemplate Context="contextName">
@@ -27,9 +27,8 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <label for="amount" class="col-3 col-form-label">Mängd</label>
-                <div class="col-9">
-                    <input type="text" id="amount" name="amount" class="form-control" @bind="_form.Amount" placeholder="Mängd gram/portioner">
+                <div class="col">
+                    <input type="text" id="amount" name="amount" class="form-control" @bind="_form.Amount" placeholder="Ange mängd (gram/portioner)">
                     <ValidationMessage For="() => _form.Amount" />
                 </div>
             </div>
@@ -37,6 +36,6 @@
     </Body>
     <Buttons>
         <button form="@_editFormId" class="btn btn-primary" type="submit">Lägg till</button>
-        <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Ångra</button>
+        <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Avbryt</button>
     </Buttons>
 </Modal>
