@@ -7,48 +7,55 @@
 
 <div class="card mb-2">
     <div class="card-body">
-        <CollapsibleComponent CollapsedButtonText="Visa ingrediensformulär" ExposedButtonText="Dölj ingrediensformulär">
+        <CollapsibleComponent CollapsedButtonText="Visa formulär" ExposedButtonText="Dölj formulär" OnShow="@HandleCollapsibleShow">
             <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
                 <CustomValidation @ref="_customValidation" />
-                <div class="form-floating mb-2">
-                    <input type="text" id="name" name="name" class="form-control" @bind="_form.Name" @onblur="@(_ => HandleNameBlur())" placeholder="Namn">
-                    <label for="name">Namn</label>
-                    <ValidationMessage For="() => _form.Name" />
+                <div class="row mb-2">
+                    <div class="col-12 col-md-9 col-lg-7">
+                        <input type="text" id="name" name="name" class="form-control" @ref="_nameInput" @bind="_form.Name" @onblur="@(_ => HandleNameBlur())" placeholder="Ange namn">
+                        <ValidationMessage For="() => _form.Name" />
+                    </div>
                 </div>
-                <div class="form-floating mb-2">
-                    <input type="text" id="fat" name="fat" class="form-control" @bind="_form.Fat" placeholder="Fett">
-                    <label for="fat">Fett</label>
-                    <ValidationMessage For="() => _form.Fat" />
+                <div class="row mb-2">
+                    <div class="col-12 col-md-9 col-lg-7 ">
+                        <input type="number" id="fat" name="fat" class="form-control" @bind="_form.Fat" placeholder="Ange fettvärde">
+                        <ValidationMessage For="() => _form.Fat" />
+                    </div>
                 </div>
-                <div class="form-floating mb-2">
-                    <input type="text" id="carbohydrates" name="carbohydrates" class="form-control" @bind="_form.Carbohydrates" placeholder="Kolhydrater">
-                    <label for="carbohydrates">Kolhydrater</label>
-                    <ValidationMessage For="() => _form.Carbohydrates" />
+                <div class="row mb-2">
+                    <div class="col-12 col-md-9 col-lg-7">
+                        <input type="number" id="carbohydrates" name="carbohydrates" class="form-control" @bind="_form.Carbohydrates" placeholder="Ange kolhydratvärde">
+                        <ValidationMessage For="() => _form.Carbohydrates" />
+                    </div>
                 </div>
-                <div class="form-floating mb-2">
-                    <input type="text" id="protein" name="protein" class="form-control" @bind="_form.Protein" placeholder="Protein">
-                    <label for="protein">Protein</label>
-                    <ValidationMessage For="() => _form.Protein" />
+                <div class="row mb-2">
+                    <div class="col-12 col-md-9 col-lg-7">
+                        <input type="number" id="protein" name="protein" class="form-control" @bind="_form.Protein" placeholder="Ange proteinvärde">
+                        <ValidationMessage For="() => _form.Protein" />
+                    </div>
                 </div>
-                <div class="form-floating mb-2">
-                    <input type="text" id="calories" name="calories" class="form-control" @bind="_form.Calories" placeholder="Kalorier">
-                    <label for="calories">Kalorier</label>
-                    <ValidationMessage For="() => _form.Calories" />
+                <div class="row mb-2">
+                    <div class="col-12 col-md-9 col-lg-7">
+                        <input type="number" id="calories" name="calories" class="form-control" @bind="_form.Calories" placeholder="Ange kalorivärde">
+                        <ValidationMessage For="() => _form.Calories" />
+                    </div>
                 </div>
-                <div class="form-group mb-2">
-                    <select id="category-selector" name="category-selector" class="form-select" @bind="_form.CategoryDtoId">
-                        <option value="@Guid.Empty">Ange kategori...</option>
-                        @if (_categoryDtos != null)
-                        {
-                            foreach (CategoryDto categoryDto in _categoryDtos)
+                <div class="row mb-2">
+                    <div class="col-12 col-md-9 col-lg-7">
+                        <select id="category-selector" name="category-selector" class="form-select" @bind="_form.CategoryDtoId">
+                            <option value="@Guid.Empty" disabled selected>Ange kategori</option>
+                            @if (_categoryDtos != null)
                             {
-                                <option value="@categoryDto.Id">@categoryDto.Name</option>
+                                foreach (CategoryDto categoryDto in _categoryDtos)
+                                {
+                                    <option value="@categoryDto.Id">@categoryDto.Name</option>
+                                }
                             }
-                        }
-                    </select>
-                    <ValidationMessage For="() => _form.CategoryDtoId" />
+                        </select>
+                        <ValidationMessage For="() => _form.CategoryDtoId" />
+                    </div>
                 </div>
-                <button class="btn btn-primary" type="submit">Lägg till ingrediens</button>
+                <button class="btn btn-primary" type="submit">Lägg till</button>
             </EditForm>
         </CollapsibleComponent>
     </div>

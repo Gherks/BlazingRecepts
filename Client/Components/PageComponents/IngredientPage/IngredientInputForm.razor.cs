@@ -1,4 +1,5 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
+using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
@@ -18,6 +19,8 @@ public partial class IngredientInputForm : PageComponentBase
     private Form _form = new();
 
     private CustomValidation? _customValidation;
+    private ElementReference _nameInput;
+    private bool _shouldMoveFocusToNameElement = false;
 
     private IReadOnlyList<CategoryDto>? _categoryDtos = new List<CategoryDto>();
 
@@ -47,8 +50,22 @@ public partial class IngredientInputForm : PageComponentBase
         IsLoading = false;
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_nameInput.Id != null && _shouldMoveFocusToNameElement)
+        {
+            _shouldMoveFocusToNameElement = false;
+            await _nameInput.FocusAsync();
+        }
+    }
+
     private async Task HandleNameBlur()
     {
+        if (string.IsNullOrWhiteSpace(_form.Name))
+        {
+            return;
+        }
+
         if (_customValidation == null)
         {
             string errorMessage = "Custom validation object is not available during blur validation.";
@@ -69,6 +86,11 @@ public partial class IngredientInputForm : PageComponentBase
 
         if (ingredientExists)
         {
+            if (_customValidation.ContainsError(nameof(_form.Name)))
+            {
+                _customValidation.RemoveError(nameof(_form.Name));
+            }
+
             errors.Add(nameof(_form.Name), new List<string>() {
                 "Ingrediens med angivet namn finns redan."
             });
@@ -105,7 +127,7 @@ public partial class IngredientInputForm : PageComponentBase
 
         if (await Validate())
         {
-            IngredientDto newIngredientDto = CreateIngredientDtoFromForm() ?? throw new InvalidOperationException();
+            IngredientDto newIngredientDto = CreateIngredientDtoFromForm();
             IngredientDto? ingredientDto = await IngredientService.SaveAsync(newIngredientDto);
 
             if (ingredientDto != null && ingredientDto.Id != Guid.Empty)
@@ -113,6 +135,7 @@ public partial class IngredientInputForm : PageComponentBase
                 ToastService.ShowSuccess("Ingrediens tillagd!");
                 IngredientsPage.AddNewIngredientToCollection(ingredientDto);
 
+                _shouldMoveFocusToNameElement = true;
                 _form = new();
             }
             else
@@ -120,6 +143,11 @@ public partial class IngredientInputForm : PageComponentBase
                 ToastService.ShowError("Kunde ej lägga till ingrediens.");
             }
         }
+    }
+
+    private async Task HandleCollapsibleShow()
+    {
+        await _nameInput.FocusAsync();
     }
 
     private async Task<bool> Validate()
@@ -160,10 +188,10 @@ public partial class IngredientInputForm : PageComponentBase
             }
         }
 
-        InputValidation.ValidateStringToDouble(_form.Fat, nameof(_form.Fat), "Fett", errors);
-        InputValidation.ValidateStringToDouble(_form.Carbohydrates, nameof(_form.Carbohydrates), "Kolhydrater", errors);
-        InputValidation.ValidateStringToDouble(_form.Protein, nameof(_form.Protein), "Protein", errors);
-        InputValidation.ValidateStringToDouble(_form.Calories, nameof(_form.Calories), "Kalorier", errors);
+        InputValidation.ValidateNullableDouble(_form.Fat, nameof(_form.Fat), "Fett", errors);
+        InputValidation.ValidateNullableDouble(_form.Carbohydrates, nameof(_form.Carbohydrates), "Kolhydrater", errors);
+        InputValidation.ValidateNullableDouble(_form.Protein, nameof(_form.Protein), "Protein", errors);
+        InputValidation.ValidateNullableDouble(_form.Calories, nameof(_form.Calories), "Kalorier", errors);
 
         if (_form.CategoryDtoId == Guid.Empty)
         {
@@ -181,11 +209,11 @@ public partial class IngredientInputForm : PageComponentBase
         return true;
     }
 
-    private IngredientDto? CreateIngredientDtoFromForm()
+    private IngredientDto CreateIngredientDtoFromForm()
     {
         if (_categoryDtos == null)
         {
-            string errorMessage = ".";
+            string errorMessage = "Cannot create ingredient dto from form because category list has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -194,18 +222,46 @@ public partial class IngredientInputForm : PageComponentBase
 
         if (categoryDto == null)
         {
-            string errorMessage = ".";
+            string errorMessage = "Cannot create ingredient dto from form because selected category in form does not exist.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        return new IngredientDto()
+        if (_form.Fat == null)
+        {
+            string errorMessage = "Cannot create ingredient dto from form because fat in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_form.Carbohydrates == null)
+        {
+            string errorMessage = "Cannot create ingredient dto from form because carbohydrates in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_form.Protein == null)
+        {
+            string errorMessage = "Cannot create ingredient dto from form because protein in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_form.Calories == null)
+        {
+            string errorMessage = "Cannot create ingredient dto from form because calories in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        return new()
         {
             Name = _form.Name.Trim(),
-            Fat = double.Parse(_form.Fat),
-            Carbohydrates = double.Parse(_form.Carbohydrates),
-            Protein = double.Parse(_form.Protein),
-            Calories = double.Parse(_form.Calories),
+            Fat = _form.Fat.Value,
+            Carbohydrates = _form.Carbohydrates.Value,
+            Protein = _form.Protein.Value,
+            Calories = _form.Calories.Value,
             CategoryDto = categoryDto
         };
     }
@@ -213,10 +269,10 @@ public partial class IngredientInputForm : PageComponentBase
     private class Form
     {
         public string Name { get; set; } = string.Empty;
-        public string Fat { get; set; } = string.Empty;
-        public string Carbohydrates { get; set; } = string.Empty;
-        public string Protein { get; set; } = string.Empty;
-        public string Calories { get; set; } = string.Empty;
+        public double? Fat { get; set; } = null;
+        public double? Carbohydrates { get; set; } = null;
+        public double? Protein { get; set; } = null;
+        public double? Calories { get; set; } = null;
         public Guid CategoryDtoId { get; set; } = Guid.Empty;
     }
 }
