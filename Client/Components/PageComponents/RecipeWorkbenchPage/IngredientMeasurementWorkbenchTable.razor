@@ -5,40 +5,42 @@
 @inherits PageComponentBase
 
 <div class="mb-2">
-    <table class="table table-hover table-striped table-sm">
-        <thead>
-            <tr>
-                <th>Namn</th>
-                <th>Mätning</th>
-                <th>Gram</th>
-                <th>Anteckning</th>
-                <th>Åtgärder</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (IngredientMeasurementDto ingredientMeasurementDto in GetIngredientMeasurementContainedInRecipe())
-            {
+    <div class="table-responsive">
+        <table class="table table-hover table-striped table-sm">
+            <thead>
                 <tr>
-                    <td>@ingredientMeasurementDto.IngredientDto.Name</td>
-                    <td>@GetMeasurementText(ingredientMeasurementDto)</td>
-                    <td>@ingredientMeasurementDto.Grams</td>
-                    <td>@ingredientMeasurementDto.Note</td>
-                    <td>
-                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientFormMoveUpInOrder(ingredientMeasurementDto)">
-                            <i class="fa-solid fa-arrow-up"></i>
-                        </button>
-                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientFormMoveDownInOrder(ingredientMeasurementDto)">
-                            <i class="fa-solid fa-arrow-down"></i>
-                        </button>
-                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEdit(ingredientMeasurementDto)">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                        <button type="button" class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemoval(ingredientMeasurementDto)">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
+                    <th>Namn</th>
+                    <th>Mätning</th>
+                    <th>Gram</th>
+                    <th>Anteckning</th>
+                    <th>Åtgärder</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (IngredientMeasurementDto ingredientMeasurementDto in GetIngredientMeasurementContainedInRecipe())
+                {
+                    <tr>
+                        <td>@ingredientMeasurementDto.IngredientDto.Name</td>
+                        <td>@GetMeasurementText(ingredientMeasurementDto)</td>
+                        <td>@ingredientMeasurementDto.Grams</td>
+                        <td>@ingredientMeasurementDto.Note</td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientFormMoveUpInOrder(ingredientMeasurementDto)">
+                                <i class="fa-solid fa-arrow-up"></i>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientFormMoveDownInOrder(ingredientMeasurementDto)">
+                                <i class="fa-solid fa-arrow-down"></i>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEdit(ingredientMeasurementDto)">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemoval(ingredientMeasurementDto)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
