@@ -3,7 +3,7 @@
 <div class="@_class">
     <button type="button" class="btn btn-primary" @onclick="@HandleToggle">@_buttonText</button>
 </div>
-@if (ShowChildContent)
+@if (_showChildContent)
 {
     @ChildContent
 }
