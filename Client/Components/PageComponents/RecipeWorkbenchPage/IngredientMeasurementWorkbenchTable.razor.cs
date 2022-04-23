@@ -62,7 +62,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        RecipeWorkbench.HandleEditIngredientModalOpen(ingredientMeasurementDto);
+        RecipeWorkbench.HandleUpdateIngredientModalOpen(ingredientMeasurementDto);
     }
 
     private void HandleIngredientRemoval(IngredientMeasurementDto ingredientMeasurementDto)

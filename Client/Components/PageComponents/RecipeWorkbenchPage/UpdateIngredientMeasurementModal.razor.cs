@@ -10,11 +10,11 @@ using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 
-public partial class EditIngredientMeasurementModal : PageComponentBase
+public partial class UpdateIngredientMeasurementModal : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "EditIngredientMeasurementModal";
-    private static readonly string _editFormId = "EditIngredientMeasurementModalEditForm";
+    private static readonly string _logDomainName = "UpdateIngredientMeasurementModal";
+    private static readonly string _editFormId = "UpdateIngredientMeasurementModalEditForm";
 
     private Modal? _modal;
     private CustomValidation? _customValidation;

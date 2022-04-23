@@ -19,7 +19,7 @@ public partial class RecipeWorkbench : PageBase
     private Form _form = new();
 
     private AddIngredientMeasurementModal? _addIngredientMeasurementModal;
-    private EditIngredientMeasurementModal? _editIngredientMeasurementModal;
+    private UpdateIngredientMeasurementModal? _updateIngredientMeasurementModal;
     private RemovalConfirmationModal<IngredientDto>? _removalConfirmationModal;
     private CustomValidation? _customValidation;
     private ElementReference _nameInput;
@@ -267,16 +267,16 @@ public partial class RecipeWorkbench : PageBase
         _addIngredientMeasurementModal.Open();
     }
 
-    public void HandleEditIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
+    public void HandleUpdateIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
     {
-        if (_editIngredientMeasurementModal == null)
+        if (_updateIngredientMeasurementModal == null)
         {
-            string errorMessage = "Cannot open edit ingredient modal because modal has not been set.";
+            string errorMessage = "Cannot open update ingredient modal because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        _editIngredientMeasurementModal.Open(ingredientMeasurementDto);
+        _updateIngredientMeasurementModal.Open(ingredientMeasurementDto);
     }
 
     public void OpenIngredientRemovalModalOpen(IngredientMeasurementDto ingredientMeasurementDto)
