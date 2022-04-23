@@ -9,7 +9,6 @@ using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Serilog;
-using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.DailyIntakePage;
 

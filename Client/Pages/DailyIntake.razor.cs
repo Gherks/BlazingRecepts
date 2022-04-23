@@ -71,7 +71,7 @@ public partial class DailyIntake : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        HandleUnmappedCollection(upsertedDailyIntakeEntryDto);  
+        HandleUnmappedCollection(upsertedDailyIntakeEntryDto);
 
         List<DailyIntakeEntryDto> currentCollection = DailyIntakeEntryDtoCollections[upsertedDailyIntakeEntryDto.CollectionId];
 

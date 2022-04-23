@@ -3,7 +3,6 @@ using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using Serilog;
 
 namespace BlazingRecept.Server.Services
 {
