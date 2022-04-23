@@ -47,6 +47,18 @@ public sealed class CustomValidation : ComponentBase
         }
     }
 
+    public bool ContainsError(string errorName)
+    {
+        if (_messageStore != null && CurrentEditContext != null)
+        {
+            IReadOnlyList<string> fields = _messageStore[CurrentEditContext.Field(errorName)].ToList();
+
+            return fields.Count != 0;
+        }
+
+        return false;
+    }
+
     public void RemoveError(string errorName)
     {
         if (_messageStore != null && CurrentEditContext != null)
