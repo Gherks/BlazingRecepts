@@ -57,9 +57,9 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
 
         _form = new()
         {
-            Measurement = ingredientMeasurementDto.Measurement.ToString(),
+            Measurement = ingredientMeasurementDto.Measurement,
             MeasurementUnit = ingredientMeasurementDto.MeasurementUnit,
-            Grams = ingredientMeasurementDto.Grams.ToString(),
+            Grams = ingredientMeasurementDto.Grams,
             Note = ingredientMeasurementDto.Note,
         };
 
@@ -95,9 +95,6 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _form.Measurement = _form.Measurement.Replace(',', '.');
-        _form.Grams = _form.Grams.Replace(',', '.');
-
         if (Validate())
         {
             if (RecipeWorkbench == null)
@@ -124,10 +121,7 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
                 throw new InvalidOperationException(errorMessage);
             }
 
-            ingredientMeasurementDto.Measurement = Convert.ToDouble(_form.Measurement);
-            ingredientMeasurementDto.MeasurementUnit = _form.MeasurementUnit;
-            ingredientMeasurementDto.Grams = Convert.ToDouble(_form.Grams);
-            ingredientMeasurementDto.Note = _form.Note;
+            EditIngredientMeasurementDtoWithForm(ingredientMeasurementDto);
 
             RecipeWorkbench.Refresh();
             _modal.Close();
@@ -161,8 +155,8 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
             });
         }
 
-        InputValidation.ValidateStringToDouble(_form.Measurement, nameof(_form.Measurement), "Mätning", errors);
-        InputValidation.ValidateStringToDouble(_form.Grams, nameof(_form.Grams), "Gram", errors);
+        InputValidation.ValidateNullableDouble(_form.Measurement, nameof(_form.Measurement), "Mätning", errors);
+        InputValidation.ValidateNullableDouble(_form.Grams, nameof(_form.Grams), "Gram", errors);
 
         if (errors.Count > 0)
         {
@@ -174,11 +168,33 @@ public partial class EditIngredientMeasurementModal : PageComponentBase
         return true;
     }
 
+    private void EditIngredientMeasurementDtoWithForm(IngredientMeasurementDto ingredientMeasurementDto)
+    {
+        if (_form.Measurement == null)
+        {
+            string errorMessage = "Cannot create ingredient measurement dto from form because measurement in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_form.Grams == null)
+        {
+            string errorMessage = "Cannot create ingredient measurement dto from form because grams in form has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        ingredientMeasurementDto.Measurement = _form.Measurement.Value;
+        ingredientMeasurementDto.MeasurementUnit = _form.MeasurementUnit;
+        ingredientMeasurementDto.Grams = _form.Grams.Value;
+        ingredientMeasurementDto.Note = _form.Note;
+    }
+
     private class Form
     {
-        public string Measurement { get; set; } = string.Empty;
+        public double? Measurement { get; set; } = null;
         public MeasurementUnit MeasurementUnit { get; set; } = MeasurementUnit.Unassigned;
-        public string Grams { get; set; } = string.Empty;
+        public double? Grams { get; set; } = null;
         public string Note { get; set; } = string.Empty;
     }
 }

@@ -6,23 +6,18 @@
 
 @inherits PageComponentBase
 
-<Modal @ref="_modal" Title="Editera ingrediens">
+<Modal @ref="_modal" Title="Uppdatera ingrediens">
     <Body>
         <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
             <CustomValidation @ref="_customValidation" />
             <div class="row mb-2">
-                <label for="measurement" class="col-3 col-form-label">Mätning</label>
-                <div class="col-9">
+                <div class="col">
                     <div class="input-group">
-                        <input type="text" id="measurement" class="form-control" @bind="_form!.Measurement">
+                        <input type="text" id="measurement" class="form-control" placeholder="Ange mängd" @bind="_form!.Measurement">
                         <select class="form-select" @bind="_form!.MeasurementUnit">
                             @foreach (MeasurementUnit measurementUnit in Enum.GetValues(typeof(MeasurementUnit)))
                             {
-                                if (measurementUnit == MeasurementUnit.Unassigned)
-                                {
-                                    <option value="@measurementUnit">Välj mätningstyp...</option>
-                                }
-                                else
+                                if (measurementUnit != MeasurementUnit.Unassigned)
                                 {
                                     <option value="@measurementUnit">@measurementUnit.ToSymbol()</option>
                                 }
@@ -34,22 +29,20 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <label for="grams" class="col-3 col-form-label">Gram</label>
-                <div class="col-9">
-                    <input type="text" id="grams" class="form-control" @bind="_form!.Grams">
+                <div class="col">
+                    <input type="text" id="grams" class="form-control" placeholder="Ange gram" @bind="_form!.Grams">
                     <ValidationMessage For="() => _form.Grams" />
                 </div>
             </div>
             <div class="row mb-2">
-                <label for="note" class="col-3 col-form-label">Anteckning</label>
-                <div class="col-9">
-                    <input type="text" id="note" class="form-control" @bind="_form!.Note">
+                <div class="col">
+                    <input type="text" id="note" class="form-control" placeholder="Ange anteckning" @bind="_form!.Note">
                 </div>
             </div>
         </EditForm>
     </Body>
     <Buttons>
-        <button form="@_editFormId" class="btn btn-primary" type="submit">Editera</button>
-        <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Ångra</button>
+        <button form="@_editFormId" class="btn btn-primary" type="submit">Uppdatera</button>
+        <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Avbryt</button>
     </Buttons>
 </Modal>
