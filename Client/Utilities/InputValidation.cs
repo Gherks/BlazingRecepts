@@ -2,21 +2,30 @@
 
 public static class InputValidation
 {
-    public static void ValidateStringToDouble(string variableValue, string variableName, string displayName, Dictionary<string, List<string>> errors)
+    public static void ValidateNullableInt(int? variableValue, string variableName, string displayName, Dictionary<string, List<string>> errors)
     {
-        if (string.IsNullOrWhiteSpace(variableValue))
+        if (variableValue == null)
         {
             errors.Add(variableName, new List<string>() {
                 $"{displayName} måste anges."
             });
         }
-        else if (double.TryParse(variableValue, out double doubleValue) == false)
+        else if (variableValue.Value < 0)
         {
             errors.Add(variableName, new List<string>() {
-                $"{displayName} får endast innehålla siffror, med eller utan decimal."
+                $"{displayName} kan ej vara ett negativt värde."
             });
         }
-        else if (doubleValue < 0.0)
+    }
+    public static void ValidateNullableDouble(double? variableValue, string variableName, string displayName, Dictionary<string, List<string>> errors)
+    {
+        if (variableValue == null)
+        {
+            errors.Add(variableName, new List<string>() {
+                $"{displayName} måste anges."
+            });
+        }
+        else if (variableValue.Value < 0.0)
         {
             errors.Add(variableName, new List<string>() {
                 $"{displayName} kan ej vara ett negativt värde."
