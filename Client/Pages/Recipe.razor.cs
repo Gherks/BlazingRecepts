@@ -2,7 +2,8 @@ using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using Blazored.Toast.Services;
+using Havit.Blazor.Components.Web;
+using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
@@ -24,7 +25,7 @@ public partial class Recipe : PageBase
     protected internal IRecipeService? RecipeService { get; private set; }
 
     [Inject]
-    protected internal IToastService? ToastService { get; private set; }
+    protected internal IHxMessengerService? MessengerService { get; private set; }
 
     [Inject]
     protected internal NavigationManager? NavigationManager { get; private set; }
@@ -101,18 +102,11 @@ public partial class Recipe : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (ToastService == null)
-        {
-            string errorMessage = "Cannot remove recipe because toast service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         bool removalFromDatabaseSuccessful = await RecipeService.DeleteAsync(recipeDto.Id);
 
         if (removalFromDatabaseSuccessful)
         {
-            ToastService.ShowInfo("Recept borttagen.");
+            MessengerService.AddInformation("Recept", "Recept borttagen.");
 
             NavigationManager.NavigateTo("/");
         }

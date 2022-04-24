@@ -4,7 +4,8 @@ using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using Blazored.Toast.Services;
+using Havit.Blazor.Components.Web;
+using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
@@ -33,7 +34,7 @@ public partial class DailyIntakeTable : PageComponentBase
     protected internal IRecipeService? RecipeService { get; private set; }
 
     [Inject]
-    protected internal IToastService? ToastService { get; private set; }
+    protected internal IHxMessengerService? MessengerService { get; private set; }
 
     public void HandleDailyIntakeEntryModalOpen(Guid collectionId)
     {
@@ -153,13 +154,6 @@ public partial class DailyIntakeTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (ToastService == null)
-        {
-            string errorMessage = "Toast service is not available during daily intake entry removal.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         Guid removedId = removedDailyIntakeEntryDto.Id;
         Guid removedCollectionId = removedDailyIntakeEntryDto.CollectionId;
 
@@ -186,7 +180,7 @@ public partial class DailyIntakeTable : PageComponentBase
 
         if (removalFromDatabaseSuccessful && removalFromCollectionSuccessful)
         {
-            ToastService.ShowInfo("Post för dagligt intag borttagen.");
+            MessengerService.AddInformation("Dagligt intag", "Post för dagligt intag borttagen.");
             StateHasChanged();
         }
     }

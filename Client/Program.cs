@@ -13,8 +13,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.AddHttpClients();
 builder.AddServices();
 
-builder.Services.AddBlazoredToast();
 builder.Services.AddHxServices();
+builder.Services.AddHxMessenger();
 
 builder.Services.AddMsalAuthentication(options =>
 {

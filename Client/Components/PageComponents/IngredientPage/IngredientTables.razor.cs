@@ -3,7 +3,8 @@ using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using Blazored.Toast.Services;
+using Havit.Blazor.Components.Web;
+using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
@@ -25,7 +26,7 @@ public partial class IngredientTables : PageComponentBase
     protected internal IIngredientService? IngredientService { get; private set; }
 
     [Inject]
-    protected internal IToastService? ToastService { get; private set; }
+    protected internal IHxMessengerService? MessengerService { get; private set; }
 
     private void HandleIngredientEditClicked(Guid editingIngredientGuid)
     {
@@ -103,13 +104,6 @@ public partial class IngredientTables : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (ToastService == null)
-        {
-            string errorMessage = "Toast service is not available during ingredient removal.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         bool removalFromDatabaseSuccessful = await IngredientService.DeleteAsync(ingredientDto.Id);
 
         int categoryIndex = ingredientDto.CategoryDto.SortOrder;
@@ -117,7 +111,7 @@ public partial class IngredientTables : PageComponentBase
 
         if (removalFromDatabaseSuccessful && removalFromCollectionSuccessful)
         {
-            ToastService.ShowInfo("Ingrediens borttagen.");
+            MessengerService.AddInformation("Ingredienser", "Ingrediens borttagen.");
             StateHasChanged();
         }
     }

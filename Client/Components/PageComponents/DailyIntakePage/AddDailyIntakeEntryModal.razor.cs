@@ -5,7 +5,8 @@ using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
-using Blazored.Toast.Services;
+using Havit.Blazor.Components.Web;
+using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Serilog;
@@ -32,7 +33,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     protected internal IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
 
     [Inject]
-    protected internal IToastService? ToastService { get; private set; }
+    protected internal IHxMessengerService? MessengerService { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,13 +143,6 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (ToastService == null)
-        {
-            string errorMessage = "Toast service is not available during form validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         if (Validate())
         {
             DailyIntakeEntryDto newDailyIntakeEntryDto = CreateDailyIntakeEntryDtoFromForm();
@@ -159,14 +153,14 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
                 DailyIntakePage.UpsertDailyIntakeEntryIntoCollection(savedDailyIntakeEntryDto);
 
                 _form = new();
-                ToastService.ShowSuccess("Post för dagligt intag tillagd!");
+                MessengerService.AddSuccess("Dagligt intag", "Post för dagligt intag tillagd!");
 
                 StateHasChanged();
                 _modal.Close();
             }
             else
             {
-                ToastService.ShowError("Kunde ej lägga till post för dagligt intag.");
+                MessengerService.AddError("Dagligt intag", "Kunde ej lägga till post för dagligt intag.");
             }
         }
     }

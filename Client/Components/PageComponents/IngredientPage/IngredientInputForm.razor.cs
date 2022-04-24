@@ -1,9 +1,10 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
+using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
-using Blazored.Toast.Services;
+using Havit.Blazor.Components.Web;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
@@ -37,7 +38,7 @@ public partial class IngredientInputForm : PageComponentBase
     protected internal ICategoryService? CategoryService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; private set; }
+    protected internal IHxMessengerService? MessengerService { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -132,13 +133,6 @@ public partial class IngredientInputForm : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (ToastService == null)
-        {
-            string errorMessage = "Toast service is not available during form validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         if (IngredientsPage == null)
         {
             string errorMessage = "Ingredient page reference is not available during form validation.";
@@ -153,7 +147,7 @@ public partial class IngredientInputForm : PageComponentBase
 
             if (ingredientDto != null && ingredientDto.Id != Guid.Empty)
             {
-                ToastService.ShowSuccess("Ingrediens tillagd!");
+                MessengerService.AddSuccess("Ingredienser", "Ingrediens tillagd!");
                 IngredientsPage.AddNewIngredientToCollection(ingredientDto);
 
                 _form = new();
@@ -161,7 +155,7 @@ public partial class IngredientInputForm : PageComponentBase
             }
             else
             {
-                ToastService.ShowError("Kunde ej lägga till ingrediens.");
+                MessengerService.AddError("Ingredienser", "Kunde ej lägga till ingrediens.");
             }
         }
     }

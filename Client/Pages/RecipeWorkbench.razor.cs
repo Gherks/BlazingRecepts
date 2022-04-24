@@ -1,10 +1,12 @@
 using BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 using BlazingRecept.Client.Components.Utilities;
+using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
-using Blazored.Toast.Services;
+using Havit.Blazor.Components.Web;
+using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 using static BlazingRecept.Shared.Enums;
@@ -44,7 +46,7 @@ public partial class RecipeWorkbench : PageBase
     protected internal IRecipeService? RecipeService { get; private set; }
 
     [Inject]
-    protected internal IToastService? ToastService { get; private set; }
+    protected internal IHxMessengerService? MessengerService { get; private set; }
 
     [Inject]
     protected internal NavigationManager? NavigationManager { get; private set; }
@@ -133,13 +135,6 @@ public partial class RecipeWorkbench : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (ToastService == null)
-        {
-            string errorMessage = "Cannot submit validated recipe because toast service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         if (await Validate())
         {
             RecipeDto? recipeDto = CreateRecipeDtoFromForm();
@@ -148,8 +143,8 @@ public partial class RecipeWorkbench : PageBase
 
             if (recipeDto != null && recipeDto.Id != Guid.Empty)
             {
-                string toastMessage = IsCreatingNewRecipe ? "Recept tillagd!" : "Recept uppdaterat!";
-                ToastService.ShowSuccess(toastMessage);
+                string toastMessage = IsCreatingNewRecipe ? "Recept tillagd!" : "Recept uppdaterad!";
+                MessengerService.AddSuccess("Recept", toastMessage);
 
                 NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
             }
