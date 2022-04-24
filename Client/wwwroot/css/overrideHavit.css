@@ -1,3 +1,7 @@
 ﻿form {
     gap: 0px;
 }
+
+.hx-messenger .hx-messenger-success .hx-icon {
+    color: var(--bs-success)
+}

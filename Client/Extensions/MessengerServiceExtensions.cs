@@ -15,6 +15,13 @@ public static class MessengerServiceExtensions
             throw new InvalidOperationException(errorMessage);
         }
 
-        messengerService.AddInformation(title, message);
+        messengerService.AddMessage(new()
+        {
+            Icon = BootstrapIcon.HandThumbsUp,
+            CssClass = "hx-messenger-success",
+            AutohideDelay = 5000,
+            Title = title,
+            Text = message
+        });
     }
 }
