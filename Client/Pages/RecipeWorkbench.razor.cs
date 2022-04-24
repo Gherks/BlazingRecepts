@@ -6,7 +6,6 @@ using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web;
-using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 using static BlazingRecept.Shared.Enums;
