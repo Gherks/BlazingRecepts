@@ -4,6 +4,7 @@ using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Blazored.Toast.Services;
+using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 using static BlazingRecept.Shared.Enums;
@@ -18,7 +19,10 @@ public partial class IngredientInputForm : PageComponentBase
     private Form _form = new();
 
     private CustomValidation? _customValidation;
+    private HxCollapse? _hxCollapse;
     private ElementReference _nameInput;
+
+    private bool _collapseIsShow = false;
     private bool _shouldMoveFocusToNameElement = false;
 
     private IReadOnlyList<CategoryDto>? _categoryDtos = new List<CategoryDto>();
@@ -51,11 +55,29 @@ public partial class IngredientInputForm : PageComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (_nameInput.Id != null && _shouldMoveFocusToNameElement)
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (_shouldMoveFocusToNameElement)
         {
             _shouldMoveFocusToNameElement = false;
             await _nameInput.FocusAsync();
         }
+    }
+
+    private string GetCollapseToggleTitle()
+    {
+        return _collapseIsShow ? "Dölj formulär" : "Visa formulär";
+    }
+
+    private async Task HandleCollapseShown()
+    {
+        _collapseIsShow = true;
+        await _nameInput.FocusAsync();
+    }
+
+    private void HandleCollapseHidden()
+    {
+        _collapseIsShow = false;
     }
 
     private async Task HandleNameBlur()
@@ -134,19 +156,14 @@ public partial class IngredientInputForm : PageComponentBase
                 ToastService.ShowSuccess("Ingrediens tillagd!");
                 IngredientsPage.AddNewIngredientToCollection(ingredientDto);
 
-                _shouldMoveFocusToNameElement = true;
                 _form = new();
+                _shouldMoveFocusToNameElement = true;
             }
             else
             {
                 ToastService.ShowError("Kunde ej lägga till ingrediens.");
             }
         }
-    }
-
-    private async Task HandleCollapsibleShow()
-    {
-        await _nameInput.FocusAsync();
     }
 
     private async Task<bool> Validate()

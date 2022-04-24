@@ -7,7 +7,8 @@
 
 <div class="card mb-2">
     <div class="card-body">
-        <CollapsibleComponent CollapsedButtonText="Visa formulär" ExposedButtonText="Dölj formulär" OnShow="@HandleCollapsibleShow">
+        <HxCollapseToggleButton Text="@GetCollapseToggleTitle()" CollapseTarget="#ingredient-input-form" Color="ThemeColor.Primary" CssClass="mb-2" />
+        <HxCollapse @ref="_hxCollapse" Id="ingredient-input-form" OnShown="@HandleCollapseShown" OnHidden="@HandleCollapseHidden">
             <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
                 <CustomValidation @ref="_customValidation" />
                 <div class="row mb-2">
@@ -55,8 +56,10 @@
                         <ValidationMessage For="() => _form.CategoryDtoId" />
                     </div>
                 </div>
-                <button class="btn btn-primary" type="submit">Lägg till</button>
+                <div>
+                    <button class="btn btn-primary" type="submit">Lägg till</button>
+                </div>
             </EditForm>
-        </CollapsibleComponent>
+        </HxCollapse>
     </div>
 </div>
