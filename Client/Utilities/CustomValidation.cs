@@ -18,7 +18,7 @@ public sealed class CustomValidation : ComponentBase
     {
         if (CurrentEditContext == null)
         {
-            string errorMessage = $"{nameof(CustomValidation)} requires a cascading " +
+            const string errorMessage = $"{nameof(CustomValidation)} requires a cascading " +
                 $"parameter of type {nameof(EditContext)}. " +
                 $"For example, you can use {nameof(CustomValidation)} " +
                 $"inside an {nameof(EditForm)}.";

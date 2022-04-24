@@ -24,14 +24,14 @@ public partial class RecipeNutritionChart : PageComponentBase
 
         if (RecipePage == null)
         {
-            string errorMessage = "Cannot ingredient measurement table rows because recipe page reference has not been set.";
+            const string errorMessage = "Cannot ingredient measurement table rows because recipe page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (RecipePage.RecipeDto == null)
         {
-            string errorMessage = "Cannot ingredient measurement table rows because recipe has not been set.";
+            const string errorMessage = "Cannot ingredient measurement table rows because recipe has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -45,14 +45,14 @@ public partial class RecipeNutritionChart : PageComponentBase
     {
         if (RecipePage == null)
         {
-            string errorMessage = "Cannot construct nutritional chart items because recipe page reference has not been set.";
+            const string errorMessage = "Cannot construct nutritional chart items because recipe page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (RecipePage.RecipeDto == null)
         {
-            string errorMessage = "Cannot construct nutritional chart items because recipe has not been set.";
+            const string errorMessage = "Cannot construct nutritional chart items because recipe has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

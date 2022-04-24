@@ -37,14 +37,14 @@ public partial class Ingredients : PageBase
     {
         if (IngredientCollectionTypes == null)
         {
-            string errorMessage = "Cannot add new ingredient to collection because ingredient collection is null.";
+            const string errorMessage = "Cannot add new ingredient to collection because ingredient collection is null.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (_ingredientTables == null)
         {
-            string errorMessage = "Ingredient table reference is null and can therefore not be refreshed.";
+            const string errorMessage = "Ingredient table reference is null and can therefore not be refreshed.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

@@ -19,7 +19,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
     {
         if (RecipeWorkbench == null)
         {
-            string errorMessage = "RecipeWorkbench page reference has not been set before moving ingredient measurement up in order.";
+            const string errorMessage = "RecipeWorkbench page reference has not been set before moving ingredient measurement up in order.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -38,7 +38,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
     {
         if (RecipeWorkbench == null)
         {
-            string errorMessage = "RecipeWorkbench page reference has not been set before moving ingredient measurement down in order.";
+            const string errorMessage = "RecipeWorkbench page reference has not been set before moving ingredient measurement down in order.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -57,7 +57,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
     {
         if (RecipeWorkbench == null)
         {
-            string errorMessage = "RecipeWorkbench page reference has not been set before trying to edit ingredient measurement.";
+            const string errorMessage = "RecipeWorkbench page reference has not been set before trying to edit ingredient measurement.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -69,7 +69,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
     {
         if (RecipeWorkbench == null)
         {
-            string errorMessage = "RecipeWorkbench page reference has not been set before trying to delete ingredient measurement from recipe.";
+            const string errorMessage = "RecipeWorkbench page reference has not been set before trying to delete ingredient measurement from recipe.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -81,7 +81,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
     {
         if (RecipeWorkbench == null)
         {
-            string errorMessage = "RecipeWorkbench page reference has not been set before trying to access ingredient measurements within recipe.";
+            const string errorMessage = "RecipeWorkbench page reference has not been set before trying to access ingredient measurements within recipe.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -93,7 +93,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
     {
         if (ingredientMeasurementDto == null)
         {
-            string errorMessage = "Cannot access passed ingredient measurement data because it has not been set.";
+            const string errorMessage = "Cannot access passed ingredient measurement data because it has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new ArgumentNullException(nameof(ingredientMeasurementDto), errorMessage);
         }
@@ -105,7 +105,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
     {
         if (RecipeWorkbench == null)
         {
-            string errorMessage = "RecipeWorkbench page reference has not been set before trying to switch list location of two ingredient measurements in recipe.";
+            const string errorMessage = "RecipeWorkbench page reference has not been set before trying to switch list location of two ingredient measurements in recipe.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

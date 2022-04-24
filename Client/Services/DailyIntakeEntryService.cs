@@ -90,7 +90,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
                 if (ingredientDtos == null)
                 {
-                    string errorMessage = "Cannot fetch daily intake entries because received ingredient list is null.";
+                    const string errorMessage = "Cannot fetch daily intake entries because received ingredient list is null.";
                     Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }
@@ -99,7 +99,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
                 if (recipeDtos == null)
                 {
-                    string errorMessage = "Cannot fetch daily intake entries because received recipe list is null.";
+                    const string errorMessage = "Cannot fetch daily intake entries because received recipe list is null.";
                     Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }
@@ -108,7 +108,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
                 if (readonlyDailyIntakeEntryDtos == null)
                 {
-                    string errorMessage = "Cannot fetch daily intake entries because received daily intake entry list is null.";
+                    const string errorMessage = "Cannot fetch daily intake entries because received daily intake entry list is null.";
                     Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }

@@ -25,14 +25,14 @@ public partial class IngredientMeasurementTable : PageComponentBase
 
         if (RecipePage == null)
         {
-            string errorMessage = "Cannot ingredient measurement table rows because recipe page reference has not been set.";
+            const string errorMessage = "Cannot ingredient measurement table rows because recipe page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (RecipePage.RecipeDto == null)
         {
-            string errorMessage = "Cannot ingredient measurement table rows because recipe has not been set.";
+            const string errorMessage = "Cannot ingredient measurement table rows because recipe has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -53,7 +53,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
     {
         if (ingredientMeasurementDto == null)
         {
-            string errorMessage = "Cannot access ingredient measurement within recipe because passed ingredient measurement has not been set.";
+            const string errorMessage = "Cannot access ingredient measurement within recipe because passed ingredient measurement has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -65,7 +65,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
     {
         if (checkableIngredientMeasurement == null)
         {
-            string errorMessage = "Cannot set class on ingredient measurement table row because checkable ingredient measurement has not been set.";
+            const string errorMessage = "Cannot set class on ingredient measurement table row because checkable ingredient measurement has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

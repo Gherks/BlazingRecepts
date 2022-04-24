@@ -10,7 +10,7 @@ public static class MessengerServiceExtensions
     {
         if (messengerService == null)
         {
-            string errorMessage = "Messenger service is not available during success toast creation.";
+            const string errorMessage = "Messenger service is not available during success toast creation.";
             Log.ForContext("Domain", "MessengerServiceExtensions").Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

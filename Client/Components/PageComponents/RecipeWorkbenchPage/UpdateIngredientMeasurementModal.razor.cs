@@ -41,14 +41,14 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
     {
         if (_modal == null)
         {
-            string errorMessage = "Edit ingredient measurement modal cannot be opened because modal has not been set.";
+            const string errorMessage = "Edit ingredient measurement modal cannot be opened because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (ingredientMeasurementDto == null)
         {
-            string errorMessage = "Edit ingredient measurement modal cannot be opened because it has no ingredient to edit.";
+            const string errorMessage = "Edit ingredient measurement modal cannot be opened because it has no ingredient to edit.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new ArgumentNullException(nameof(ingredientMeasurementDto), errorMessage);
         }
@@ -71,7 +71,7 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
     {
         if (_modal == null)
         {
-            string errorMessage = "Edit ingredient measurement modal cannot be closed because modal has not been set.";
+            const string errorMessage = "Edit ingredient measurement modal cannot be closed because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -83,14 +83,14 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
     {
         if (_modal == null)
         {
-            string errorMessage = "Edit ingredient measurement modal form cannot be validated because modal has not been set.";
+            const string errorMessage = "Edit ingredient measurement modal form cannot be validated because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (RecipeWorkbench == null)
         {
-            string errorMessage = "Edit ingredient measurement modal form cannot be validated because RecipeWorkbench page reference has not been set.";
+            const string errorMessage = "Edit ingredient measurement modal form cannot be validated because RecipeWorkbench page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -99,14 +99,14 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
         {
             if (RecipeWorkbench == null)
             {
-                string errorMessage = ".";
+                const string errorMessage = ".";
                 Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                 throw new InvalidOperationException(errorMessage);
             }
 
             if (_editIngredientDto == null)
             {
-                string errorMessage = ".";
+                const string errorMessage = ".";
                 Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                 throw new InvalidOperationException(errorMessage);
             }
@@ -116,7 +116,7 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
 
             if (ingredientMeasurementDto == null)
             {
-                string errorMessage = "Failed to find ingredient measurement that was expected to exist in edited recipe.";
+                const string errorMessage = "Failed to find ingredient measurement that was expected to exist in edited recipe.";
                 Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                 throw new InvalidOperationException(errorMessage);
             }
@@ -132,14 +132,14 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
     {
         if (_customValidation == null)
         {
-            string errorMessage = "Custom validation is not set during edit ingredient measurement modal validation.";
+            const string errorMessage = "Custom validation is not set during edit ingredient measurement modal validation.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (_form == null)
         {
-            string errorMessage = "Form is not set during edit ingredient measurement modal validation.";
+            const string errorMessage = "Form is not set during edit ingredient measurement modal validation.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -172,14 +172,14 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
     {
         if (_form.Measurement == null)
         {
-            string errorMessage = "Cannot create ingredient measurement dto from form because measurement in form has not been set.";
+            const string errorMessage = "Cannot create ingredient measurement dto from form because measurement in form has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (_form.Grams == null)
         {
-            string errorMessage = "Cannot create ingredient measurement dto from form because grams in form has not been set.";
+            const string errorMessage = "Cannot create ingredient measurement dto from form because grams in form has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

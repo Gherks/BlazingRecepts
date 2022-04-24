@@ -20,7 +20,7 @@ public partial class RemovalConfirmationModal<Type> : ComponentBase
     {
         if (_modal == null)
         {
-            string errorMessage = "Modal cannot be opened because it has not been set.";
+            const string errorMessage = "Modal cannot be opened because it has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -36,21 +36,21 @@ public partial class RemovalConfirmationModal<Type> : ComponentBase
     {
         if (_modal == null)
         {
-            string errorMessage = "Modal cannot be closed because it has not been set.";
+            const string errorMessage = "Modal cannot be closed because it has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (OnConfirm == null)
         {
-            string errorMessage = "Cannot call the on confirm routine because it has not been set.";
+            const string errorMessage = "Cannot call the on confirm routine because it has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (_entity == null)
         {
-            string errorMessage = "Entity cannot be removed because it has not been set.";
+            const string errorMessage = "Entity cannot be removed because it has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -63,7 +63,7 @@ public partial class RemovalConfirmationModal<Type> : ComponentBase
     {
         if (_modal == null)
         {
-            string errorMessage = "Modal cannot be closed because it has not been set.";
+            const string errorMessage = "Modal cannot be closed because it has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

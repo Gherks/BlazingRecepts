@@ -20,7 +20,7 @@ public partial class LoginDisplay
     {
         if (NavigationManager == null)
         {
-            string errorMessage = "Cannot handle begin login because navigation manager has not been set.";
+            const string errorMessage = "Cannot handle begin login because navigation manager has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -32,14 +32,14 @@ public partial class LoginDisplay
     {
         if (NavigationManager == null)
         {
-            string errorMessage = "Cannot handle begin logout because navigation manager has not been set.";
+            const string errorMessage = "Cannot handle begin logout because navigation manager has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (SignOutSessionStateManager == null)
         {
-            string errorMessage = "Cannot handle begin logout because sign out session state manager has not been set.";
+            const string errorMessage = "Cannot handle begin logout because sign out session state manager has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

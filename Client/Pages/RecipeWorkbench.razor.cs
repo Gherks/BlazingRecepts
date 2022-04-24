@@ -59,21 +59,21 @@ public partial class RecipeWorkbench : PageBase
 
         if (RecipeService == null)
         {
-            string errorMessage = "Cannot fetch recipe because recipe service is null.";
+            const string errorMessage = "Cannot fetch recipe because recipe service is null.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (IngredientService == null)
         {
-            string errorMessage = "Cannot fetch ingredients because ingredient service is null.";
+            const string errorMessage = "Cannot fetch ingredients because ingredient service is null.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (CategoryService == null)
         {
-            string errorMessage = "Cannot fetch categories because category service is null.";
+            const string errorMessage = "Cannot fetch categories because category service is null.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -123,14 +123,14 @@ public partial class RecipeWorkbench : PageBase
     {
         if (RecipeService == null)
         {
-            string errorMessage = "Cannot submit validated recipe because recipe service has not been set.";
+            const string errorMessage = "Cannot submit validated recipe because recipe service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (NavigationManager == null)
         {
-            string errorMessage = "Cannot submit validated recipe because navigation manager has not been set.";
+            const string errorMessage = "Cannot submit validated recipe because navigation manager has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -155,14 +155,14 @@ public partial class RecipeWorkbench : PageBase
     {
         if (_customValidation == null)
         {
-            string errorMessage = "Cannot validate recipe because custom validation object has not been set.";
+            const string errorMessage = "Cannot validate recipe because custom validation object has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (RecipeService == null)
         {
-            string errorMessage = "Cannot validate recipe because recipe service has not been set.";
+            const string errorMessage = "Cannot validate recipe because recipe service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -211,7 +211,7 @@ public partial class RecipeWorkbench : PageBase
     {
         if (_categoryDtos == null)
         {
-            string errorMessage = "Cannot create recipe dto from form because category list has not been set.";
+            const string errorMessage = "Cannot create recipe dto from form because category list has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -220,14 +220,14 @@ public partial class RecipeWorkbench : PageBase
 
         if (categoryDto == null)
         {
-            string errorMessage = "Cannot create recipe dto from form because selected category in form does not exist.";
+            const string errorMessage = "Cannot create recipe dto from form because selected category in form does not exist.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (_form.PortionAmount == null)
         {
-            string errorMessage = "Cannot create recipe dto from form because portion amount in form has not been set.";
+            const string errorMessage = "Cannot create recipe dto from form because portion amount in form has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -254,7 +254,7 @@ public partial class RecipeWorkbench : PageBase
     {
         if (_addIngredientMeasurementModal == null)
         {
-            string errorMessage = "Cannot open add ingredient modal because modal has not been set.";
+            const string errorMessage = "Cannot open add ingredient modal because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -266,7 +266,7 @@ public partial class RecipeWorkbench : PageBase
     {
         if (_updateIngredientMeasurementModal == null)
         {
-            string errorMessage = "Cannot open update ingredient modal because modal has not been set.";
+            const string errorMessage = "Cannot open update ingredient modal because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -278,7 +278,7 @@ public partial class RecipeWorkbench : PageBase
     {
         if (_removalConfirmationModal == null)
         {
-            string errorMessage = "Cannot open removal confirmation modal because modal has not been set.";
+            const string errorMessage = "Cannot open removal confirmation modal because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

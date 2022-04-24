@@ -29,7 +29,7 @@ public partial class RecipeCategoryTable : PageComponentBase
 
         if (RecipeService == null)
         {
-            string errorMessage = "Cannot initialize RecipeCategoryTable because recipe service has not been set.";
+            const string errorMessage = "Cannot initialize RecipeCategoryTable because recipe service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -45,7 +45,7 @@ public partial class RecipeCategoryTable : PageComponentBase
     {
         if (_recipeDtos == null)
         {
-            string errorMessage = "Cannot categorize recipes because there are no recipes to categorize.";
+            const string errorMessage = "Cannot categorize recipes because there are no recipes to categorize.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -74,7 +74,7 @@ public partial class RecipeCategoryTable : PageComponentBase
     {
         if (NavigationManager == null)
         {
-            string errorMessage = "Cannot navigate to recipe page because navigation manager has not been set.";
+            const string errorMessage = "Cannot navigate to recipe page because navigation manager has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

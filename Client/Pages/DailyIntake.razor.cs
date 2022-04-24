@@ -35,14 +35,14 @@ public partial class DailyIntake : PageBase
 
         if (IngredientService == null)
         {
-            string errorMessage = "Cannot fetch ingredients because ingredient service is not set.";
+            const string errorMessage = "Cannot fetch ingredients because ingredient service is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (RecipeService == null)
         {
-            string errorMessage = "Cannot fetch recipes because recipe service is not set.";
+            const string errorMessage = "Cannot fetch recipes because recipe service is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -66,7 +66,7 @@ public partial class DailyIntake : PageBase
     {
         if (_dailyIntakeTable == null)
         {
-            string errorMessage = "Cannot upsert daily intake collection because daily intake table is not set.";
+            const string errorMessage = "Cannot upsert daily intake collection because daily intake table is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -103,7 +103,7 @@ public partial class DailyIntake : PageBase
     {
         if (DailyIntakeEntryService == null)
         {
-            string errorMessage = "Cannot fetch daily intake entry because daily intake service is not set.";
+            const string errorMessage = "Cannot fetch daily intake entry because daily intake service is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -112,7 +112,7 @@ public partial class DailyIntake : PageBase
 
         if (dailyIntakeEntryDtos == null)
         {
-            string errorMessage = "Cannot load daily intake entry collection because fetched list of entries was null.";
+            const string errorMessage = "Cannot load daily intake entry collection because fetched list of entries was null.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

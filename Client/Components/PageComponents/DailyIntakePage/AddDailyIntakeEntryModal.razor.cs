@@ -50,7 +50,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     {
         if (_modal == null)
         {
-            string errorMessage = "Add ingredient measurement modal cannot be opened because modal has not been set.";
+            const string errorMessage = "Add ingredient measurement modal cannot be opened because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -66,7 +66,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     {
         if (_modal == null)
         {
-            string errorMessage = "Add ingredient measurement modal cannot be closed because modal has not been set.";
+            const string errorMessage = "Add ingredient measurement modal cannot be closed because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -78,21 +78,21 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     {
         if (DailyIntakePage == null)
         {
-            string errorMessage = "DailyIntake page reference has not been set during ingredient input search procedure.";
+            const string errorMessage = "DailyIntake page reference has not been set during ingredient input search procedure.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (DailyIntakePage.Ingredients == null)
         {
-            string errorMessage = "DailyIntake page reference contains no ingredients during daily intake ingredient input search procedure.";
+            const string errorMessage = "DailyIntake page reference contains no ingredients during daily intake ingredient input search procedure.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (DailyIntakePage.Recipes == null)
         {
-            string errorMessage = "DailyIntake page reference contains no recipes during daily intake recipe input search procedure.";
+            const string errorMessage = "DailyIntake page reference contains no recipes during daily intake recipe input search procedure.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -124,21 +124,21 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     {
         if (_modal == null)
         {
-            string errorMessage = "Add ingredient measurement modal form cannot be validated because modal has not been set.";
+            const string errorMessage = "Add ingredient measurement modal form cannot be validated because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (DailyIntakePage == null)
         {
-            string errorMessage = "Daily intake page reference is not available during form validation.";
+            const string errorMessage = "Daily intake page reference is not available during form validation.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (DailyIntakeEntryService == null)
         {
-            string errorMessage = "Daily intake entry service is not available during form validation.";
+            const string errorMessage = "Daily intake entry service is not available during form validation.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -169,7 +169,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     {
         if (_customValidation == null)
         {
-            string errorMessage = "Custom validation object is not available during validation.";
+            const string errorMessage = "Custom validation object is not available during validation.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -200,21 +200,21 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     {
         if (DailyIntakePage == null)
         {
-            string errorMessage = "Cannot create daily intake entry dto from form because daily intake page reference has not been set.";
+            const string errorMessage = "Cannot create daily intake entry dto from form because daily intake page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (_form.ProductName == null)
         {
-            string errorMessage = "Cannot create daily intake entry dto from form because name in form has not been set.";
+            const string errorMessage = "Cannot create daily intake entry dto from form because name in form has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (_form.Amount == null)
         {
-            string errorMessage = "Cannot create daily intake entry dto from form because amount in form has not been set.";
+            const string errorMessage = "Cannot create daily intake entry dto from form because amount in form has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

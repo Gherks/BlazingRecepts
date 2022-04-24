@@ -38,7 +38,7 @@ public partial class Recipe : PageBase
 
         if (RecipeService == null)
         {
-            string errorMessage = "Cannot fetch recipe because recipe service is null.";
+            const string errorMessage = "Cannot fetch recipe because recipe service is null.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -47,7 +47,7 @@ public partial class Recipe : PageBase
 
         if (RecipeDto == null)
         {
-            string errorMessage = "Cannot properly present recipe because sought recipe coulnd't be fetched.";
+            const string errorMessage = "Cannot properly present recipe because sought recipe coulnd't be fetched.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -59,7 +59,7 @@ public partial class Recipe : PageBase
     {
         if (NavigationManager == null)
         {
-            string errorMessage = "Cannot navigate to recipe edit page because navigation manager has not been set.";
+            const string errorMessage = "Cannot navigate to recipe edit page because navigation manager has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -71,14 +71,14 @@ public partial class Recipe : PageBase
     {
         if (_removalConfirmationModal == null)
         {
-            string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
+            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (recipeDto == null)
         {
-            string errorMessage = "Cannot start recipe removal process because passed recipe was not valid.";
+            const string errorMessage = "Cannot start recipe removal process because passed recipe was not valid.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -90,14 +90,14 @@ public partial class Recipe : PageBase
     {
         if (RecipeService == null)
         {
-            string errorMessage = "Recipe service is not available during ingredient removal.";
+            const string errorMessage = "Recipe service is not available during ingredient removal.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (NavigationManager == null)
         {
-            string errorMessage = "Cannot navigate to index page after recipe removal because navigation manager has not been set.";
+            const string errorMessage = "Cannot navigate to index page after recipe removal because navigation manager has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -116,7 +116,7 @@ public partial class Recipe : PageBase
     {
         if (RecipeDto == null)
         {
-            string errorMessage = "Cannot access recipe instructions because recipe has not been set.";
+            const string errorMessage = "Cannot access recipe instructions because recipe has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

@@ -23,7 +23,7 @@ public sealed class LogController : ControllerBase
     {
         if (logEventsJsonDocument == null)
         {
-            string errorMessage = "Cannot process log events because log events json document is null.";
+            const string errorMessage = "Cannot process log events because log events json document is null.";
             Log.Error(errorMessage);
             throw new ArgumentNullException(nameof(logEventsJsonDocument), errorMessage);
         }
@@ -32,7 +32,7 @@ public sealed class LogController : ControllerBase
 
         if (jsonString == null)
         {
-            string errorMessage = "Cannot process log events because content of log events json document is null.";
+            const string errorMessage = "Cannot process log events because content of log events json document is null.";
             Log.Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -41,7 +41,7 @@ public sealed class LogController : ControllerBase
 
         if (logEventDtos == null)
         {
-            string errorMessage = "Cannot process log events because deserialized log event dto list is null.";
+            const string errorMessage = "Cannot process log events because deserialized log event dto list is null.";
             Log.Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

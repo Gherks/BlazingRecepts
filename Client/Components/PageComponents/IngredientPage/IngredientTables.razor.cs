@@ -38,14 +38,14 @@ public partial class IngredientTables : PageComponentBase
     {
         if (_removalConfirmationModal == null)
         {
-            string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
+            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (ingredientDto == null)
         {
-            string errorMessage = "Cannot start ingredient removal process because ingredient has not been set.";
+            const string errorMessage = "Cannot start ingredient removal process because ingredient has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new ArgumentNullException(nameof(ingredientDto), errorMessage);
         }
@@ -57,7 +57,7 @@ public partial class IngredientTables : PageComponentBase
     {
         if (IngredientService == null)
         {
-            string errorMessage = "Cannot save edited ingredient because the ingredient service has not been set.";
+            const string errorMessage = "Cannot save edited ingredient because the ingredient service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -66,7 +66,7 @@ public partial class IngredientTables : PageComponentBase
 
         if (savedIngredientDto == null)
         {
-            string errorMessage = "Something went wrong when saving an edited ingredient.";
+            const string errorMessage = "Something went wrong when saving an edited ingredient.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -85,21 +85,21 @@ public partial class IngredientTables : PageComponentBase
     {
         if (IngredientService == null)
         {
-            string errorMessage = "Ingredient service is not available during ingredient removal.";
+            const string errorMessage = "Ingredient service is not available during ingredient removal.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (IngredientsPage == null)
         {
-            string errorMessage = "Cannot remove ingredient from ingredient page collection because ingredient page reference is null.";
+            const string errorMessage = "Cannot remove ingredient from ingredient page collection because ingredient page reference is null.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (IngredientsPage.IngredientCollectionTypes == null)
         {
-            string errorMessage = "Cannot remove ingredient from ingredient page collection because collection is null.";
+            const string errorMessage = "Cannot remove ingredient from ingredient page collection because collection is null.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

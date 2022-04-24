@@ -40,7 +40,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (_addDailyIntakeEntryModal == null)
         {
-            string errorMessage = "Cannot open add daily intake entry modal because modal has not been set.";
+            const string errorMessage = "Cannot open add daily intake entry modal because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -58,14 +58,14 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (_removalConfirmationModal == null)
         {
-            string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
+            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (dailyIntakeEntryDto == null)
         {
-            string errorMessage = "Cannot start daily intake entry removal process because daily intake entry has not been set.";
+            const string errorMessage = "Cannot start daily intake entry removal process because daily intake entry has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new ArgumentNullException(nameof(dailyIntakeEntryDto), errorMessage);
         }
@@ -77,28 +77,28 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (DailyIntakePage == null)
         {
-            string errorMessage = "Cannot save edited daily intake entry because the daily intake page reference has not been set.";
+            const string errorMessage = "Cannot save edited daily intake entry because the daily intake page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (DailyIntakeService == null)
         {
-            string errorMessage = "Cannot save edited daily intake entry because the daily intake service has not been set.";
+            const string errorMessage = "Cannot save edited daily intake entry because the daily intake service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (IngredientService == null)
         {
-            string errorMessage = "Cannot save edited daily intake entry because the ingredient service has not been set.";
+            const string errorMessage = "Cannot save edited daily intake entry because the ingredient service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (RecipeService == null)
         {
-            string errorMessage = "Cannot save edited daily intake entry because the recipe service has not been set.";
+            const string errorMessage = "Cannot save edited daily intake entry because the recipe service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -107,7 +107,7 @@ public partial class DailyIntakeTable : PageComponentBase
 
         if (savedDailyIntakeEntryDto == null)
         {
-            string errorMessage = "Something went wrong when saving an edited daily intake entry.";
+            const string errorMessage = "Something went wrong when saving an edited daily intake entry.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -124,7 +124,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (DailyIntakePage == null)
         {
-            string errorMessage = "Cannot add new daily intake entry collection because the daily intake page reference has not been set.";
+            const string errorMessage = "Cannot add new daily intake entry collection because the daily intake page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -142,14 +142,14 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (DailyIntakePage == null)
         {
-            string errorMessage = "Cannot remove daily intake entry from daily intake page because daily intake page reference is null.";
+            const string errorMessage = "Cannot remove daily intake entry from daily intake page because daily intake page reference is null.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (DailyIntakeService == null)
         {
-            string errorMessage = "Daily intake service is not available during daily intake entry removal.";
+            const string errorMessage = "Daily intake service is not available during daily intake entry removal.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -228,7 +228,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (dailyIntakeEntryDtos == null)
         {
-            string errorMessage = "Cannot present daily intake grams total because daily intake list is not set.";
+            const string errorMessage = "Cannot present daily intake grams total because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -242,7 +242,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (dailyIntakeEntryDtos == null)
         {
-            string errorMessage = "Cannot present daily intake carbohydrate total because daily intake list is not set.";
+            const string errorMessage = "Cannot present daily intake carbohydrate total because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -256,7 +256,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (dailyIntakeEntryDtos == null)
         {
-            string errorMessage = "Cannot present daily intake protein total because daily intake list is not set.";
+            const string errorMessage = "Cannot present daily intake protein total because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -270,7 +270,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (dailyIntakeEntryDtos == null)
         {
-            string errorMessage = "Cannot present daily intake calorie total because daily intake list is not set.";
+            const string errorMessage = "Cannot present daily intake calorie total because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -284,7 +284,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (dailyIntakeEntryDtos == null)
         {
-            string errorMessage = "Cannot present daily intake protein per gram because daily intake list is not set.";
+            const string errorMessage = "Cannot present daily intake protein per gram because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
