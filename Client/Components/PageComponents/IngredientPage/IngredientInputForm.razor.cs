@@ -31,10 +31,10 @@ public partial class IngredientInputForm : PageComponentBase
     protected internal Ingredients? IngredientsPage { get; private set; }
 
     [Inject]
-    public IIngredientService? IngredientService { get; private set; }
+    protected internal IIngredientService? IngredientService { get; private set; }
 
     [Inject]
-    public ICategoryService? CategoryService { get; private set; }
+    protected internal ICategoryService? CategoryService { get; private set; }
 
     [Inject]
     public IToastService? ToastService { get; private set; }

@@ -29,10 +29,10 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     protected internal DailyIntake? DailyIntakePage { get; private set; }
 
     [Inject]
-    public IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
+    protected internal IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; private set; }
+    protected internal IToastService? ToastService { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

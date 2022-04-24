@@ -16,10 +16,10 @@ public partial class RecipeCategoryTable : PageComponentBase
     private Dictionary<char, List<RecipeDto>> _recipeCategories = new();
 
     [Inject]
-    public IRecipeService? RecipeService { get; private set; }
+    protected internal IRecipeService? RecipeService { get; private set; }
 
     [Inject]
-    public NavigationManager? NavigationManager { get; private set; }
+    protected internal NavigationManager? NavigationManager { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

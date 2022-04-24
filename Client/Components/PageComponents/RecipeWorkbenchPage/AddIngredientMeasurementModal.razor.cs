@@ -23,7 +23,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
     private Form _form = new();
 
     [CascadingParameter]
-    public RecipeWorkbench? RecipeWorkbench { get; private set; }
+    protected internal RecipeWorkbench? RecipeWorkbench { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

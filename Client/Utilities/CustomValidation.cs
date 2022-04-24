@@ -12,7 +12,7 @@ public sealed class CustomValidation : ComponentBase
     private ValidationMessageStore? _messageStore;
 
     [CascadingParameter]
-    private EditContext? CurrentEditContext { get; set; }
+    internal EditContext? CurrentEditContext { get; private set; }
 
     protected override void OnInitialized()
     {

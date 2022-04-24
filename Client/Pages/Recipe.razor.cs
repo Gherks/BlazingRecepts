@@ -21,13 +21,13 @@ public partial class Recipe : PageBase
     public Guid RecipeId { get; set; }
 
     [Inject]
-    public IRecipeService? RecipeService { get; private set; }
+    protected internal IRecipeService? RecipeService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; private set; }
+    protected internal IToastService? ToastService { get; private set; }
 
     [Inject]
-    public NavigationManager? NavigationManager { get; private set; }
+    protected internal NavigationManager? NavigationManager { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

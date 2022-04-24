@@ -24,16 +24,16 @@ public partial class DailyIntakeTable : PageComponentBase
     protected internal DailyIntake? DailyIntakePage { get; private set; }
 
     [Inject]
-    public IDailyIntakeEntryService? DailyIntakeService { get; private set; }
+    protected internal IDailyIntakeEntryService? DailyIntakeService { get; private set; }
 
     [Inject]
-    public IIngredientService? IngredientService { get; private set; }
+    protected internal IIngredientService? IngredientService { get; private set; }
 
     [Inject]
-    public IRecipeService? RecipeService { get; private set; }
+    protected internal IRecipeService? RecipeService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; private set; }
+    protected internal IToastService? ToastService { get; private set; }
 
     public void HandleDailyIntakeEntryModalOpen(Guid collectionId)
     {

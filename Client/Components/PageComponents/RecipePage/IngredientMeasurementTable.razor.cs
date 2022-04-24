@@ -15,7 +15,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
     private List<CheckableIngredientMeasurement> _checkableIngredientMeasurements = new();
 
     [CascadingParameter]
-    public Recipe? RecipePage { get; private set; }
+    protected internal Recipe? RecipePage { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

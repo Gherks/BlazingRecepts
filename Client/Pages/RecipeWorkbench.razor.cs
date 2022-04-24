@@ -35,19 +35,19 @@ public partial class RecipeWorkbench : PageBase
     public Guid RecipeId { get; set; } = Guid.Empty;
 
     [Inject]
-    public IIngredientService? IngredientService { get; private set; }
+    protected internal IIngredientService? IngredientService { get; private set; }
 
     [Inject]
-    public ICategoryService? CategoryService { get; private set; }
+    protected internal ICategoryService? CategoryService { get; private set; }
 
     [Inject]
-    public IRecipeService? RecipeService { get; private set; }
+    protected internal IRecipeService? RecipeService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; private set; }
+    protected internal IToastService? ToastService { get; private set; }
 
     [Inject]
-    public NavigationManager? NavigationManager { get; private set; }
+    protected internal NavigationManager? NavigationManager { get; private set; }
 
     private bool IsCreatingNewRecipe => RecipeId == Guid.Empty;
 

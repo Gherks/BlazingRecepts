@@ -19,13 +19,13 @@ public partial class DailyIntake : PageBase
     public IReadOnlyList<RecipeDto> Recipes { get; private set; } = new List<RecipeDto>();
 
     [Inject]
-    public IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
+    protected internal IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
 
     [Inject]
-    public IIngredientService? IngredientService { get; private set; }
+    protected internal IIngredientService? IngredientService { get; private set; }
 
     [Inject]
-    public IRecipeService? RecipeService { get; private set; }
+    protected internal IRecipeService? RecipeService { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {

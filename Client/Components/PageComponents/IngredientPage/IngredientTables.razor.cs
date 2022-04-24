@@ -22,10 +22,10 @@ public partial class IngredientTables : PageComponentBase
     protected internal Ingredients? IngredientsPage { get; private set; }
 
     [Inject]
-    public IIngredientService? IngredientService { get; private set; }
+    protected internal IIngredientService? IngredientService { get; private set; }
 
     [Inject]
-    public IToastService? ToastService { get; private set; }
+    protected internal IToastService? ToastService { get; private set; }
 
     private void HandleIngredientEditClicked(Guid editingIngredientGuid)
     {
