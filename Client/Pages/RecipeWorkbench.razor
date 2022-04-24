@@ -29,7 +29,7 @@ else
                     <CustomValidation @ref="_customValidation" />
                     <div class="row mb-2">
                         <div class="col-12 col-xl-10 col-xxl-8">
-                            <input type="number" id="name" name="name" class="form-control" @ref="_nameInput" @bind="_form.Name" placeholder="Ange namn">
+                            <input type="text" id="name" name="name" class="form-control" @ref="_nameInput" @bind="_form.Name" placeholder="Ange namn">
                             <ValidationMessage For="() => _form.Name" />
                         </div>
                     </div>
