@@ -7,7 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazored.Toast" Version="3.2.2" />
 		<PackageReference Include="Blazored.Typeahead" Version="4.6.0" />
 		<PackageReference Include="Havit.Blazor.Components.Web.Bootstrap" Version="2.4.0" />
 		<PackageReference Include="Markdig" Version="0.28.1" />

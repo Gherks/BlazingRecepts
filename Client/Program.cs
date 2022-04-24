@@ -1,6 +1,5 @@
 using BlazingRecept.Client;
 using BlazingRecept.Client.Extensions;
-using Blazored.Toast;
 using Havit.Blazor.Components.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
