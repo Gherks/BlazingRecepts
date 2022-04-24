@@ -33,7 +33,10 @@ else
                         IngredientMeasurementDto ingredientMeasurementDto = checkableIngredientMeasurement.IngredientMeasurementDto;
                         <tr class=@GetIngredientMeasurementRowClass(checkableIngredientMeasurement)>
                             <td><input class="form-check-input" type="checkbox" @bind="@checkableIngredientMeasurement.IsChecked"></td>
-                            <td>@ingredientMeasurementDto.IngredientDto.Name</td>
+                            <td>
+                                @ingredientMeasurementDto.IngredientDto.Name
+                                <NoteTooltipIcon IngredientMeasurementDto="@ingredientMeasurementDto" />
+                            </td>
                             <td>@GetMeasurement(ingredientMeasurementDto)</td>
                             <td>@ingredientMeasurementDto.Grams</td>
                             <td>@ingredientMeasurementDto.IngredientDto.Fat</td>

@@ -12,7 +12,6 @@
                     <th>Namn</th>
                     <th>Mätning</th>
                     <th>Gram</th>
-                    <th>Anteckning</th>
                     <th>Åtgärder</th>
                 </tr>
             </thead>
@@ -20,10 +19,12 @@
                 @foreach (IngredientMeasurementDto ingredientMeasurementDto in GetIngredientMeasurementContainedInRecipe())
                 {
                     <tr>
-                        <td>@ingredientMeasurementDto.IngredientDto.Name</td>
+                        <td>
+                            @ingredientMeasurementDto.IngredientDto.Name
+                            <NoteTooltipIcon IngredientMeasurementDto="@ingredientMeasurementDto" />
+                        </td>
                         <td>@GetMeasurementText(ingredientMeasurementDto)</td>
                         <td>@ingredientMeasurementDto.Grams</td>
-                        <td>@ingredientMeasurementDto.Note</td>
                         <td>
                             <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientFormMoveUpInOrder(ingredientMeasurementDto)">
                                 <i class="fa-solid fa-arrow-up"></i>

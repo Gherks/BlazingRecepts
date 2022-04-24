@@ -1,0 +1,10 @@
+﻿@using BlazingRecept.Shared.Dto
+
+@inherits ComponentBase
+
+@if (IngredientMeasurementDto != null && string.IsNullOrWhiteSpace(IngredientMeasurementDto.Note) == false)
+{
+    <HxTooltip Text="@IngredientMeasurementDto.Note">
+        <i class="fa-solid fa-circle-info ms-1"></i>
+    </HxTooltip>
+}
