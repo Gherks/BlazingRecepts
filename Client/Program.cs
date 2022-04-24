@@ -1,6 +1,7 @@
 using BlazingRecept.Client;
 using BlazingRecept.Client.Extensions;
 using Blazored.Toast;
+using Havit.Blazor.Components.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
@@ -13,6 +14,7 @@ builder.AddHttpClients();
 builder.AddServices();
 
 builder.Services.AddBlazoredToast();
+builder.Services.AddHxServices();
 
 builder.Services.AddMsalAuthentication(options =>
 {
