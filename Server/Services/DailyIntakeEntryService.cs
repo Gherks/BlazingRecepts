@@ -3,6 +3,7 @@ using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Serilog;
 
 namespace BlazingRecept.Server.Services
 {
@@ -60,6 +61,33 @@ namespace BlazingRecept.Server.Services
             }
 
             return _mapper.Map<DailyIntakeEntryDto>(dailyIntakeEntry);
+        }
+
+        public async Task<bool> SaveAsync(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
+        {
+            foreach (DailyIntakeEntryDto dailyIntakeEntryDto in dailyIntakeEntryDtos)
+            {
+                DailyIntakeEntry dailyIntakeEntry = _mapper.Map<DailyIntakeEntry>(dailyIntakeEntryDto);
+
+                try
+                {
+                    if (dailyIntakeEntry.Id == Guid.Empty)
+                    {
+                        await _dailyIntakeEntryRepository.AddAsync(dailyIntakeEntry);
+                    }
+                    else
+                    {
+                        await _dailyIntakeEntryRepository.UpdateAsync(dailyIntakeEntry);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    const string errorMessage = "Something when wrong when saving and/or updating multiple daily intake entries: ({@DailyIntakeEntries})";
+                    Log.Error(exception, errorMessage, dailyIntakeEntryDtos);
+                }
+            }
+
+            return true;
         }
 
         public async Task<bool> DeleteAsync(Guid id)
