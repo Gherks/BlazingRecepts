@@ -26,10 +26,10 @@
                         <td>@GetMeasurementText(ingredientMeasurementDto)</td>
                         <td>@ingredientMeasurementDto.Grams</td>
                         <td>
-                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientFormMoveUpInOrder(ingredientMeasurementDto)">
+                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientMoveUpInOrder(ingredientMeasurementDto)">
                                 <i class="fa-solid fa-arrow-up"></i>
                             </button>
-                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientFormMoveDownInOrder(ingredientMeasurementDto)">
+                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientMoveDownInOrder(ingredientMeasurementDto)">
                                 <i class="fa-solid fa-arrow-down"></i>
                             </button>
                             <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEdit(ingredientMeasurementDto)">

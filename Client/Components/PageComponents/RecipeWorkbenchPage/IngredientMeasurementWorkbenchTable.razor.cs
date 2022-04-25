@@ -2,6 +2,7 @@ using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
+using BlazingRecept.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
@@ -15,7 +16,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
     [CascadingParameter]
     protected internal RecipeWorkbench? RecipeWorkbench { get; private set; }
 
-    private void HandleIngredientFormMoveUpInOrder(IngredientMeasurementDto ingredientMeasurementDto)
+    private void HandleIngredientMoveUpInOrder(IngredientMeasurementDto ingredientMeasurementDto)
     {
         if (RecipeWorkbench == null)
         {
@@ -24,17 +25,17 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        int movedIngredientFormIndex = RecipeWorkbench.ContainedIngredientMeasurements.IndexOf(ingredientMeasurementDto);
+        int movedIndex = RecipeWorkbench.ContainedIngredientMeasurements.IndexOf(ingredientMeasurementDto);
 
-        if (movedIngredientFormIndex != 0)
+        if (movedIndex != 0)
         {
-            SwapIngredientMeasurementsPositionInList(movedIngredientFormIndex, movedIngredientFormIndex - 1);
+            RecipeWorkbench.ContainedIngredientMeasurements.Swap(movedIndex, movedIndex - 1);
         }
 
         StateHasChanged();
     }
 
-    private void HandleIngredientFormMoveDownInOrder(IngredientMeasurementDto ingredientMeasurementDto)
+    private void HandleIngredientMoveDownInOrder(IngredientMeasurementDto ingredientMeasurementDto)
     {
         if (RecipeWorkbench == null)
         {
@@ -43,11 +44,11 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        int movedIngredientFormIndex = RecipeWorkbench.ContainedIngredientMeasurements.IndexOf(ingredientMeasurementDto);
+        int movedIndex = RecipeWorkbench.ContainedIngredientMeasurements.IndexOf(ingredientMeasurementDto);
 
-        if (movedIngredientFormIndex < RecipeWorkbench.ContainedIngredientMeasurements.Count - 1)
+        if (movedIndex < RecipeWorkbench.ContainedIngredientMeasurements.Count - 1)
         {
-            SwapIngredientMeasurementsPositionInList(movedIngredientFormIndex, movedIngredientFormIndex + 1);
+            RecipeWorkbench.ContainedIngredientMeasurements.Swap(movedIndex, movedIndex + 1);
         }
 
         StateHasChanged();
@@ -99,19 +100,5 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
         }
 
         return ingredientMeasurementDto.Measurement.ToString() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
-    }
-
-    private void SwapIngredientMeasurementsPositionInList(int first, int second)
-    {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "RecipeWorkbench page reference has not been set before trying to switch list location of two ingredient measurements in recipe.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        IngredientMeasurementDto temporary = RecipeWorkbench.ContainedIngredientMeasurements[first];
-        RecipeWorkbench.ContainedIngredientMeasurements[first] = RecipeWorkbench.ContainedIngredientMeasurements[second];
-        RecipeWorkbench.ContainedIngredientMeasurements[second] = temporary;
     }
 }
