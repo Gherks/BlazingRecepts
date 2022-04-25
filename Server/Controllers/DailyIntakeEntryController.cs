@@ -92,6 +92,38 @@ public class DailyIntakeEntryController : ControllerBase
 
     [Authorize]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+    [HttpPost("many")]
+    public async Task<ActionResult<bool>> Post(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
+    {
+        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+
+        try
+        {
+            if (dailyIntakeEntryDtos == null)
+            {
+                return BadRequest();
+            }
+
+            bool saveSuccessful = await _dailyIntakeEntryService.SaveAsync(dailyIntakeEntryDtos);
+
+            if (saveSuccessful)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("Saving multiple daily intake entries was unsuccessful.");
+            }
+        }
+        catch (Exception exception)
+        {
+            Log.Error(exception, "Controller failed while saving daily intake entries: {@DailyIntakeEntryDtos}", dailyIntakeEntryDtos);
+            return BadRequest("Failed while saving multiple daily intake entries.");
+        }
+    }
+
+    [Authorize]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
