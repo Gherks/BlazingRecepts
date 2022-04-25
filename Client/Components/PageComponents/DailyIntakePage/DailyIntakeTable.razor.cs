@@ -4,6 +4,7 @@ using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using BlazingRecept.Shared.Extensions;
 using Havit.Blazor.Components.Web;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
@@ -25,7 +26,7 @@ public partial class DailyIntakeTable : PageComponentBase
     protected internal DailyIntake? DailyIntakePage { get; private set; }
 
     [Inject]
-    protected internal IDailyIntakeEntryService? DailyIntakeService { get; private set; }
+    protected internal IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
 
     [Inject]
     protected internal IIngredientService? IngredientService { get; private set; }
@@ -82,9 +83,9 @@ public partial class DailyIntakeTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (DailyIntakeService == null)
+        if (DailyIntakeEntryService == null)
         {
-            const string errorMessage = "Cannot save edited daily intake entry because the daily intake service has not been set.";
+            const string errorMessage = "Cannot save edited daily intake entry because the daily intake entry service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -103,7 +104,7 @@ public partial class DailyIntakeTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        DailyIntakeEntryDto? savedDailyIntakeEntryDto = await DailyIntakeService.SaveAsync(dailyIntakeEntryDto);
+        DailyIntakeEntryDto? savedDailyIntakeEntryDto = await DailyIntakeEntryService.SaveAsync(dailyIntakeEntryDto);
 
         if (savedDailyIntakeEntryDto == null)
         {
@@ -147,9 +148,9 @@ public partial class DailyIntakeTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (DailyIntakeService == null)
+        if (DailyIntakeEntryService == null)
         {
-            const string errorMessage = "Daily intake service is not available during daily intake entry removal.";
+            const string errorMessage = "Daily intake entry service is not available during daily intake entry removal.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -157,7 +158,7 @@ public partial class DailyIntakeTable : PageComponentBase
         Guid removedId = removedDailyIntakeEntryDto.Id;
         Guid removedCollectionId = removedDailyIntakeEntryDto.CollectionId;
 
-        bool removalFromDatabaseSuccessful = await DailyIntakeService.DeleteAsync(removedId);
+        bool removalFromDatabaseSuccessful = await DailyIntakeEntryService.DeleteAsync(removedId);
         bool removalFromCollectionSuccessful = false;
 
         foreach (List<DailyIntakeEntryDto> dailyIntakeEntryDtos in DailyIntakePage.DailyIntakeEntryDtoCollections.Values)
