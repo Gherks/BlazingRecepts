@@ -121,5 +121,15 @@ public partial class DailyIntake : PageBase
         {
             InsertDailyIntakeEntryIntoCollection(dailyIntakeEntryDto);
         }
+
+        SortDailyIntakeEntryCollections();
+    }
+
+    private void SortDailyIntakeEntryCollections()
+    {
+        foreach (List<DailyIntakeEntryDto> dailyIntakeEntryDtos in DailyIntakeEntryDtoCollections.Values)
+        {
+            dailyIntakeEntryDtos.Sort((first, second) => first.SortOrder > second.SortOrder ? 1 : -1);
+        }
     }
 }
