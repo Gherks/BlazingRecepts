@@ -24,14 +24,14 @@ else
                     <thead>
                         <tr>
                             <th class="col-3">Namn</th>
-                            <th class="col-3">Mängd</th>
+                            <th class="col-1">Mängd</th>
                             <th class="col-1">Fett</th>
                             <th class="col-1">Kolhydrater</th>
                             <th class="col-1">Protein</th>
                             <th class="col-1">Kalorier</th>
-                            <th class="col-1">Protein/kalorie</th>
+                            <th class="col-1">Protein/kalori</th>
                             <AuthorizeView>
-                                <th class="col-1">Åtgärder</th>
+                                <th class="col-3">Åtgärder</th>
                             </AuthorizeView>
                         </tr>
                     </thead>
@@ -42,13 +42,13 @@ else
                                 <td class="col-3">@dailyIntakeEntryDto.ProductName</td>
                                 @if (_editingDailyIntakeEntryGuid == dailyIntakeEntryDto.Id)
                                 {
-                                    <td class="col-3">
+                                    <td class="col-1">
                                         <input type="text" id="amount" name="amount" class="form-control" @bind="@dailyIntakeEntryDto.Amount" placeholder="@dailyIntakeEntryDto.Amount">
                                     </td>
                                 }
                                 else
                                 {
-                                    <td class="col-3">@GetAmount(dailyIntakeEntryDto)</td>
+                                    <td class="col-1">@GetAmount(dailyIntakeEntryDto)</td>
                                 }
                                 <td class="col-1">@GetFat(dailyIntakeEntryDto)</td>
                                 <td class="col-1">@GetCarbohydrates(dailyIntakeEntryDto)</td>
@@ -58,7 +58,7 @@ else
                                 @if (_editingDailyIntakeEntryGuid == dailyIntakeEntryDto.Id)
                                 {
                                     <AuthorizeView>
-                                        <td class="col-1">
+                                        <td class="col-3">
                                             <button class="btn btn-success btn-sm" @onclick="() => HandleDailyIntakeEntryEditConfirmed(dailyIntakeEntryDto)">
                                                 <i class="fa-solid fa-check"></i>
                                             </button>
@@ -71,7 +71,7 @@ else
                                 else
                                 {
                                     <AuthorizeView>
-                                        <td class="col-1">
+                                        <td class="col-3">
                                             <button class="btn btn-primary btn-sm" @onclick="() => HandleDailyIntakeEntryEditClicked(dailyIntakeEntryDto.Id)">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
@@ -87,14 +87,14 @@ else
                     <tfoot>
                         <tr>
                             <th class="col-3">Total</th>
-                            <th class="col-3"></th>
+                            <th class="col-1"></th>
                             <th class="col-1">@GetFatTotal(dailyIntakeEntryDtos)</th>
                             <th class="col-1">@GetCarbohydrateTotal(dailyIntakeEntryDtos)</th>
                             <th class="col-1">@GetProteinTotal(dailyIntakeEntryDtos)</th>
                             <th class="col-1">@GetCalorieTotal(dailyIntakeEntryDtos)</th>
                             <th class="col-1">@GetAverageProteinPerCalorie(dailyIntakeEntryDtos)</th>
                             <AuthorizeView>
-                                <th class="col-1"></th>
+                                <th class="col-3"></th>
                             </AuthorizeView>
                         </tr>
                     </tfoot>
