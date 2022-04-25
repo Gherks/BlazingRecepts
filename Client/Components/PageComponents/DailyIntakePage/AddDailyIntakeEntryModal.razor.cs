@@ -223,6 +223,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
         {
             ProductName = _form.ProductName.Trim(),
             Amount = _form.Amount.Value,
+            SortOrder = DailyIntakePage.DailyIntakeEntryDtoCollections[_collectionId].Count,
             CollectionId = _collectionId
         };
 
