@@ -8,5 +8,6 @@ public interface IDailyIntakeEntryService
     Task<DailyIntakeEntryDto?> GetByIdAsync(Guid id);
     Task<IReadOnlyList<DailyIntakeEntryDto>?> GetAllAsync();
     Task<DailyIntakeEntryDto?> SaveAsync(DailyIntakeEntryDto dailyIntakeEntryDto);
+    Task<bool> SaveAsync(List<DailyIntakeEntryDto> dailyIntakeEntryDtos);
     Task<bool> DeleteAsync(Guid id);
 }

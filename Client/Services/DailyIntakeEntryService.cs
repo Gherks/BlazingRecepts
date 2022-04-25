@@ -163,6 +163,27 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         return null;
     }
 
+    public async Task<bool> SaveAsync(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
+    {
+        try
+        {
+            HttpResponseMessage response = await _authenticatedHttpClient.PostAsJsonAsync(_apiAddress + "/many", dailyIntakeEntryDtos);
+
+            return response.StatusCode == HttpStatusCode.OK;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception exception)
+        {
+            const string messageTemplate = "Failed while saving daily intake entries: {@DailyIntakeEntryDtos}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, dailyIntakeEntryDtos);
+        }
+
+        return false;
+    }
+
     public async Task<bool> DeleteAsync(Guid id)
     {
         try
