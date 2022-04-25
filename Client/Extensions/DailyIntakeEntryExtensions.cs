@@ -1,10 +1,14 @@
 ﻿using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Serilog;
 
 namespace BlazingRecept.Client.Extensions;
 
 public static class DailyIntakeEntryExtensions
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "DailyIntakeEntryExtensions";
+
     public static async Task LoadFromProductServices(
         this DailyIntakeEntryDto dailyIntakeEntryDto,
         IIngredientService ingredientService,
@@ -26,7 +30,9 @@ public static class DailyIntakeEntryExtensions
             }
             else
             {
-
+                const string errorMessage = "Cannot load daily intake entry by id from services because its product was not found in either recipes or ingredients.";
+                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
             }
         }
     }
@@ -52,7 +58,9 @@ public static class DailyIntakeEntryExtensions
             }
             else
             {
-
+                const string errorMessage = "Cannot load daily intake by id from product lists because its was not found in either list of recipes or ingredients.";
+                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
             }
         }
     }
@@ -78,7 +86,9 @@ public static class DailyIntakeEntryExtensions
             }
             else
             {
-
+                const string errorMessage = "Cannot load daily intake entry by name from product lists because its was not found in either list of recipes or ingredients.";
+                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
             }
         }
     }
