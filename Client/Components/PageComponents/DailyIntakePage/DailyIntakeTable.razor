@@ -72,6 +72,12 @@ else
                                 {
                                     <AuthorizeView>
                                         <td class="col-3">
+                                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleDailyIntakeEntryMoveUpInOrder(dailyIntakeEntryDto, collectionId)">
+                                                <i class="fa-solid fa-arrow-up"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleDailyIntakeEntryMoveDownInOrder(dailyIntakeEntryDto, collectionId)">
+                                                <i class="fa-solid fa-arrow-down"></i>
+                                            </button>
                                             <button class="btn btn-primary btn-sm" @onclick="() => HandleDailyIntakeEntryEditClicked(dailyIntakeEntryDto.Id)">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>

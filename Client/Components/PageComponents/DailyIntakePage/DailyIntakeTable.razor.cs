@@ -74,6 +74,77 @@ public partial class DailyIntakeTable : PageComponentBase
         _removalConfirmationModal.Open(dailyIntakeEntryDto, "Ta bort post för dagligt intag", dailyIntakeEntryDto.ProductName);
     }
 
+    private void HandleDailyIntakeEntryMoveUpInOrder(DailyIntakeEntryDto dailyIntakeEntryDto, Guid collectionId)
+    {
+        if (DailyIntakePage == null)
+        {
+            const string errorMessage = "DailyIntakePage page reference has not been set before moving daily intake entry up in order.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (DailyIntakeEntryService == null)
+        {
+            const string errorMessage = "Daily intake entry service has not been set before moving daily intake entry up in order.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        List<DailyIntakeEntryDto> dailyIntakeEntries = DailyIntakePage.DailyIntakeEntryDtoCollections[collectionId];
+
+        int movedIndex = dailyIntakeEntries.IndexOf(dailyIntakeEntryDto);
+
+        if (movedIndex != 0)
+        {
+            dailyIntakeEntries.Swap(movedIndex, movedIndex - 1);
+
+        }
+
+        UpdateSortOrderInDailyIntakeEntryCollection(dailyIntakeEntries);
+        DailyIntakeEntryService.SaveAsync(dailyIntakeEntries);
+
+        StateHasChanged();
+    }
+
+    private void HandleDailyIntakeEntryMoveDownInOrder(DailyIntakeEntryDto dailyIntakeEntryDto, Guid collectionId)
+    {
+        if (DailyIntakePage == null)
+        {
+            const string errorMessage = "DailyIntakePage page reference has not been set before moving daily intake entry down in order.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (DailyIntakeEntryService == null)
+        {
+            const string errorMessage = "Daily intake entry service has not been set before moving daily intake entry down in order.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        List<DailyIntakeEntryDto> dailyIntakeEntries = DailyIntakePage.DailyIntakeEntryDtoCollections[collectionId];
+
+        int movedIndex = dailyIntakeEntries.IndexOf(dailyIntakeEntryDto);
+
+        if (movedIndex < dailyIntakeEntries.Count - 1)
+        {
+            dailyIntakeEntries.Swap(movedIndex, movedIndex + 1);
+        }
+
+        UpdateSortOrderInDailyIntakeEntryCollection(dailyIntakeEntries);
+        DailyIntakeEntryService.SaveAsync(dailyIntakeEntries);
+
+        StateHasChanged();
+    }
+
+    private static void UpdateSortOrderInDailyIntakeEntryCollection(List<DailyIntakeEntryDto> dailyIntakeEntries)
+    {
+        for (int index = 0; index < dailyIntakeEntries.Count; ++index)
+        {
+            dailyIntakeEntries[index].SortOrder = index;
+        }
+    }
+
     private async Task HandleDailyIntakeEntryEditConfirmed(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
         if (DailyIntakePage == null)
