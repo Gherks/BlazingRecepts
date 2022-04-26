@@ -4,44 +4,43 @@
 
 @inherits PageComponentBase
 
-<div class="mb-2">
-    <div class="table-responsive">
-        <table class="table table-hover table-striped table-sm">
-            <thead>
+
+<div class="table-responsive">
+    <table class="table table-hover table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Namn</th>
+                <th>Mätning</th>
+                <th>Gram</th>
+                <th>Åtgärder</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (IngredientMeasurementDto ingredientMeasurementDto in GetIngredientMeasurementContainedInRecipe())
+            {
                 <tr>
-                    <th>Namn</th>
-                    <th>Mätning</th>
-                    <th>Gram</th>
-                    <th>Åtgärder</th>
+                    <td>
+                        @ingredientMeasurementDto.IngredientDto.Name
+                        <NoteTooltipIcon IngredientMeasurementDto="@ingredientMeasurementDto" />
+                    </td>
+                    <td>@GetMeasurementText(ingredientMeasurementDto)</td>
+                    <td>@ingredientMeasurementDto.Grams</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientMoveUpInOrder(ingredientMeasurementDto)">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientMoveDownInOrder(ingredientMeasurementDto)">
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEdit(ingredientMeasurementDto)">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemoval(ingredientMeasurementDto)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (IngredientMeasurementDto ingredientMeasurementDto in GetIngredientMeasurementContainedInRecipe())
-                {
-                    <tr>
-                        <td>
-                            @ingredientMeasurementDto.IngredientDto.Name
-                            <NoteTooltipIcon IngredientMeasurementDto="@ingredientMeasurementDto" />
-                        </td>
-                        <td>@GetMeasurementText(ingredientMeasurementDto)</td>
-                        <td>@ingredientMeasurementDto.Grams</td>
-                        <td>
-                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientMoveUpInOrder(ingredientMeasurementDto)">
-                                <i class="fa-solid fa-arrow-up"></i>
-                            </button>
-                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientMoveDownInOrder(ingredientMeasurementDto)">
-                                <i class="fa-solid fa-arrow-down"></i>
-                            </button>
-                            <button type="button" class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEdit(ingredientMeasurementDto)">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemoval(ingredientMeasurementDto)">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
 </div>

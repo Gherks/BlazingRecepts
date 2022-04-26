@@ -74,14 +74,16 @@ else
                         </div>
                     </div>
                     <p>
-                        <a class="link-primary" href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown Cheat Sheet</a>
+                        <a class="link-primary" href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Hur fungerar Markdown?</a>
                     </p>
                     <div class="row mb-2">
                         <div class="col-12 col-xl-10 col-xxl-8">
                             <div class="card">
-                                <IngredientMeasurementWorkbenchTable />
-                                <div class="ms-2 mb-2">
-                                    <button type="button" class="btn btn-primary" @onclick="@(_ => HandleAddIngredientModalOpen())">Lägg till</button>
+                                <div class="card-body">
+                                    <IngredientMeasurementWorkbenchTable />
+                                    <div class="mb-2">
+                                        <button type="button" class="btn btn-primary" @onclick="@(_ => HandleAddIngredientModalOpen())">Lägg till ingrediens</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

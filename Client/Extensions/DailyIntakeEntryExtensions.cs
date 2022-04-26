@@ -95,7 +95,7 @@ public static class DailyIntakeEntryExtensions
 
     private static void AddIngredientDataIntoDailyIntakeEntry(DailyIntakeEntryDto dailyIntakeEntryDto, IngredientDto ingredientDto)
     {
-        double gramMultiplier = dailyIntakeEntryDto.Amount / 100;
+        double gramMultiplier = dailyIntakeEntryDto.Amount * 0.01;
 
         dailyIntakeEntryDto.ProductName = ingredientDto.Name;
         dailyIntakeEntryDto.Fat = ingredientDto.Fat * gramMultiplier;
