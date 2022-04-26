@@ -1,0 +1,9 @@
+﻿@inherits ComponentBase
+
+<button form="@EditFormId" class="@CssClass" type="@Type">
+    @Label
+    @if (_isProcessing)
+    {
+        <span class="spinner-border spinner-border-sm ms-1" role="status" aria-hidden="true"></span>
+    }
+</button>
