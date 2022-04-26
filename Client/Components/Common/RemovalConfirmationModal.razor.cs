@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Serilog;
 
-namespace BlazingRecept.Client.Components.Utilities;
+namespace BlazingRecept.Client.Components.Common;
 
 public partial class RemovalConfirmationModal<Type> : ComponentBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "RemovalConfirmationModal";
 
-    private Type? _entity = default(Type);
+    private Type? _entity = default;
     private string _title = string.Empty;
     private string _name = string.Empty;
     private Modal? _modal;

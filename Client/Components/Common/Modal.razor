@@ -1,0 +1,16 @@
+﻿<div class="modal @_modalClass" tabindex="-1" role="dialog" style="display:@_modalDisplay">
+    <div class="modal-dialog @Options" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Title</h5>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="() => Close()" disabled="@CloseButtonDisabled"></button>
+            </div>
+            <div class="modal-body overflow-auto modal-component-content">
+                @Body
+            </div>
+            <div class="modal-footer">
+                @Buttons
+            </div>
+        </div>
+    </div>
+</div>

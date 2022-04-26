@@ -1,5 +1,5 @@
+using BlazingRecept.Client.Components.Common;
 using BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
-using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;

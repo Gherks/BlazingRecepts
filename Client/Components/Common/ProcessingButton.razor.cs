@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace BlazingRecept.Client.Components.Utilities;
+namespace BlazingRecept.Client.Components.Common;
 
 public partial class ProcessingButton : ComponentBase
 {

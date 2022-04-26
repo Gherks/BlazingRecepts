@@ -1,4 +1,4 @@
-using BlazingRecept.Client.Components.Utilities;
+using BlazingRecept.Client.Components.Common;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
