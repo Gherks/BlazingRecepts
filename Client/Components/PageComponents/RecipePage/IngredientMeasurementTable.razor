@@ -39,10 +39,10 @@ else
                             </td>
                             <td>@GetMeasurement(ingredientMeasurementDto)</td>
                             <td>@ingredientMeasurementDto.Grams</td>
-                            <td>@ingredientMeasurementDto.IngredientDto.Fat</td>
-                            <td>@ingredientMeasurementDto.IngredientDto.Carbohydrates</td>
-                            <td>@ingredientMeasurementDto.IngredientDto.Protein</td>
-                            <td>@ingredientMeasurementDto.IngredientDto.Calories</td>
+                            <td>@ingredientMeasurementDto.GetFat()</td>
+                            <td>@ingredientMeasurementDto.GetCarbohydrates()</td>
+                            <td>@ingredientMeasurementDto.GetProtein()</td>
+                            <td>@ingredientMeasurementDto.GetCalories()</td>
                         </tr>
                     }
                 </tbody>
