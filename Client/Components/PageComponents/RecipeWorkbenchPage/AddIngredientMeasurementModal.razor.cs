@@ -143,20 +143,12 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
     private IngredientMeasurementDto CreateIngredientMeasurementDtoFromForm()
     {
-        //if (RecipeWorkbench == null)
-        //{
-        //    const string errorMessage = "Add ingredient measurement modal form cannot be validated because RecipeWorkbench page reference has not been set.";
-        //    Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-        //    throw new InvalidOperationException(errorMessage);
-        //}
-
-        int sortOrder = _form.SortOrder;
-
-        // huh?
-        //if (sortOrder >= 0)
-        //{
-        //    sortOrder = RecipeWorkbench.ContainedIngredientMeasurements.Count;
-        //}
+        if (RecipeWorkbench == null)
+        {
+            const string errorMessage = "Cannot create ingredient measurement dto from form because recipe workbench page reference has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         if (_form.IngredientDto == null)
         {
@@ -186,7 +178,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
             MeasurementUnit = _form.MeasurementUnit,
             Grams = _form.Grams.Value,
             Note = _form.Note,
-            SortOrder = sortOrder
+            SortOrder = RecipeWorkbench.ContainedIngredientMeasurements.Count
         };
     }
 
@@ -235,6 +227,5 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
         public MeasurementUnit MeasurementUnit { get; set; } = MeasurementUnit.Unassigned;
         public double? Grams { get; set; } = null;
         public string Note { get; set; } = string.Empty;
-        public int SortOrder { get; set; } = -1;
     }
 }
