@@ -6,7 +6,7 @@ public partial class ProcessingButton : ComponentBase
 {
     private bool _isProcessing = false;
 
-    public bool IsProcessing 
+    public bool IsProcessing
     {
         get
         {
