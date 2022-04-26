@@ -83,14 +83,14 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
     {
         if (_modal == null)
         {
-            const string errorMessage = "Edit ingredient measurement modal form cannot be validated because modal has not been set.";
+            const string errorMessage = "Cannot update ingredient measurement because modal has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (RecipeWorkbench == null)
         {
-            const string errorMessage = "Edit ingredient measurement modal form cannot be validated because RecipeWorkbench page reference has not been set.";
+            const string errorMessage = "Cannot update ingredient measurement because recipe workbench page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
