@@ -1,4 +1,5 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
+using BlazingRecept.Client.Components.Utilities;
 using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
@@ -7,6 +8,7 @@ using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Serilog;
 using static BlazingRecept.Shared.Enums;
 
@@ -16,12 +18,14 @@ public partial class IngredientInputForm : PageComponentBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "IngredientInputForm";
+    private static readonly string _editFormId = "IngredientInputFormEditForm";
 
     private Form _form = new();
 
     private CustomValidation? _customValidation;
-    private HxCollapse? _hxCollapse;
+    private EditContext? _editContext;
     private ElementReference _nameInput;
+    private ProcessingButton? _processingButtonSubmit;
 
     private bool _collapseIsShow = false;
     private bool _shouldMoveFocusToNameElement = false;
@@ -45,6 +49,8 @@ public partial class IngredientInputForm : PageComponentBase
         IsLoading = true;
 
         await base.OnInitializedAsync();
+
+        _editContext = new(_form);
 
         if (CategoryService != null)
         {
@@ -126,16 +132,25 @@ public partial class IngredientInputForm : PageComponentBase
 
     private async Task HandleValidFormSubmitted()
     {
+        if (_processingButtonSubmit == null)
+        {
+            const string errorMessage = "Cannot add new ingredient because processing button has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        _processingButtonSubmit.IsProcessing = true;
+
         if (IngredientService == null)
         {
-            const string errorMessage = "Ingredient service is not available during form validation.";
+            const string errorMessage = "Cannot add new ingredient because ingredient service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (IngredientsPage == null)
         {
-            const string errorMessage = "Ingredient page reference is not available during form validation.";
+            const string errorMessage = "Cannot add new ingredient because ingredient page reference has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -158,6 +173,8 @@ public partial class IngredientInputForm : PageComponentBase
                 MessengerService.AddError("Ingredienser", "Kunde ej lägga till ingrediens.");
             }
         }
+
+        _processingButtonSubmit.IsProcessing = false;
     }
 
     private async Task<bool> Validate()

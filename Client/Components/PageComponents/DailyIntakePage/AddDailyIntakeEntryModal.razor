@@ -35,7 +35,7 @@
         </EditForm>
     </Body>
     <Buttons>
-        <button form="@_editFormId" class="btn btn-primary" type="submit">Lägg till</button>
+        <ProcessingButton @ref="_processingButtonSubmit" Label="Lägg till" EditFormId="@_editFormId" />
         <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Avbryt</button>
     </Buttons>
 </Modal>

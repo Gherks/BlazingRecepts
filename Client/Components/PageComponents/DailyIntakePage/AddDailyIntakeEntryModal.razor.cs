@@ -22,6 +22,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     private Modal? _modal;
     private CustomValidation? _customValidation;
     private EditContext? _editContext;
+    private ProcessingButton? _processingButtonSubmit;
 
     private Guid _collectionId;
     private Form _form = new();
@@ -122,6 +123,15 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
 
     private async Task HandleValidFormSubmitted()
     {
+        if (_processingButtonSubmit == null)
+        {
+            const string errorMessage = "Add ingredient measurement modal form cannot be validated because processing button has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        _processingButtonSubmit.IsProcessing = true;
+
         if (_modal == null)
         {
             const string errorMessage = "Add ingredient measurement modal form cannot be validated because modal has not been set.";
@@ -163,6 +173,8 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
                 MessengerService.AddError("Dagligt intag", "Kunde ej lägga till post för dagligt intag.");
             }
         }
+
+        _processingButtonSubmit.IsProcessing = false;
     }
 
     private bool Validate()

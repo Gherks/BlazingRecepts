@@ -25,7 +25,7 @@ else
         <RemovalConfirmationModal Type="IngredientDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
         <div class="card mb-2">
             <div class="card-body">
-                <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
+                <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
                     <CustomValidation @ref="_customValidation" />
                     <div class="row mb-2">
                         <div class="col-12 col-xl-10 col-xxl-8">
@@ -87,7 +87,7 @@ else
                         </div>
                     </div>
                     <div class="mb-2">
-                        <button type="submit" class="btn btn-primary">@GetConfirmationButtonLabel()</button>
+                        <ProcessingButton @ref="_processingButtonSubmit" Label="@GetConfirmationButtonLabel()" EditFormId="@_editFormId" />
                     </div>
                     <ValidationMessage For="() => _form.RecipeCreationErrorMessage" />
                 </EditForm>

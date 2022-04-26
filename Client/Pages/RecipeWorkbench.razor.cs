@@ -7,6 +7,7 @@ using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Serilog;
 using static BlazingRecept.Shared.Enums;
 
@@ -16,15 +17,19 @@ public partial class RecipeWorkbench : PageBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "RecipeWorkbenchPage";
+    private static readonly string _editFormId = "RecipeWorkbenchEditForm";
 
     private Form _form = new();
 
     private AddIngredientMeasurementModal? _addIngredientMeasurementModal;
     private UpdateIngredientMeasurementModal? _updateIngredientMeasurementModal;
     private RemovalConfirmationModal<IngredientDto>? _removalConfirmationModal;
+
     private CustomValidation? _customValidation;
+    private EditContext? _editContext;
     private ElementReference _nameInput;
     private bool _shouldMoveFocusToNameElement = false;
+    private ProcessingButton? _processingButtonSubmit;
 
     private IReadOnlyList<CategoryDto>? _categoryDtos = new List<CategoryDto>();
 
@@ -77,6 +82,7 @@ public partial class RecipeWorkbench : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
+        _editContext = new(_form);
         Ingredients = await IngredientService.GetAllAsync();
         _categoryDtos = await CategoryService.GetAllOfTypeAsync(CategoryType.Recipe);
 
@@ -120,16 +126,25 @@ public partial class RecipeWorkbench : PageBase
 
     private async Task HandleValidFormSubmitted()
     {
+        if (_processingButtonSubmit == null)
+        {
+            const string errorMessage = "Cannot create submitted recipe because processing button has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        _processingButtonSubmit.IsProcessing = true;
+
         if (RecipeService == null)
         {
-            const string errorMessage = "Cannot submit validated recipe because recipe service has not been set.";
+            const string errorMessage = "Cannot create submitted recipe because recipe service has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
         if (NavigationManager == null)
         {
-            const string errorMessage = "Cannot submit validated recipe because navigation manager has not been set.";
+            const string errorMessage = "Cannot create submitted recipe because navigation manager has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
@@ -148,6 +163,8 @@ public partial class RecipeWorkbench : PageBase
                 NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
             }
         }
+
+        _processingButtonSubmit.IsProcessing = false;
     }
 
     private async Task<bool> Validate()

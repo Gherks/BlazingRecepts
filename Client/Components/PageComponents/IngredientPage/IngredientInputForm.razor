@@ -8,8 +8,8 @@
 <div class="card mb-2">
     <div class="card-body">
         <HxCollapseToggleButton Text="@GetCollapseToggleTitle()" CollapseTarget="#ingredient-input-form" Color="ThemeColor.Primary" CssClass="mb-2" />
-        <HxCollapse @ref="_hxCollapse" Id="ingredient-input-form" OnShown="@HandleCollapseShown" OnHidden="@HandleCollapseHidden">
-            <EditForm Model="_form" OnValidSubmit="@HandleValidFormSubmitted">
+        <HxCollapse Id="ingredient-input-form" OnShown="@HandleCollapseShown" OnHidden="@HandleCollapseHidden">
+            <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
                 <CustomValidation @ref="_customValidation" />
                 <div class="row mb-2">
                     <div class="col-12 col-md-9 col-lg-7">
@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <div>
-                    <button class="btn btn-primary" type="submit">Lägg till</button>
+                    <ProcessingButton @ref="_processingButtonSubmit" Label="Lägg till" EditFormId="@_editFormId" />
                 </div>
             </EditForm>
         </HxCollapse>
