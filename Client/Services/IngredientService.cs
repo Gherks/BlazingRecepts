@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Serilog;
 using System.Net;
 using System.Net.Http.Json;
+using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Services;
 
@@ -16,10 +17,14 @@ public class IngredientService : IIngredientService
     private readonly HttpClient _publicHttpClient;
     private readonly HttpClient _authenticatedHttpClient;
 
-    public IngredientService(IHttpClientFactory httpClientFactory)
+    private readonly ICategoryService _categoryService;
+
+    public IngredientService(IHttpClientFactory httpClientFactory, ICategoryService categoryService)
     {
         _publicHttpClient = httpClientFactory.CreateClient("BlazingRecept.PublicServerAPI");
         _authenticatedHttpClient = httpClientFactory.CreateClient("BlazingRecept.AuthenticatedServerAPI");
+
+        _categoryService = categoryService;
     }
 
     public async Task<bool> AnyAsync(string name)
@@ -69,7 +74,26 @@ public class IngredientService : IIngredientService
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientDto>>();
+                IReadOnlyList<IngredientDto>? ingredientDtos = await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientDto>>();
+
+                if (ingredientDtos == null)
+                {
+                    throw new InvalidOperationException("Failed because fetched ingredient list is null.");
+                }
+
+                IReadOnlyList<CategoryDto>? categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
+
+                if (categoryDtos == null)
+                {
+                    throw new InvalidOperationException("Failed because fetched category list is null.");
+                }
+
+                foreach(IngredientDto ingredientDto in ingredientDtos)
+                {
+                    ingredientDto.CategoryDto = categoryDtos.First(category => category.Id == ingredientDto.CategoryId);
+                }
+
+                return ingredientDtos;
             }
         }
         catch (Exception exception)
@@ -83,22 +107,47 @@ public class IngredientService : IIngredientService
 
     public async Task<IReadOnlyList<IngredientCollectionTypeDto>?> GetAllSortedAsync()
     {
-        try
-        {
-            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress + "/sorted");
+        IReadOnlyList<IngredientDto>? ingredientDtos = await GetAllAsync();
 
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                return await response.Content.ReadFromJsonAsync<IReadOnlyList<IngredientCollectionTypeDto>>();
-            }
-        }
-        catch (Exception exception)
+        if (ingredientDtos == null)
         {
-            const string messageTemplate = "Failed while fetching all ingredients in sorted collection.";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate);
+            const string messageTemplate = "Failed because fetched ingredient dto list is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate);
+            throw new InvalidOperationException();
         }
 
-        return null;
+        IReadOnlyList<CategoryDto>? categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
+
+        if (categoryDtos == null)
+        {
+            const string messageTemplate = "Failed because fetched category dto list is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate);
+            throw new InvalidOperationException();
+        }
+
+        List<IngredientCollectionTypeDto> ingredientCollectionTypes = new();
+
+        foreach (CategoryDto CategoryDto in categoryDtos)
+        {
+            IngredientCollectionTypeDto ingredientCollectionTypeDto = new();
+            ingredientCollectionTypeDto.Name = CategoryDto.Name;
+
+            ingredientCollectionTypes.Add(ingredientCollectionTypeDto);
+        }
+
+        foreach (IngredientDto ingredientDto in ingredientDtos)
+        {
+            ingredientCollectionTypes[ingredientDto.CategoryDto.SortOrder].Ingredients.Add(ingredientDto);
+        }
+
+        foreach (IngredientCollectionTypeDto ingredientCollectionTypeDto in ingredientCollectionTypes)
+        {
+            ingredientCollectionTypeDto.Ingredients = ingredientCollectionTypeDto.Ingredients
+                .OrderBy(ingredientDto => ingredientDto.Name)
+                .ToList();
+        }
+
+        return ingredientCollectionTypes;
     }
 
     public async Task<IngredientDto?> SaveAsync(IngredientDto ingredientDto)

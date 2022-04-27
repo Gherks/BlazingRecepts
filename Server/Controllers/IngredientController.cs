@@ -46,15 +46,9 @@ public class IngredientController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IReadOnlyList<IngredientDto>> Get()
+    public async Task<IReadOnlyList<IngredientDto>?> Get()
     {
         return await _ingredientService.GetAllAsync();
-    }
-
-    [HttpGet("sorted")]
-    public async Task<IReadOnlyList<IngredientCollectionTypeDto>> GetSorted()
-    {
-        return await _ingredientService.GetAllSortedAsync();
     }
 
     [HttpGet("{ingredientIdentifier}")]
