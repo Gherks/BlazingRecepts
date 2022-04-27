@@ -3,6 +3,7 @@ using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Serilog;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Services
@@ -30,9 +31,16 @@ namespace BlazingRecept.Server.Services
             return null;
         }
 
-        public async Task<IReadOnlyList<CategoryDto>> GetAllOfTypeAsync(CategoryType categoryType)
+        public async Task<IReadOnlyList<CategoryDto>?> GetAllOfTypeAsync(CategoryType categoryType)
         {
-            IReadOnlyList<Category> categories = await _categoryRepository.ListAllOfTypeAsync(categoryType) ?? new List<Category>();
+            IReadOnlyList<Category>? categories = await _categoryRepository.ListAllOfTypeAsync(categoryType);
+
+            if (categories == null)
+            {
+                const string errorMessage = "Cannot return list of ingredient dtos because returned list from repository is null.";
+                Log.Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
+            }
 
             List<CategoryDto> categoryDtos = categories.Select(ingredientCategory => _mapper.Map<CategoryDto>(ingredientCategory)).ToList();
 

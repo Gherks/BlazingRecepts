@@ -7,6 +7,6 @@ namespace BlazingRecept.Server.Services.Interfaces
     {
         Task<CategoryDto?> GetByIdAsync(Guid id);
 
-        Task<IReadOnlyList<CategoryDto>> GetAllOfTypeAsync(CategoryType categoryType);
+        Task<IReadOnlyList<CategoryDto>?> GetAllOfTypeAsync(CategoryType categoryType);
     }
 }
