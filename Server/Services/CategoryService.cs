@@ -37,7 +37,7 @@ namespace BlazingRecept.Server.Services
 
             if (categories == null)
             {
-                const string errorMessage = "Cannot return list of ingredient dtos because returned list from repository is null.";
+                const string errorMessage = "Failed because fetched category list is null.";
                 Log.Error(errorMessage);
                 throw new InvalidOperationException(errorMessage);
             }
