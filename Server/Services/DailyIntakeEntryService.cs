@@ -39,12 +39,14 @@ namespace BlazingRecept.Server.Services
         {
             IReadOnlyList<DailyIntakeEntry>? dailyIntakeEntries = await _dailyIntakeEntryRepository.ListAllAsync();
 
-            if (dailyIntakeEntries != null)
+            if (dailyIntakeEntries == null)
             {
-                return dailyIntakeEntries.Select(dailyIntakeEntry => _mapper.Map<DailyIntakeEntryDto>(dailyIntakeEntry)).ToList();
+                const string errorMessage = "Failed because fetched daily intake entry list is null.";
+                Log.Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
             }
 
-            return null;
+            return dailyIntakeEntries.Select(dailyIntakeEntry => _mapper.Map<DailyIntakeEntryDto>(dailyIntakeEntry)).ToList();
         }
 
         public async Task<DailyIntakeEntryDto> SaveAsync(DailyIntakeEntryDto dailyIntakeEntryDto)

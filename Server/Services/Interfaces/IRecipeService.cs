@@ -7,7 +7,7 @@ namespace BlazingRecept.Server.Services.Interfaces
         Task<bool> AnyAsync(Guid id);
         Task<bool> AnyAsync(string name);
         Task<RecipeDto?> GetByIdAsync(Guid id);
-        Task<IReadOnlyList<RecipeDto>> GetAllAsync();
+        Task<IReadOnlyList<RecipeDto>?> GetAllAsync();
         Task<RecipeDto> SaveAsync(RecipeDto recipeDto);
         Task<bool> DeleteAsync(Guid id);
     }

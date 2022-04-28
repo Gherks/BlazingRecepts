@@ -81,17 +81,7 @@ public class IngredientService : IIngredientService
                     throw new InvalidOperationException("Failed because fetched ingredient list is null.");
                 }
 
-                IReadOnlyList<CategoryDto>? categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
-
-                if (categoryDtos == null)
-                {
-                    throw new InvalidOperationException("Failed because fetched category list is null.");
-                }
-
-                foreach(IngredientDto ingredientDto in ingredientDtos)
-                {
-                    ingredientDto.CategoryDto = categoryDtos.First(category => category.Id == ingredientDto.CategoryId);
-                }
+                await LoadCategoryDtoIntoIngredientDtos(ingredientDtos);
 
                 return ingredientDtos;
             }
@@ -200,5 +190,29 @@ public class IngredientService : IIngredientService
         }
 
         return false;
+    }
+
+    private async Task LoadCategoryDtoIntoIngredientDtos(IReadOnlyList<IngredientDto>? ingredientDtos)
+    {
+        if (ingredientDtos == null)
+        {
+            const string errorMessage = "Cannot load category dtos into ingredient dtos because ingredient dto list is not set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        IReadOnlyList<CategoryDto>? categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
+
+        if (categoryDtos == null)
+        {
+            const string errorMessage = "Failed because fetched category list is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        foreach (IngredientDto ingredientDto in ingredientDtos)
+        {
+            ingredientDto.CategoryDto = categoryDtos.First(category => category.Id == ingredientDto.CategoryId);
+        }
     }
 }

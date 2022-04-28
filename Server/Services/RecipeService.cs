@@ -3,6 +3,7 @@ using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Serilog;
 
 namespace BlazingRecept.Server.Services
 {
@@ -41,9 +42,17 @@ namespace BlazingRecept.Server.Services
 
             if (recipe != null)
             {
-                IReadOnlyList<IngredientDto> ingredientDtos = await _ingredientService.GetAllAsync();
+                RecipeDto recipeDto = _mapper.Map<RecipeDto>(recipe);
+                IReadOnlyList<IngredientDto>? ingredientDtos = await _ingredientService.GetAllAsync();
 
-                RecipeDto recipeDto = await LoadRecipeDtoFromRecipe(recipe, ingredientDtos);
+                if (ingredientDtos == null)
+                {
+                    const string errorMessage = "Cannot reload saved recipe because fetched ingredient list is null.";
+                    Log.Error(errorMessage);
+                    throw new InvalidOperationException(errorMessage);
+                }
+
+                LoadIngredientMeasurements(recipeDto, recipe, ingredientDtos);
 
                 return recipeDto;
             }
@@ -51,20 +60,36 @@ namespace BlazingRecept.Server.Services
             return null;
         }
 
-        public async Task<IReadOnlyList<RecipeDto>> GetAllAsync()
+        public async Task<IReadOnlyList<RecipeDto>?> GetAllAsync()
         {
-            IReadOnlyList<Recipe> recipes = await _recipeRepository.ListAllAsync() ?? new List<Recipe>();
+            IReadOnlyList<Recipe>? recipes = await _recipeRepository.ListAllAsync();
 
-            IReadOnlyList<IngredientDto> ingredientDtos = await _ingredientService.GetAllAsync();
-
-            List<RecipeDto> recipeDto = new();
-
-            foreach (Recipe recipe in recipes)
+            if (recipes == null)
             {
-                recipeDto.Add(await LoadRecipeDtoFromRecipe(recipe, ingredientDtos));
+                const string errorMessage = "Failed because fetched recipe list is null.";
+                Log.Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
             }
 
-            return recipeDto;
+            //return recipes.Select(recipe => _mapper.Map<RecipeDto>(recipe)).ToList();
+            List<RecipeDto> recipeDtos = new();
+            IReadOnlyList<IngredientDto>? ingredientDtos = await _ingredientService.GetAllAsync();
+            foreach(Recipe recipe in recipes)
+            {
+                RecipeDto recipeDto = _mapper.Map<RecipeDto>(recipe);
+
+                if (ingredientDtos == null)
+                {
+                    const string errorMessage = "Cannot fetch all recipe dtos because fetched ingredient list is null.";
+                    Log.Error(errorMessage);
+                    throw new InvalidOperationException(errorMessage);
+                }
+
+                LoadIngredientMeasurements(recipeDto, recipe, ingredientDtos);
+                recipeDtos.Add(recipeDto);
+            }
+
+            return recipeDtos;
         }
 
         public async Task<RecipeDto> SaveAsync(RecipeDto recipeDto)
@@ -77,12 +102,23 @@ namespace BlazingRecept.Server.Services
             }
             else
             {
-                await _recipeRepository.UpdateAsync(recipe);
+                recipe = await _recipeRepository.UpdateAsync(recipe);
             }
 
-            IReadOnlyList<IngredientDto> ingredientDtos = await _ingredientService.GetAllAsync();
+            recipeDto = _mapper.Map<RecipeDto>(recipe);
 
-            return await LoadRecipeDtoFromRecipe(recipe, ingredientDtos);
+            IReadOnlyList<IngredientDto>? ingredientDtos = await _ingredientService.GetAllAsync();
+
+            if (ingredientDtos == null)
+            {
+                const string errorMessage = "Cannot reload saved recipe because fetched ingredient list is null.";
+                Log.Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
+            }
+
+            LoadIngredientMeasurements(recipeDto, recipe, ingredientDtos);
+
+            return recipeDto;
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -97,18 +133,14 @@ namespace BlazingRecept.Server.Services
             return false;
         }
 
-        private async Task<RecipeDto> LoadRecipeDtoFromRecipe(Recipe recipe, IReadOnlyList<IngredientDto> ingredientDtos)
+        private RecipeDto LoadIngredientMeasurements(RecipeDto recipeDto, Recipe recipe, IReadOnlyList<IngredientDto> ingredientDtos)
         {
-            RecipeDto recipeDto = _mapper.Map<RecipeDto>(recipe);
-
-            recipeDto.CategoryDto = await _categoryService.GetByIdAsync(recipe.CategoryId) ?? throw new InvalidOperationException();
-
             recipeDto.IngredientMeasurementDtos.Clear();
 
             foreach (IngredientMeasurement ingredientMeasurement in recipe.IngredientMeasurements)
             {
                 IngredientMeasurementDto ingredientMeasurementDto = _mapper.Map<IngredientMeasurementDto>(ingredientMeasurement);
-                ingredientMeasurementDto.IngredientDto = ingredientDtos.FirstOrDefault(ingredientDto => ingredientDto.Id == ingredientMeasurement.IngredientId) ?? throw new InvalidOperationException("");
+                ingredientMeasurementDto.IngredientDto = ingredientDtos.First(ingredientDto => ingredientDto.Id == ingredientMeasurement.IngredientId);
 
                 recipeDto.IngredientMeasurementDtos.Add(ingredientMeasurementDto);
             }

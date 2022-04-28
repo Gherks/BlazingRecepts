@@ -3,6 +3,7 @@ using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using Serilog;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Services
@@ -52,7 +53,9 @@ namespace BlazingRecept.Server.Services
 
             if (ingredients == null)
             {
-                throw new InvalidOperationException();
+                const string errorMessage = "Failed because fetched ingredient list is null.";
+                Log.Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
             }
 
             return ingredients.Select(ingredient => _mapper.Map<IngredientDto>(ingredient)).ToList();

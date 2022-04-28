@@ -20,7 +20,23 @@ public class CategoryController : ControllerBase
         LogContext.PushProperty("Domain", "Category");
     }
 
-    [HttpGet("{categoryType:int}")]
+    [HttpGet("{categoryIdentifier}")]
+    public async Task<ActionResult<DailyIntakeEntryDto>> Get(string categoryIdentifier)
+    {
+        if (Guid.TryParse(categoryIdentifier, out Guid id))
+        {
+            CategoryDto? categoryDto = await _categoryService.GetByIdAsync(id);
+
+            if (categoryDto != null)
+            {
+                return Ok(categoryDto);
+            }
+        }
+
+        return NoContent();
+    }
+
+    [HttpGet("by-type/{categoryType:int}")]
     public async Task<ActionResult<IReadOnlyList<CategoryDto>>> Get(int categoryType)
     {
         if (Enum.IsDefined(typeof(CategoryType), categoryType))
