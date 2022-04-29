@@ -24,4 +24,34 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
             return false;
         }
     }
+
+    public override async Task<Ingredient?> GetByIdAsync(Guid id)
+    {
+        try
+        {
+            return await _context.Set<Ingredient>()
+                .Include(ingredient => ingredient.Category)
+                .FirstOrDefaultAsync(ingredient => ingredient.Id == id);
+        }
+        catch (Exception exception)
+        {
+            Log.Error(exception, "Repository failed to fetch entity with id: {@Id}", id);
+            return null;
+        }
+    }
+
+    public override async Task<IReadOnlyList<Ingredient>?> ListAllAsync()
+    {
+        try
+        {
+            return await _context.Set<Ingredient>()
+                .Include(ingredient => ingredient.Category)
+                .ToListAsync();
+        }
+        catch (Exception exception)
+        {
+            Log.Error(exception, "Repository failed to fetch many entities");
+            return null;
+        }
+    }
 }

@@ -10,4 +10,5 @@ public sealed class Ingredient : BaseEntity
     public double Protein { get; set; } = -1.0;
     public double Calories { get; set; } = -1.0;
     public Guid CategoryId { get; set; } = Guid.Empty;
+    public Category Category { get; set; } = new();
 }
