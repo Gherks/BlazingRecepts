@@ -16,14 +16,10 @@ public class RecipeService : IRecipeService
     private readonly HttpClient _publicHttpClient;
     private readonly HttpClient _authenticatedHttpClient;
 
-    private readonly ICategoryService _categoryService;
-
-    public RecipeService(IHttpClientFactory httpClientFactory, ICategoryService categoryService)
+    public RecipeService(IHttpClientFactory httpClientFactory)
     {
         _publicHttpClient = httpClientFactory.CreateClient("BlazingRecept.PublicServerAPI");
         _authenticatedHttpClient = httpClientFactory.CreateClient("BlazingRecept.AuthenticatedServerAPI");
-
-        _categoryService = categoryService;
     }
 
     public async Task<bool> AnyAsync(string name)
@@ -53,18 +49,18 @@ public class RecipeService : IRecipeService
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                RecipeDto? returnedRecipeDto = await response.Content.ReadFromJsonAsync<RecipeDto>();
+                RecipeDto? recipeDto = await response.Content.ReadFromJsonAsync<RecipeDto>();
 
-                if (returnedRecipeDto == null)
+                if (recipeDto == null)
                 {
                     const string errorMessage = "Failed to read returned recipe after saving it.";
                     Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }
 
-                returnedRecipeDto = await LoadRecipeDtoFromRecipe(returnedRecipeDto);
+                SortIngredientMeasurements(recipeDto);
 
-                return returnedRecipeDto;
+                return recipeDto;
             }
         }
         catch (Exception exception)
@@ -84,16 +80,7 @@ public class RecipeService : IRecipeService
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                IReadOnlyList<RecipeDto>? readonlyRecipeDtos = await response.Content.ReadFromJsonAsync<IReadOnlyList<RecipeDto>>();
-
-                if (readonlyRecipeDtos == null)
-                {
-                    const string errorMessage = "Failed to fetch all recipe dtos.";
-                    Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                    throw new InvalidOperationException(errorMessage);
-                }
-
-                List<RecipeDto>? recipeDtos = readonlyRecipeDtos.ToList();
+                IReadOnlyList<RecipeDto>? recipeDtos = await response.Content.ReadFromJsonAsync<IReadOnlyList<RecipeDto>>();
 
                 if (recipeDtos == null)
                 {
@@ -102,9 +89,9 @@ public class RecipeService : IRecipeService
                     throw new InvalidOperationException(errorMessage);
                 }
 
-                for(int index = 0; index < recipeDtos.Count; index++)
+                foreach (RecipeDto recipeDto in recipeDtos)
                 {
-                    recipeDtos[index] = await LoadRecipeDtoFromRecipe(recipeDtos[index]);
+                    SortIngredientMeasurements(recipeDto);
                 }
 
                 return recipeDtos;
@@ -134,18 +121,18 @@ public class RecipeService : IRecipeService
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                RecipeDto? returnedRecipeDto = await response.Content.ReadFromJsonAsync<RecipeDto>();
+                RecipeDto? savedRecipeDto = await response.Content.ReadFromJsonAsync<RecipeDto>();
 
-                if (returnedRecipeDto == null)
+                if (savedRecipeDto == null)
                 {
                     const string errorMessage = "Failed to read returned recipe after saving it.";
                     Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }
 
-                returnedRecipeDto = await LoadRecipeDtoFromRecipe(returnedRecipeDto);
+                SortIngredientMeasurements(savedRecipeDto);
 
-                return returnedRecipeDto;
+                return savedRecipeDto;
             }
         }
         catch (AccessTokenNotAvailableException exception)
@@ -182,20 +169,8 @@ public class RecipeService : IRecipeService
         return false;
     }
 
-    private async Task<RecipeDto> LoadRecipeDtoFromRecipe(RecipeDto recipeDto)
+    private void SortIngredientMeasurements(RecipeDto recipeDto)
     {
-        CategoryDto? categoryDto = await _categoryService.GetByIdAsync(recipeDto.CategoryId);
-
-        if (categoryDto == null)
-        {
-            const string messageTemplate = "Failed to load recipe category from category service.";
-            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate);
-            throw new ArgumentNullException(nameof(recipeDto));
-        }
-
-        recipeDto.CategoryDto = categoryDto;
-        recipeDto.IngredientMeasurementDtos.Sort((first, second) => first.SortOrder > second.SortOrder ? 1 : -1);
-
-        return recipeDto;
+        recipeDto.IngredientMeasurementDtos.Sort((first, second) => first.SortOrder > second.SortOrder ? -1 : 1);
     }
 }

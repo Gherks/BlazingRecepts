@@ -9,6 +9,8 @@ public class RecipeProfile : Profile
     public RecipeProfile()
     {
         CreateMap<Recipe, RecipeDto>()
+            .ForMember(recipeDto => recipeDto.CategoryDto,
+                options => options.MapFrom(recipe => recipe.Category))
             .ForMember(recipeDto => recipeDto.IngredientMeasurementDtos,
                 options => options.MapFrom(recipe => recipe.IngredientMeasurements));
 
@@ -16,6 +18,8 @@ public class RecipeProfile : Profile
             .ForMember(recipe => recipe.IngredientMeasurements,
                 options => options.MapFrom(recipeDto => recipeDto.IngredientMeasurementDtos))
             .ForMember(recipe => recipe.CategoryId,
-                options => options.MapFrom(recipeDto => recipeDto.CategoryDto.Id));
+                options => options.MapFrom(recipeDto => recipeDto.CategoryDto.Id))
+            .ForMember(recipe => recipe.Category,
+                options => options.MapFrom(recipeDto => recipeDto.CategoryDto));
     }
 }

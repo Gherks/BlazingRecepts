@@ -11,4 +11,5 @@ public sealed class IngredientMeasurement : BaseEntity
     public string Note { get; set; } = string.Empty;
     public int SortOrder { get; set; } = -1;
     public Guid IngredientId { get; set; } = Guid.Empty;
+    public Ingredient Ingredient { get; set; } = new();
 }

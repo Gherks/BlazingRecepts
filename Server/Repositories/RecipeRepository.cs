@@ -30,7 +30,10 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         try
         {
             return await _context.Recipe
+                .Include(recipe => recipe.Category)
                 .Include(recipe => recipe.IngredientMeasurements)
+                    .ThenInclude(ingredientMeasurement => ingredientMeasurement.Ingredient)
+                        .ThenInclude(ingredient => ingredient.Category)
                 .FirstOrDefaultAsync(recipe => recipe.Id == id);
         }
         catch (Exception exception)
@@ -45,7 +48,10 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         try
         {
             return await _context.Recipe
+                .Include(recipe => recipe.Category)
                 .Include(recipe => recipe.IngredientMeasurements)
+                    .ThenInclude(ingredientMeasurement => ingredientMeasurement.Ingredient)
+                        .ThenInclude(ingredient => ingredient.Category)
                 .ToListAsync();
         }
         catch (Exception exception)
@@ -59,6 +65,14 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
     {
         try
         {
+            foreach (IngredientMeasurement ingredientMeasurement in recipe.IngredientMeasurements)
+            {
+                ingredientMeasurement.Ingredient = await _context.Ingredient
+                    .Where(ingredient => ingredient.Id == ingredientMeasurement.Ingredient.Id)
+                    .Include(ingredient => ingredient.Category)
+                    .FirstAsync();
+            }
+
             _context.Add(recipe);
 
             await _context.SaveChangesAsync();
