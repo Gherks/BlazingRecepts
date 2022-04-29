@@ -46,7 +46,7 @@ public class RecipeController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IReadOnlyList<RecipeDto>> Get()
+    public async Task<IReadOnlyList<RecipeDto>?> Get()
     {
         return await _recipeService.GetAllAsync();
     }
