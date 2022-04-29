@@ -23,77 +23,73 @@ else
         <AddIngredientMeasurementModal @ref="_addIngredientMeasurementModal" />
         <UpdateIngredientMeasurementModal @ref="_updateIngredientMeasurementModal" />
         <RemovalConfirmationModal Type="IngredientDto" @ref="_removalConfirmationModal" OnConfirm="HandleIngredientRemovalConfirmed" />
-        <div class="card mb-2">
-            <div class="card-body">
-                <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
-                    <CustomValidation @ref="_customValidation" />
-                    <div class="row mb-2">
-                        <div class="col-12 col-xl-10 col-xxl-8">
-                            <input type="text" id="name" name="name" class="form-control" @ref="_nameInput" @bind="_form.Name" placeholder="Ange namn">
-                            <ValidationMessage For="() => _form.Name" />
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 col-xl-10 col-xxl-8">
-                            <input type="number" id="portion-amount" name="portion-amount" class="form-control" @bind="_form.PortionAmount" placeholder="Ange antal portioner">
-                            <ValidationMessage For="() => _form.PortionAmount" />
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 col-xl-10 col-xxl-8">
-                            <select id="category-selector" name="category-selector" class="form-select" @bind="_form.CategoryDtoId">
-                                <option value="@Guid.Empty" disabled selected>Ange kategori</option>
-                                @if (_categoryDtos != null)
-                                {
-                                    foreach (CategoryDto categoryDto in _categoryDtos)
-                                    {
-                                        <option value="@categoryDto.Id">@categoryDto.Name</option>
-                                    }
-                                }
-                            </select>
-                            <ValidationMessage For="() => _form.CategoryDtoId" />
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 col-xl-10 col-xxl-8">
-                            <div class="mb-2">
-                                <textarea id="instructions" name="instructions" class="form-control" @bind="_form.Instructions" @bind:event="oninput" placeholder="Ange instruktioner" style="height: 200px"></textarea>
-                            </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    @if (string.IsNullOrWhiteSpace(_form.Instructions))
-                                    {
-                                        <p>Markdown baserat på angivna instruktioner ovan kommer synas här</p>
-                                    }
-                                    else
-                                    {
-                                        @((MarkupString) Markdown.ToHtml(_form.Instructions))
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <p>
-                        <a class="link-primary" href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Hur fungerar Markdown?</a>
-                    </p>
-                    <div class="row mb-2">
-                        <div class="col-12 col-xl-10 col-xxl-8">
-                            <div class="card">
-                                <div class="card-body">
-                                    <IngredientMeasurementWorkbenchTable />
-                                    <div class="mb-2">
-                                        <button type="button" class="btn btn-primary" @onclick="@(_ => HandleAddIngredientModalOpen())">Lägg till ingrediens</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-2">
-                        <ProcessingButton @ref="_processingButtonSubmit" Label="@GetConfirmationButtonLabel()" EditFormId="@_editFormId" />
-                    </div>
-                    <ValidationMessage For="() => _form.RecipeCreationErrorMessage" />
-                </EditForm>
+        <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
+            <CustomValidation @ref="_customValidation" />
+            <div class="row mb-2">
+                <div class="col-12 col-xl-10 col-xxl-8">
+                    <input type="text" id="name" name="name" class="form-control" @ref="_nameInput" @bind="_form.Name" placeholder="Ange namn">
+                    <ValidationMessage For="() => _form.Name" />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-12 col-xl-10 col-xxl-8">
+                    <input type="number" id="portion-amount" name="portion-amount" class="form-control" @bind="_form.PortionAmount" placeholder="Ange antal portioner">
+                    <ValidationMessage For="() => _form.PortionAmount" />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-12 col-xl-10 col-xxl-8">
+                    <select id="category-selector" name="category-selector" class="form-select" @bind="_form.CategoryDtoId">
+                        <option value="@Guid.Empty" disabled selected>Ange kategori</option>
+                        @if (_categoryDtos != null)
+                    {
+                        foreach (CategoryDto categoryDto in _categoryDtos)
+                        {
+                            <option value="@categoryDto.Id">@categoryDto.Name</option>
+                        }
+                    }
+                </select>
+                <ValidationMessage For="() => _form.CategoryDtoId" />
             </div>
         </div>
-    </CascadingValue>
+        <div class="row mb-2">
+            <div class="col-12 col-xl-10 col-xxl-8">
+                <div class="mb-2">
+                    <textarea id="instructions" name="instructions" class="form-control" @bind="_form.Instructions" @bind:event="oninput" placeholder="Ange instruktioner" style="height: 200px"></textarea>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        @if (string.IsNullOrWhiteSpace(_form.Instructions))
+                        {
+                            <p>Markdown baserat på angivna instruktioner ovan kommer synas här</p>
+                        }
+                        else
+                        {
+                            @((MarkupString) Markdown.ToHtml(_form.Instructions))
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p>
+            <a class="link-primary" href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Hur fungerar Markdown?</a>
+        </p>
+        <div class="row mb-2">
+            <div class="col-12 col-xl-10 col-xxl-8">
+                <div class="card">
+                    <div class="card-body">
+                        <IngredientMeasurementWorkbenchTable />
+                        <div class="mb-2">
+                            <button type="button" class="btn btn-primary" @onclick="@(_ => HandleAddIngredientModalOpen())">Lägg till ingrediens</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-2">
+            <ProcessingButton @ref="_processingButtonSubmit" Label="@GetConfirmationButtonLabel()" EditFormId="@_editFormId" />
+        </div>
+        <ValidationMessage For="() => _form.RecipeCreationErrorMessage" />
+    </EditForm>
+</CascadingValue>
 }
