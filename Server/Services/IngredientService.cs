@@ -4,7 +4,6 @@ using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Serilog;
-using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Services
 {
