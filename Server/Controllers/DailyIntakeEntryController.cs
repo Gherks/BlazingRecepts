@@ -46,9 +46,9 @@ public class DailyIntakeEntryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IReadOnlyList<DailyIntakeEntryDto>> Get()
+    public async Task<IReadOnlyList<DailyIntakeEntryDto>?> Get()
     {
-        return await _dailyIntakeEntryService.GetAllAsync() ?? new List<DailyIntakeEntryDto>();
+        return await _dailyIntakeEntryService.GetAllAsync();
     }
 
     [HttpGet("{dailyIntakeEntryIdentifier}")]
