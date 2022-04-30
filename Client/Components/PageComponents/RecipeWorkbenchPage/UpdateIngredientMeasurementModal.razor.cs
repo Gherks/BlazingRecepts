@@ -81,13 +81,6 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
 
     private void HandleValidFormSubmitted()
     {
-        if (_modal == null)
-        {
-            const string errorMessage = "Cannot update ingredient measurement because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         if (RecipeWorkbench == null)
         {
             const string errorMessage = "Cannot update ingredient measurement because recipe workbench page reference has not been set.";
@@ -95,22 +88,22 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
+        if (_editIngredientDto == null)
+        {
+            const string errorMessage = "Cannot update ingredient measurement because editing ingredient dto has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (_modal == null)
+        {
+            const string errorMessage = "Cannot update ingredient measurement because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
         if (Validate())
         {
-            if (RecipeWorkbench == null)
-            {
-                const string errorMessage = ".";
-                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                throw new InvalidOperationException(errorMessage);
-            }
-
-            if (_editIngredientDto == null)
-            {
-                const string errorMessage = ".";
-                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                throw new InvalidOperationException(errorMessage);
-            }
-
             IngredientMeasurementDto? ingredientMeasurementDto = RecipeWorkbench.ContainedIngredientMeasurements
                 .FirstOrDefault(ingredientMeasurement => ingredientMeasurement.IngredientDto.Id == _editIngredientDto.Id);
 
