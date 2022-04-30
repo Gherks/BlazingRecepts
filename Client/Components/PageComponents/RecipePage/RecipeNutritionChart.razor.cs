@@ -1,6 +1,6 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
-using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages;
+using BlazingRecept.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 

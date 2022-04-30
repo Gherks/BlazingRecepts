@@ -239,8 +239,6 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
             CollectionId = _collectionId
         };
 
-        dailyIntakeEntryDto.LoadFromProductListsByName(DailyIntakePage.Ingredients, DailyIntakePage.Recipes);
-
         return dailyIntakeEntryDto;
     }
 

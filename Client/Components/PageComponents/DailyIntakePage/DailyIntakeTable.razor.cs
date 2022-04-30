@@ -184,8 +184,6 @@ public partial class DailyIntakeTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        await savedDailyIntakeEntryDto.LoadFromProductServices(IngredientService, RecipeService);
-
         DailyIntakePage.UpsertDailyIntakeEntryIntoCollection(savedDailyIntakeEntryDto);
 
         _editingDailyIntakeEntryGuid = Guid.Empty;

@@ -17,19 +17,10 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
     private readonly HttpClient _publicHttpClient;
     private readonly HttpClient _authenticatedHttpClient;
 
-    private readonly IIngredientService _ingredientService;
-    private readonly IRecipeService _recipeService;
-
-    public DailyIntakeEntryService(
-        IHttpClientFactory httpClientFactory,
-        IIngredientService ingredientService,
-        IRecipeService recipeService)
+    public DailyIntakeEntryService(IHttpClientFactory httpClientFactory)
     {
         _publicHttpClient = httpClientFactory.CreateClient("BlazingRecept.PublicServerAPI");
         _authenticatedHttpClient = httpClientFactory.CreateClient("BlazingRecept.AuthenticatedServerAPI");
-
-        _ingredientService = ingredientService;
-        _recipeService = recipeService;
     }
 
     public async Task<bool> AnyAsync(string name)
@@ -59,14 +50,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                DailyIntakeEntryDto? dailyIntakeEntryDto = await response.Content.ReadFromJsonAsync<DailyIntakeEntryDto>();
-
-                if (dailyIntakeEntryDto != null)
-                {
-                    await dailyIntakeEntryDto.LoadFromProductServices(_ingredientService, _recipeService);
-
-                    return dailyIntakeEntryDto;
-                }
+                return await response.Content.ReadFromJsonAsync<DailyIntakeEntryDto>();
             }
         }
         catch (Exception exception)
@@ -86,41 +70,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                IReadOnlyList<IngredientDto>? ingredientDtos = await _ingredientService.GetAllAsync();
-
-                if (ingredientDtos == null)
-                {
-                    const string errorMessage = "Cannot fetch daily intake entries because received ingredient list is null.";
-                    Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                    throw new InvalidOperationException(errorMessage);
-                }
-
-                IReadOnlyList<RecipeDto>? recipeDtos = await _recipeService.GetAllAsync();
-
-                if (recipeDtos == null)
-                {
-                    const string errorMessage = "Cannot fetch daily intake entries because received recipe list is null.";
-                    Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                    throw new InvalidOperationException(errorMessage);
-                }
-
-                IReadOnlyList<DailyIntakeEntryDto>? readonlyDailyIntakeEntryDtos = await response.Content.ReadFromJsonAsync<IReadOnlyList<DailyIntakeEntryDto>>();
-
-                if (readonlyDailyIntakeEntryDtos == null)
-                {
-                    const string errorMessage = "Cannot fetch daily intake entries because received daily intake entry list is null.";
-                    Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                    throw new InvalidOperationException(errorMessage);
-                }
-
-                List<DailyIntakeEntryDto> dailyIntakeEntryDtos = readonlyDailyIntakeEntryDtos.ToList();
-
-                for (int index = 0; index < dailyIntakeEntryDtos.Count; ++index)
-                {
-                    dailyIntakeEntryDtos[index].LoadFromProductListsById(ingredientDtos, recipeDtos);
-                }
-
-                return dailyIntakeEntryDtos;
+                return await response.Content.ReadFromJsonAsync<IReadOnlyList<DailyIntakeEntryDto>>();
             }
         }
         catch (Exception exception)
@@ -140,14 +90,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                DailyIntakeEntryDto? savedDailyIntakeEntryDto = await response.Content.ReadFromJsonAsync<DailyIntakeEntryDto>();
-
-                if (savedDailyIntakeEntryDto != null)
-                {
-                    await savedDailyIntakeEntryDto.LoadFromProductServices(_ingredientService, _recipeService);
-
-                    return savedDailyIntakeEntryDto;
-                }
+                return await response.Content.ReadFromJsonAsync<DailyIntakeEntryDto>();
             }
         }
         catch (AccessTokenNotAvailableException exception)

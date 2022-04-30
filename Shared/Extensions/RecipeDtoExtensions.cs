@@ -1,6 +1,6 @@
 ﻿using BlazingRecept.Shared.Dto;
 
-namespace BlazingRecept.Client.Extensions;
+namespace BlazingRecept.Shared.Extensions;
 
 public static class RecipeDtoExtensions
 {
@@ -61,21 +61,49 @@ public static class RecipeDtoExtensions
 
     public static double GetGramsPerPortion(this RecipeDto recipeDto)
     {
-        return Math.Round(Convert.ToDouble(recipeDto.GetTotalGrams()) / recipeDto.PortionAmount, 2);
+        double gramsPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalGrams()) / recipeDto.PortionAmount, 2);
+
+        if (double.IsNaN(gramsPerPortion))
+        {
+            return 0.0;
+        }
+
+        return gramsPerPortion;
     }
 
     public static double GetProteinPerPortion(this RecipeDto recipeDto)
     {
-        return Math.Round(Convert.ToDouble(recipeDto.GetTotalProtein()) / recipeDto.PortionAmount, 2);
+        double proteinPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalProtein()) / recipeDto.PortionAmount, 2);
+
+        if (double.IsNaN(proteinPerPortion))
+        {
+            return 0.0;
+        }
+
+        return proteinPerPortion;
     }
 
     public static double GetCaloriesPerPortion(this RecipeDto recipeDto)
     {
-        return Math.Round(Convert.ToDouble(recipeDto.GetTotalCalories()) / recipeDto.PortionAmount, 2);
+        double calroriesPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalCalories()) / recipeDto.PortionAmount, 2);
+
+        if (double.IsNaN(calroriesPerPortion))
+        {
+            return 0.0;
+        }
+
+        return calroriesPerPortion;
     }
 
     public static double GetProteinPerCalorie(this RecipeDto recipeDto)
     {
-        return Math.Round(recipeDto.GetTotalProtein() / recipeDto.GetTotalCalories(), 2);
+        double proteinPerCalorie = Math.Round(recipeDto.GetTotalProtein() / recipeDto.GetTotalCalories(), 2);
+
+        if (double.IsNaN(proteinPerCalorie))
+        {
+            return 0.0;
+        }
+
+        return proteinPerCalorie;
     }
 }
