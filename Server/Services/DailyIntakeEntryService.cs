@@ -216,10 +216,10 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         double portionMultiplier = dailyIntakeEntryDto.Amount;
 
         dailyIntakeEntryDto.ProductName = recipeDto.Name;
-        dailyIntakeEntryDto.Fat = recipeDto.GetTotalFat() * portionMultiplier;
-        dailyIntakeEntryDto.Carbohydrates = recipeDto.GetTotalCarbohydrates() * portionMultiplier;
-        dailyIntakeEntryDto.Protein = recipeDto.GetTotalProtein() * portionMultiplier;
-        dailyIntakeEntryDto.Calories = recipeDto.GetTotalCalories() * portionMultiplier;
+        dailyIntakeEntryDto.Fat = recipeDto.GetFatPerPortion() * portionMultiplier;
+        dailyIntakeEntryDto.Carbohydrates = recipeDto.GetCarbohydratesPerPortion() * portionMultiplier;
+        dailyIntakeEntryDto.Protein = recipeDto.GetProteinPerPortion() * portionMultiplier;
+        dailyIntakeEntryDto.Calories = recipeDto.GetCaloriesPerPortion() * portionMultiplier;
         dailyIntakeEntryDto.ProteinPerCalorie = recipeDto.GetProteinPerCalorie();
         dailyIntakeEntryDto.IsRecipe = true;
         dailyIntakeEntryDto.ProductId = recipeDto.Id;
