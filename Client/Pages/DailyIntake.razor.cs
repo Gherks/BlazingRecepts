@@ -15,8 +15,8 @@ public partial class DailyIntake : PageBase
     private DailyIntakeTable? _dailyIntakeTable;
 
     internal Dictionary<Guid, List<DailyIntakeEntryDto>> DailyIntakeEntryDtoCollections { get; private set; } = new();
-    public IReadOnlyList<IngredientDto> Ingredients { get; private set; } = new List<IngredientDto>();
-    public IReadOnlyList<RecipeDto> Recipes { get; private set; } = new List<RecipeDto>();
+    internal IReadOnlyList<IngredientDto>? Ingredients { get; private set; } = null;
+    internal IReadOnlyList<RecipeDto>? Recipes { get; private set; } = null;
 
     [Inject]
     protected internal IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
@@ -49,8 +49,23 @@ public partial class DailyIntake : PageBase
 
         await LoadDailyIntakeEntriesToCollections();
 
-        Ingredients = await IngredientService.GetAllAsync() ?? new List<IngredientDto>();
-        Recipes = await RecipeService.GetAllAsync() ?? new List<RecipeDto>();
+        Ingredients = await IngredientService.GetAllAsync();
+
+        if (Ingredients == null)
+        {
+            const string errorMessage = "Cannot properly present daily intake page because it could not fetch list of all ingredients.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        Recipes = await RecipeService.GetAllAsync();
+
+        if (Recipes == null)
+        {
+            const string errorMessage = "Cannot properly present daily intake page because it could not fetch list of all recipes.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
 
         IsLoading = false;
     }
