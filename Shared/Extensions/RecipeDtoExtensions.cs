@@ -71,6 +71,30 @@ public static class RecipeDtoExtensions
         return gramsPerPortion;
     }
 
+    public static double GetFatPerPortion(this RecipeDto recipeDto)
+    {
+        double fatPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalFat()) / recipeDto.PortionAmount, 2);
+
+        if (double.IsNaN(fatPerPortion))
+        {
+            return 0.0;
+        }
+
+        return fatPerPortion;
+    }
+
+    public static double GetCarbohydratesPerPortion(this RecipeDto recipeDto)
+    {
+        double carbohydratesPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalCarbohydrates()) / recipeDto.PortionAmount, 2);
+
+        if (double.IsNaN(carbohydratesPerPortion))
+        {
+            return 0.0;
+        }
+
+        return carbohydratesPerPortion;
+    }
+
     public static double GetProteinPerPortion(this RecipeDto recipeDto)
     {
         double proteinPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalProtein()) / recipeDto.PortionAmount, 2);
