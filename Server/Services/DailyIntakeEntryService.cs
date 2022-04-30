@@ -81,6 +81,8 @@ namespace BlazingRecept.Server.Services
         {
             DailyIntakeEntry dailyIntakeEntry = _mapper.Map<DailyIntakeEntry>(dailyIntakeEntryDto);
 
+            dailyIntakeEntry.ProductId = await GetProductIdFromProductName(dailyIntakeEntryDto.ProductName);
+
             if (dailyIntakeEntry.Id == Guid.Empty)
             {
                 dailyIntakeEntry = await _dailyIntakeEntryRepository.AddAsync(dailyIntakeEntry);
@@ -107,6 +109,8 @@ namespace BlazingRecept.Server.Services
             foreach (DailyIntakeEntryDto dailyIntakeEntryDto in dailyIntakeEntryDtos)
             {
                 DailyIntakeEntry dailyIntakeEntry = _mapper.Map<DailyIntakeEntry>(dailyIntakeEntryDto);
+
+                dailyIntakeEntry.ProductId = await GetProductIdFromProductName(dailyIntakeEntryDto.ProductName);
 
                 try
                 {
@@ -139,6 +143,29 @@ namespace BlazingRecept.Server.Services
             }
 
             return false;
+        }
+
+        private async Task<Guid> GetProductIdFromProductName(string productName)
+        {
+            RecipeDto? recipeDto = await _recipeService.GetByNameAsync(productName);
+
+            if (recipeDto != null)
+            {
+                return recipeDto.Id;
+            }
+            else
+            {
+                IngredientDto? ingredientDto = await _ingredientService.GetByNameAsync(productName);
+
+                if (ingredientDto != null)
+                {
+                    return ingredientDto.Id;
+                }
+            }
+
+            const string errorMessage = "Could not find product id from given product name because product with given name was not found in neither recipes nor ingredients.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
 
         private async Task<DailyIntakeEntryDto?> LoadDailyIntakeEntryDtoFromDailyIntakeEntry(DailyIntakeEntry dailyIntakeEntry)
