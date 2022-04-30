@@ -43,6 +43,19 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
     }
 
+    public async Task<Recipe?> GetByNameAsync(string name)
+    {
+        try
+        {
+            return await _context.Set<Recipe>().FirstAsync(recipe => recipe.Name.ToLower() == name.ToLower());
+        }
+        catch (Exception exception)
+        {
+            Log.Error(exception, "Repository failed to fetch recipe with name: {@Name}", name);
+            return null;
+        }
+    }
+
     public override async Task<IReadOnlyList<Recipe>?> ListAllAsync()
     {
         try

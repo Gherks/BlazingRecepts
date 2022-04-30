@@ -5,4 +5,5 @@ namespace BlazingRecept.Server.Repositories.Interfaces;
 public interface IIngredientRepository : IAsyncRepository<Ingredient>
 {
     Task<bool> AnyAsync(string name);
+    Task<Ingredient?> GetByNameAsync(string name);
 }

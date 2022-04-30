@@ -40,6 +40,19 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
     }
 
+    public async Task<Ingredient?> GetByNameAsync(string name)
+    {
+        try
+        {
+            return await _context.Set<Ingredient>().FirstAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
+        }
+        catch (Exception exception)
+        {
+            Log.Error(exception, "Repository failed to fetch recipe with name: {@Name}", name);
+            return null;
+        }
+    }
+
     public override async Task<IReadOnlyList<Ingredient>?> ListAllAsync()
     {
         try

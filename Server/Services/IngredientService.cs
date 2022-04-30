@@ -40,6 +40,18 @@ namespace BlazingRecept.Server.Services
             return null;
         }
 
+        public async Task<IngredientDto?> GetByNameAsync(string name)
+        {
+            Ingredient? ingredient = await _ingredientsRepository.GetByNameAsync(name);
+
+            if (ingredient != null)
+            {
+                return _mapper.Map<IngredientDto>(ingredient);
+            }
+
+            return null;
+        }
+
         public async Task<IReadOnlyList<IngredientDto>?> GetAllAsync()
         {
             IReadOnlyList<Ingredient>? ingredients = await _ingredientsRepository.ListAllAsync();
