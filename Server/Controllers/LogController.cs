@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Serilog;
-using Serilog.Context;
 using Serilog.Events;
 using Serilog.Parsing;
 using System.Text.Json;
@@ -15,8 +14,6 @@ public sealed class LogController : ControllerBase
 {
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "LogController";
-
-    public LogController() {}
 
     [HttpPost]
     public void PostAsync(JsonDocument logEventsJsonDocument)

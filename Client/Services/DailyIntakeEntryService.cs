@@ -1,4 +1,3 @@
-using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;

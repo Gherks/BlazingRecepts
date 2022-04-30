@@ -2,7 +2,6 @@
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using Serilog.Context;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Controllers;

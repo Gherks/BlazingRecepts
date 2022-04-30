@@ -6,50 +6,49 @@ using BlazingRecept.Shared.Dto;
 using Serilog;
 using static BlazingRecept.Shared.Enums;
 
-namespace BlazingRecept.Server.Services
+namespace BlazingRecept.Server.Services;
+
+public class CategoryService : ICategoryService
 {
-    public class CategoryService : ICategoryService
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "CategoryService";
+
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
+
+    public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
     {
-        private static readonly string _logProperty = "Domain";
-        private static readonly string _logDomainName = "CategoryService";
+        _categoryRepository = categoryRepository;
+        _mapper = mapper;
+    }
 
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly IMapper _mapper;
+    public async Task<CategoryDto?> GetByIdAsync(Guid id)
+    {
+        Category? category = await _categoryRepository.GetByIdAsync(id);
 
-        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
+        if (category != null)
         {
-            _categoryRepository = categoryRepository;
-            _mapper = mapper;
+            return _mapper.Map<CategoryDto>(category);
         }
 
-        public async Task<CategoryDto?> GetByIdAsync(Guid id)
+        return null;
+    }
+
+    public async Task<IReadOnlyList<CategoryDto>?> GetAllOfTypeAsync(CategoryType categoryType)
+    {
+        IReadOnlyList<Category>? categories = await _categoryRepository.ListAllOfTypeAsync(categoryType);
+
+        if (categories == null)
         {
-            Category? category = await _categoryRepository.GetByIdAsync(id);
-
-            if (category != null)
-            {
-                return _mapper.Map<CategoryDto>(category);
-            }
-
-            return null;
+            const string errorMessage = "Failed because fetched category list is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
 
-        public async Task<IReadOnlyList<CategoryDto>?> GetAllOfTypeAsync(CategoryType categoryType)
-        {
-            IReadOnlyList<Category>? categories = await _categoryRepository.ListAllOfTypeAsync(categoryType);
+        List<CategoryDto> categoryDtos = categories.Select(ingredientCategory => _mapper.Map<CategoryDto>(ingredientCategory)).ToList();
 
-            if (categories == null)
-            {
-                const string errorMessage = "Failed because fetched category list is null.";
-                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                throw new InvalidOperationException(errorMessage);
-            }
+        categoryDtos.Sort((first, second) => first.SortOrder > second.SortOrder ? 1 : -1);
 
-            List<CategoryDto> categoryDtos = categories.Select(ingredientCategory => _mapper.Map<CategoryDto>(ingredientCategory)).ToList();
-
-            categoryDtos.Sort((first, second) => first.SortOrder > second.SortOrder ? 1 : -1);
-
-            return categoryDtos;
-        }
+        return categoryDtos;
     }
 }
