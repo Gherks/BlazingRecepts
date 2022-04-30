@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 using Serilog;
-using Serilog.Context;
 
 namespace BlazingRecept.Server.Controllers;
 
@@ -12,15 +11,15 @@ namespace BlazingRecept.Server.Controllers;
 [Route("api/ingredients")]
 public class IngredientController : ControllerBase
 {
-    static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "IngredientController";
+    private static readonly string[] _scopeRequiredByApi = new string[] { "API.Access" };
 
     private readonly IIngredientService _ingredientService;
 
     public IngredientController(IIngredientService ingredientService)
     {
         _ingredientService = ingredientService;
-
-        LogContext.PushProperty("Domain", "Ingredient");
     }
 
     [HttpHead("{identifier}")]
@@ -72,7 +71,7 @@ public class IngredientController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<IngredientDto>> Post(IngredientDto ingredientDto)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
 
         try
         {
@@ -85,8 +84,10 @@ public class IngredientController : ControllerBase
         }
         catch (Exception exception)
         {
-            Log.Error(exception, "Controller failed while saving ingredient: {@IngredientDto}", ingredientDto);
-            return BadRequest("Failed while saving ingredient.");
+            const string errorMessage = "Controller failed while saving ingredient: {@IngredientDto}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, ingredientDto);
+
+            return BadRequest();
         }
     }
 
@@ -95,7 +96,7 @@ public class IngredientController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
 
         bool ingredientRemoved = await _ingredientService.DeleteAsync(id);
 
@@ -104,7 +105,9 @@ public class IngredientController : ControllerBase
             return Ok(ingredientRemoved);
         }
 
-        Log.Error("Controller failed to delete ingredient with id: {@Id}", id);
-        return BadRequest($"Failed to delete ingredient.");
+        const string errorMessage = "Controller failed to delete ingredient with id: {@Id}";
+        Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, id);
+
+        return BadRequest();
     }
 }

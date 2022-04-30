@@ -9,6 +9,9 @@ namespace BlazingRecept.Server.Services
 {
     public class IngredientService : IIngredientService
     {
+        private static readonly string _logProperty = "Domain";
+        private static readonly string _logDomainName = "IngredientService";
+
         private readonly IIngredientRepository _ingredientsRepository;
         private readonly IMapper _mapper;
 
@@ -59,7 +62,7 @@ namespace BlazingRecept.Server.Services
             if (ingredients == null)
             {
                 const string errorMessage = "Failed because fetched ingredient list is null.";
-                Log.Error(errorMessage);
+                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                 throw new InvalidOperationException(errorMessage);
             }
 

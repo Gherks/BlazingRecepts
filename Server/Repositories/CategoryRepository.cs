@@ -9,6 +9,9 @@ namespace BlazingRecept.Server.Repositories;
 
 public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "CategoryRepository";
+
     public CategoryRepository(BlazingReceptContext context) : base(context)
     {
     }
@@ -23,7 +26,9 @@ public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
         }
         catch (Exception exception)
         {
-            Log.Error(exception, "Repository failed to delete recipe with id: {@CategoryType}", categoryType);
+            string errorMessage = "Repository failed to delete recipe with id: {@CategoryType}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, categoryType);
+
             return null;
         }
     }

@@ -8,6 +8,9 @@ namespace BlazingRecept.Server.Repositories;
 
 public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepository
 {
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "IngredientRepository";
+
     public IngredientRepository(BlazingReceptContext context) : base(context)
     {
     }
@@ -20,7 +23,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            Log.Error(exception, "Repository failed check existence of ingredient with name: {@Name}", name);
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, "Repository failed check existence of ingredient with name: {@Name}", name);
             return false;
         }
     }
@@ -35,7 +38,9 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            Log.Error(exception, "Repository failed to fetch entity with id: {@Id}", id);
+            const string errorMessage = "Repository failed to fetch entity with id: {@Id}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
+
             return null;
         }
     }
@@ -48,7 +53,9 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            Log.Error(exception, "Repository failed to fetch recipe with name: {@Name}", name);
+            const string errorMessage = "Repository failed to fetch recipe with name: {@Name}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, name);
+
             return null;
         }
     }
@@ -63,7 +70,9 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            Log.Error(exception, "Repository failed to fetch many entities");
+            const string errorMessage = "Repository failed to fetch many entities";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage);
+
             return null;
         }
     }

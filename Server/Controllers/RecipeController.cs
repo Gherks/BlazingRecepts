@@ -12,15 +12,15 @@ namespace BlazingRecept.Server.Controllers;
 [Route("api/recipes")]
 public class RecipeController : ControllerBase
 {
-    static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "RecipeController";
+    private static readonly string[] _scopeRequiredByApi = new string[] { "API.Access" };
 
     private readonly IRecipeService _recipeService;
 
     public RecipeController(IRecipeService recipeService)
     {
         _recipeService = recipeService;
-
-        LogContext.PushProperty("Domain", "Recipe");
     }
 
     [HttpHead("{identifier}")]
@@ -72,7 +72,7 @@ public class RecipeController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<RecipeDto>> Post(RecipeDto recipeDto)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
 
         try
         {
@@ -85,8 +85,10 @@ public class RecipeController : ControllerBase
         }
         catch (Exception exception)
         {
-            Log.Error(exception, "Controller failed while saving recipe: {@RecipeDto}", recipeDto);
-            return BadRequest("Failed while saving recipe.");
+            const string errorMessage = "Controller failed while saving recipe: {@RecipeDto}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, recipeDto);
+
+            return BadRequest();
         }
     }
 
@@ -95,7 +97,7 @@ public class RecipeController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
 
         bool recipeRemoved = await _recipeService.DeleteAsync(id);
 
@@ -104,7 +106,9 @@ public class RecipeController : ControllerBase
             return NoContent();
         }
 
-        Log.Error("Controller failed to delete recipe with id: {@Id}", id);
-        return BadRequest($"Failed to delete recipe.");
+        const string errorMessage = "Controller failed to delete recipe with id: {@Id}";
+        Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, id);
+
+        return BadRequest();
     }
 }

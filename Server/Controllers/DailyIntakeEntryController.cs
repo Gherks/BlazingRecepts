@@ -12,15 +12,15 @@ namespace BlazingRecept.Server.Controllers;
 [Route("api/daily-intake-entries")]
 public class DailyIntakeEntryController : ControllerBase
 {
-    static readonly string[] scopeRequiredByApi = new string[] { "API.Access" };
+    private static readonly string _logProperty = "Domain";
+    private static readonly string _logDomainName = "DailyIntakeEntryController";
+    private static readonly string[] _scopeRequiredByApi = new string[] { "API.Access" };
 
     private readonly IDailyIntakeEntryService _dailyIntakeEntryService;
 
     public DailyIntakeEntryController(IDailyIntakeEntryService dailyIntakeEntryService)
     {
         _dailyIntakeEntryService = dailyIntakeEntryService;
-
-        LogContext.PushProperty("Domain", "Daily Intake Entry");
     }
 
     [HttpHead("{identifier}")]
@@ -72,7 +72,7 @@ public class DailyIntakeEntryController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<DailyIntakeEntryDto>> Post(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
 
         try
         {
@@ -85,8 +85,10 @@ public class DailyIntakeEntryController : ControllerBase
         }
         catch (Exception exception)
         {
-            Log.Error(exception, "Controller failed while saving daily intake entry: {@DailyIntakeEntryDto}", dailyIntakeEntryDto);
-            return BadRequest("Failed while saving daily intake entry.");
+            const string errorMessage = "Controller failed while saving daily intake entry: {@DailyIntakeEntryDto}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, dailyIntakeEntryDto);
+
+            return BadRequest();
         }
     }
 
@@ -95,7 +97,7 @@ public class DailyIntakeEntryController : ControllerBase
     [HttpPost("many")]
     public async Task<ActionResult<bool>> Post(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
 
         try
         {
@@ -112,13 +114,15 @@ public class DailyIntakeEntryController : ControllerBase
             }
             else
             {
-                return BadRequest("Saving multiple daily intake entries was unsuccessful.");
+                return BadRequest();
             }
         }
         catch (Exception exception)
         {
-            Log.Error(exception, "Controller failed while saving daily intake entries: {@DailyIntakeEntryDtos}", dailyIntakeEntryDtos);
-            return BadRequest("Failed while saving multiple daily intake entries.");
+            const string errorMessage = "Controller failed while saving daily intake entries: {@DailyIntakeEntryDtos}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, dailyIntakeEntryDtos);
+
+            return BadRequest();
         }
     }
 
@@ -127,7 +131,7 @@ public class DailyIntakeEntryController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
 
         bool dailyIntakeEntryRemoved = await _dailyIntakeEntryService.DeleteAsync(id);
 
@@ -136,7 +140,9 @@ public class DailyIntakeEntryController : ControllerBase
             return Ok(dailyIntakeEntryRemoved);
         }
 
-        Log.Error("Controller failed to delete daily intake entry with id: {@Id}", id);
+        const string errorMessage = "Controller failed to delete daily intake entry with id: {@Id}";
+        Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, id);
+
         return BadRequest($"Failed to delete daily intake entry.");
     }
 }

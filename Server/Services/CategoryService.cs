@@ -10,6 +10,9 @@ namespace BlazingRecept.Server.Services
 {
     public class CategoryService : ICategoryService
     {
+        private static readonly string _logProperty = "Domain";
+        private static readonly string _logDomainName = "CategoryService";
+
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
@@ -38,7 +41,7 @@ namespace BlazingRecept.Server.Services
             if (categories == null)
             {
                 const string errorMessage = "Failed because fetched category list is null.";
-                Log.Error(errorMessage);
+                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                 throw new InvalidOperationException(errorMessage);
             }
 

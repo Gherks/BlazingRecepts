@@ -9,6 +9,9 @@ namespace BlazingRecept.Server.Services
 {
     public class RecipeService : IRecipeService
     {
+        private static readonly string _logProperty = "Domain";
+        private static readonly string _logDomainName = "RecipeService";
+
         private readonly IRecipeRepository _recipeRepository;
         private readonly IMapper _mapper;
 
@@ -59,7 +62,7 @@ namespace BlazingRecept.Server.Services
             if (recipes == null)
             {
                 const string errorMessage = "Failed because fetched recipe list is null.";
-                Log.Error(errorMessage);
+                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                 throw new InvalidOperationException(errorMessage);
             }
 
