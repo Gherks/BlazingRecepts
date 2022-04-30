@@ -10,13 +10,11 @@ namespace BlazingRecept.Server.Services
     public class IngredientService : IIngredientService
     {
         private readonly IIngredientRepository _ingredientsRepository;
-        private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
 
-        public IngredientService(IIngredientRepository ingredientsRepository, ICategoryService ingredientCategoryService, IMapper mapper)
+        public IngredientService(IIngredientRepository ingredientsRepository, IMapper mapper)
         {
             _ingredientsRepository = ingredientsRepository;
-            _categoryService = ingredientCategoryService;
             _mapper = mapper;
         }
 
@@ -36,11 +34,7 @@ namespace BlazingRecept.Server.Services
 
             if (ingredient != null)
             {
-                IngredientDto ingredientDto = _mapper.Map<IngredientDto>(ingredient);
-
-                ingredientDto.CategoryDto = await _categoryService.GetByIdAsync(ingredient.CategoryId) ?? throw new InvalidOperationException();
-
-                return ingredientDto;
+                return _mapper.Map<IngredientDto>(ingredient);
             }
 
             return null;
