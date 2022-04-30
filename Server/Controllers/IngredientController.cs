@@ -51,10 +51,10 @@ public class IngredientController : ControllerBase
         return await _ingredientService.GetAllAsync();
     }
 
-    [HttpGet("{ingredientIdentifier}")]
-    public async Task<ActionResult<IngredientDto>> Get(string ingredientIdentifier)
+    [HttpGet("{identifier}")]
+    public async Task<ActionResult<IngredientDto>> Get(string identifier)
     {
-        if (Guid.TryParse(ingredientIdentifier, out Guid id))
+        if (Guid.TryParse(identifier, out Guid id))
         {
             IngredientDto? ingredientDto = await _ingredientService.GetByIdAsync(id);
 

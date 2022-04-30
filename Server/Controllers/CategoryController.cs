@@ -20,10 +20,10 @@ public class CategoryController : ControllerBase
         LogContext.PushProperty("Domain", "Category");
     }
 
-    [HttpGet("{categoryIdentifier}")]
-    public async Task<ActionResult<CategoryDto>> Get(string categoryIdentifier)
+    [HttpGet("{identifier}")]
+    public async Task<ActionResult<CategoryDto>> Get(string identifier)
     {
-        if (Guid.TryParse(categoryIdentifier, out Guid id))
+        if (Guid.TryParse(identifier, out Guid id))
         {
             CategoryDto? categoryDto = await _categoryService.GetByIdAsync(id);
 

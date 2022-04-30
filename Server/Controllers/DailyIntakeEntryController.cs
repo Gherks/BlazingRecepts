@@ -51,10 +51,10 @@ public class DailyIntakeEntryController : ControllerBase
         return await _dailyIntakeEntryService.GetAllAsync();
     }
 
-    [HttpGet("{dailyIntakeEntryIdentifier}")]
-    public async Task<ActionResult<DailyIntakeEntryDto>> Get(string dailyIntakeEntryIdentifier)
+    [HttpGet("{identifier}")]
+    public async Task<ActionResult<DailyIntakeEntryDto>> Get(string identifier)
     {
-        if (Guid.TryParse(dailyIntakeEntryIdentifier, out Guid id))
+        if (Guid.TryParse(identifier, out Guid id))
         {
             DailyIntakeEntryDto? dailyIntakeEntryDto = await _dailyIntakeEntryService.GetByIdAsync(id);
 
