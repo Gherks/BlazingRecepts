@@ -92,13 +92,6 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
 
     private string GetMeasurementText(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (ingredientMeasurementDto == null)
-        {
-            const string errorMessage = "Cannot access passed ingredient measurement data because it has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new ArgumentNullException(nameof(ingredientMeasurementDto), errorMessage);
-        }
-
         return ingredientMeasurementDto.Measurement.ToString() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
     }
 }

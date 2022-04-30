@@ -40,9 +40,9 @@ public class CategoryService : ICategoryService
 
         if (categories == null)
         {
-            const string errorMessage = "Failed because fetched category list is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
+            const string errorMessage = "Fetched category list from repository was null, tried to fetch all of category type: {@CategoryType}";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, categoryType);
+            throw new InvalidOperationException("Fetched category list from repository was null.");
         }
 
         List<CategoryDto> categoryDtos = categories.Select(ingredientCategory => _mapper.Map<CategoryDto>(ingredientCategory)).ToList();

@@ -37,7 +37,7 @@ public static class EnumTranslations
             case MeasurementUnit.Clove:
                 return "klyfta";
             default:
-                throw new InvalidOperationException("Unknown measurement given.");
+                throw new InvalidOperationException("Unknown measurement given when trying to convert it to a readable symbol.");
         }
     }
 }

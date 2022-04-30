@@ -113,7 +113,14 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
 
     public override async Task<Recipe> UpdateAsync(Recipe updatedRecipe)
     {
-        Recipe currentRecipe = await GetByIdAsync(updatedRecipe.Id) ?? throw new InvalidOperationException();
+        Recipe? currentRecipe = await GetByIdAsync(updatedRecipe.Id);
+
+        if (currentRecipe == null)
+        {
+            const string errorMessage = "Failed to fetch current state of recipe before updating it: {@UpdatedRecipe}";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, updatedRecipe);
+            throw new InvalidOperationException("Failed to fetch current state of recipe before updating it.");
+        }
 
         try
         {

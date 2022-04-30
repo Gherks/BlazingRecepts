@@ -61,7 +61,7 @@ public class RecipeService : IRecipeService
 
         if (recipes == null)
         {
-            const string errorMessage = "Failed because fetched recipe list is null.";
+            const string errorMessage = "Failed to fetch all recipes from repository.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

@@ -39,8 +39,8 @@ public class IngredientService : IIngredientService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while checking existence of ingredient with name: {@Name}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, name);
+            const string errorMessage = "Failed while checking existence of ingredient with name: {@Name}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, name);
         }
 
         return false;
@@ -59,8 +59,8 @@ public class IngredientService : IIngredientService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while fetching ingredient with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
+            const string errorMessage = "Failed while fetching ingredient with id: {@Id}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
         }
 
         return null;
@@ -86,8 +86,8 @@ public class IngredientService : IIngredientService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while fetching all ingredients.";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate);
+            const string errorMessage = "Failed while fetching all ingredients.";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage);
         }
 
         return null;
@@ -99,18 +99,18 @@ public class IngredientService : IIngredientService
 
         if (ingredientDtos == null)
         {
-            const string messageTemplate = "Failed because fetched ingredient dto list is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate);
-            throw new InvalidOperationException();
+            const string errorMessage = "Failed while fetching all ingredients sorted because fetched and unsorted ingredient dto list is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
 
         IReadOnlyList<CategoryDto>? categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
 
         if (categoryDtos == null)
         {
-            const string messageTemplate = "Failed because fetched category dto list is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate);
-            throw new InvalidOperationException();
+            const string errorMessage = "Failed while fetching all ingredients sorted because fetched category dto list is null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
 
         List<IngredientCollectionTypeDto> ingredientCollectionTypes = new();
@@ -140,13 +140,6 @@ public class IngredientService : IIngredientService
 
     public async Task<IngredientDto?> SaveAsync(IngredientDto ingredientDto)
     {
-        if (ingredientDto == null)
-        {
-            const string messageTemplate = "Failed to save ingredient because passed ingredient is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate);
-            throw new ArgumentNullException(nameof(ingredientDto));
-        }
-
         try
         {
             HttpResponseMessage response = await _authenticatedHttpClient.PostAsJsonAsync(_apiAddress, ingredientDto);
@@ -162,8 +155,8 @@ public class IngredientService : IIngredientService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while saving ingredient: {@IngredientDto}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, ingredientDto);
+            const string errorMessage = "Failed while saving ingredient: {@IngredientDto}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, ingredientDto);
         }
 
         return null;
@@ -183,8 +176,8 @@ public class IngredientService : IIngredientService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while deleting ingredient with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
+            const string errorMessage = "Failed while deleting ingredient with id: {@Id}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
         }
 
         return false;

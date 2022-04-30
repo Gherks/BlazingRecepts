@@ -107,7 +107,6 @@ public partial class Recipe : PageBase
         if (removalFromDatabaseSuccessful)
         {
             MessengerService.AddInformation("Recept", "Recept borttagen.");
-
             NavigationManager.NavigateTo("/");
         }
     }

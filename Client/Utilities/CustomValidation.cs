@@ -22,9 +22,7 @@ public sealed class CustomValidation : ComponentBase
                 $"parameter of type {nameof(EditContext)}. " +
                 $"For example, you can use {nameof(CustomValidation)} " +
                 $"inside an {nameof(EditForm)}.";
-
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-
             throw new InvalidOperationException(errorMessage);
         }
 

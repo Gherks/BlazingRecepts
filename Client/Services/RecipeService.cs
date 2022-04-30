@@ -34,8 +34,8 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while checking existence of recipe with name: {@Name}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, name);
+            const string errorMessage = "Failed while checking existence of recipe with name: {@Name}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, name);
         }
 
         return false;
@@ -53,7 +53,7 @@ public class RecipeService : IRecipeService
 
                 if (recipeDto == null)
                 {
-                    const string errorMessage = "Failed to read returned recipe after saving it.";
+                    const string errorMessage = "Failed to read returned recipe dto after successfuly fetching it.";
                     Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }
@@ -65,8 +65,8 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while fetching recipe with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
+            const string errorMessage = "Failed while fetching recipe with id: {@Id}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
         }
 
         return null;
@@ -84,7 +84,7 @@ public class RecipeService : IRecipeService
 
                 if (recipeDtos == null)
                 {
-                    const string errorMessage = "Failed to fetch all recipe dtos.";
+                    const string errorMessage = "Failed to read returned recipe dto list after successfuly fetching it.";
                     Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }
@@ -99,8 +99,8 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while fetching all recipes.";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate);
+            const string errorMessage = "Failed while fetching all recipes.";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage);
         }
 
         return null;
@@ -108,13 +108,6 @@ public class RecipeService : IRecipeService
 
     public async Task<RecipeDto?> SaveAsync(RecipeDto recipeDto)
     {
-        if (recipeDto == null)
-        {
-            const string messageTemplate = "Failed to save recipe because passed recipe is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate);
-            throw new ArgumentNullException(nameof(recipeDto));
-        }
-
         try
         {
             HttpResponseMessage response = await _authenticatedHttpClient.PostAsJsonAsync(_apiAddress, recipeDto);
@@ -125,7 +118,7 @@ public class RecipeService : IRecipeService
 
                 if (savedRecipeDto == null)
                 {
-                    const string errorMessage = "Failed to read returned recipe after saving it.";
+                    const string errorMessage = "Failed to read returned recipe dto after successfuly saving it.";
                     Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
                     throw new InvalidOperationException(errorMessage);
                 }
@@ -141,8 +134,8 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while saving recipe: {@RecipeDto}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, recipeDto);
+            const string errorMessage = "Failed while saving recipe: {@RecipeDto}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, recipeDto);
         }
 
         return null;
@@ -162,8 +155,8 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while deleting recipe with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
+            const string errorMessage = "Failed while deleting recipe with id: {@Id}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
         }
 
         return false;

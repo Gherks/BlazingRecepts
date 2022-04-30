@@ -18,13 +18,6 @@ public sealed class LogController : ControllerBase
     [HttpPost]
     public void PostAsync(JsonDocument logEventsJsonDocument)
     {
-        if (logEventsJsonDocument == null)
-        {
-            const string errorMessage = "Cannot process log events because log events json document is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new ArgumentNullException(nameof(logEventsJsonDocument), errorMessage);
-        }
-
         string jsonString = logEventsJsonDocument.RootElement.GetRawText();
 
         if (jsonString == null)

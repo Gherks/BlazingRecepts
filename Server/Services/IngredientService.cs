@@ -61,7 +61,7 @@ public class IngredientService : IIngredientService
 
         if (ingredients == null)
         {
-            const string errorMessage = "Failed because fetched ingredient list is null.";
+            const string errorMessage = "Failed to fetch all ingredients from repository.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

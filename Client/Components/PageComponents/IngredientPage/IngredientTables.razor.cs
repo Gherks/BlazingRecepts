@@ -36,18 +36,18 @@ public partial class IngredientTables : PageComponentBase
 
     private void HandleIngredientRemovalModalOpen(IngredientDto? ingredientDto)
     {
-        if (_removalConfirmationModal == null)
-        {
-            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         if (ingredientDto == null)
         {
             const string errorMessage = "Cannot start ingredient removal process because ingredient has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new ArgumentNullException(nameof(ingredientDto), errorMessage);
+        }
+
+        if (_removalConfirmationModal == null)
+        {
+            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
 
         _removalConfirmationModal.Open(ingredientDto, "Ta bort recept", ingredientDto.Name);

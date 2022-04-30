@@ -39,18 +39,18 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
 
     public void Open(IngredientMeasurementDto? ingredientMeasurementDto)
     {
-        if (_modal == null)
-        {
-            const string errorMessage = "Edit ingredient measurement modal cannot be opened because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         if (ingredientMeasurementDto == null)
         {
             const string errorMessage = "Edit ingredient measurement modal cannot be opened because it has no ingredient to edit.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new ArgumentNullException(nameof(ingredientMeasurementDto), errorMessage);
+        }
+
+        if (_modal == null)
+        {
+            const string errorMessage = "Edit ingredient measurement modal cannot be opened because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
 
         _editIngredientDto = ingredientMeasurementDto.IngredientDto;

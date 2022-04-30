@@ -53,7 +53,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
         if (dailyIntakeEntries == null)
         {
-            const string errorMessage = "Failed to fetch all daily intake entries and turn them into daily intake entry dtos.";
+            const string errorMessage = "Failed to fetch all daily intake entries from repository.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }

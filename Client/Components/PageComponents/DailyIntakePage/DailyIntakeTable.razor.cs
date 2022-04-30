@@ -56,18 +56,18 @@ public partial class DailyIntakeTable : PageComponentBase
 
     private void HandleDailyIntakeEntryRemovalModalOpen(DailyIntakeEntryDto? dailyIntakeEntryDto)
     {
-        if (_removalConfirmationModal == null)
-        {
-            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         if (dailyIntakeEntryDto == null)
         {
             const string errorMessage = "Cannot start daily intake entry removal process because daily intake entry has not been set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new ArgumentNullException(nameof(dailyIntakeEntryDto), errorMessage);
+        }
+
+        if (_removalConfirmationModal == null)
+        {
+            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
 
         _removalConfirmationModal.Open(dailyIntakeEntryDto, "Ta bort post för dagligt intag", dailyIntakeEntryDto.ProductName);
