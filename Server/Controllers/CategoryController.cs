@@ -21,7 +21,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("{categoryIdentifier}")]
-    public async Task<ActionResult<DailyIntakeEntryDto>> Get(string categoryIdentifier)
+    public async Task<ActionResult<CategoryDto>> Get(string categoryIdentifier)
     {
         if (Guid.TryParse(categoryIdentifier, out Guid id))
         {
