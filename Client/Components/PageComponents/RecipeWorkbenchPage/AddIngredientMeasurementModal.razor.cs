@@ -3,6 +3,7 @@ using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
+using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Serilog;
@@ -60,6 +61,36 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
         }
 
         _modal.Close();
+    }
+
+    private async Task<AutosuggestDataProviderResult<IngredientDto>> ProvideSuggestionsToNameAutosuggest(AutosuggestDataProviderRequest request)
+    {
+        if (RecipeWorkbench == null)
+        {
+            const string errorMessage = "Cannot provide ingredient suggestions to name autosuggest because recipe workbench page reference has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (RecipeWorkbench.Ingredients == null)
+        {
+            const string errorMessage = "Cannot provide ingredient suggestions to name autosuggest because recipe workbench ingredient list has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        return await Task.FromResult(new AutosuggestDataProviderResult<IngredientDto>
+        {
+            Data = RecipeWorkbench.Ingredients
+                .Where(ingredientDto => ingredientDto.Name?.Contains(request.UserInput, StringComparison.CurrentCultureIgnoreCase) ?? false)
+                .OrderBy(ingredientDto => ingredientDto.Name)
+                .ToList()
+        });
+    }
+
+    private string ResolvePickedAutosuggestItemToTextInNameAutosuggest(IngredientDto ingredientDto)
+    {
+        return ingredientDto.Name;
     }
 
     private void HandleValidFormSubmitted()
@@ -182,32 +213,6 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
         };
     }
 
-    private async Task<IEnumerable<IngredientDto>> SearchForIngredients(string searchTerm)
-    {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "RecipeWorkbench page reference has not been set during ingredient input search procedure.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (RecipeWorkbench.Ingredients == null)
-        {
-            const string errorMessage = "RecipeWorkbench page reference contains no ingredients during ingredient input search procedure.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        List<IngredientDto> foundIngredients = RecipeWorkbench.Ingredients.Where(ingredientDto => ingredientDto.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
-
-        if (foundIngredients.Count == 1)
-        {
-            _form.IngredientDto = foundIngredients.First();
-        }
-
-        return await Task.FromResult(foundIngredients);
-    }
-
     private bool IngredientAlreadyAdded(IngredientDto IngredientDto)
     {
         if (RecipeWorkbench == null)
@@ -223,6 +228,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
     private class Form
     {
         public IngredientDto? IngredientDto { get; set; } = null;
+        public Guid? IngredientId { get; set; } = null;
         public double? Measurement { get; set; } = null;
         public MeasurementUnit MeasurementUnit { get; set; } = MeasurementUnit.Unassigned;
         public double? Grams { get; set; } = null;

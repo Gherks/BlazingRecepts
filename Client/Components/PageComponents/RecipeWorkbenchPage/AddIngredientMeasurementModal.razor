@@ -2,6 +2,7 @@
 @using BlazingRecept.Client.Components.Common;
 @using BlazingRecept.Client.Utilities;
 @using BlazingRecept.Shared
+@using BlazingRecept.Shared.Dto
 @using static BlazingRecept.Shared.Enums
 
 @inherits PageComponentBase
@@ -12,26 +13,25 @@
             <CustomValidation @ref="_customValidation" />
             <div class="row mb-2">
                 <div class="col">
-                    <BlazoredTypeahead id="name"
-                                       placeholder="Ange namn"
-                                       SearchMethod="SearchForIngredients"
-                                       @bind-Value="_form.IngredientDto">
-                        <SelectedTemplate Context="ingredientDto">
-                            @if(ingredientDto != null)
-                            {
-                                @ingredientDto.Name
-                            }
-                        </SelectedTemplate>
-                        <ResultTemplate Context="ingredientDto">
-                            @ingredientDto.Name
-                        </ResultTemplate>
-                    </BlazoredTypeahead>
+                    <HxAutosuggest id="name"
+                                   Placeholder="Ange namn"
+                                   TItem="IngredientDto"
+                                   TValue="IngredientDto"
+                                   @bind-Value="@_form.IngredientDto"
+                                   DataProvider="ProvideSuggestionsToNameAutosuggest"
+                                   TextSelector="ResolvePickedAutosuggestItemToTextInNameAutosuggest"
+                                   ShowValidationMessage=false>
+                        <ItemTemplate Context="ingredientDto">@ingredientDto.Name</ItemTemplate>
+                        <EmptyTemplate>
+                            <span class="p-2">Kan inte hitta ingrediens med angivet namn.</span>
+                        </EmptyTemplate>
+                    </HxAutosuggest>
                     <ValidationMessage For="() => _form.IngredientDto" />
                 </div>
             </div>
             <div class="row mb-2">
                 <div class="col">
-                    <div class="input-group"> 
+                    <div class="input-group">
                         <input type="text" id="measurement" class="form-control" placeholder="Ange mängd" @bind="_form!.Measurement">
                         <select class="form-select" @bind="_form!.MeasurementUnit">
                             @foreach (MeasurementUnit measurementUnit in Enum.GetValues(typeof(MeasurementUnit)))
