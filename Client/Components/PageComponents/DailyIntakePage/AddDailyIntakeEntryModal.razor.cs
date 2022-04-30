@@ -75,7 +75,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
         _modal.Close();
     }
 
-    private async Task<IEnumerable<string>> SearchForRecipeOrIngredient(string searchTerm)
+    private async Task<AutosuggestDataProviderResult<string>> ProvideSuggestionsToProductNameAutosuggest(AutosuggestDataProviderRequest request)
     {
         if (DailyIntakePage == null)
         {
@@ -98,8 +98,15 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        List<IngredientDto> foundIngredients = DailyIntakePage.Ingredients.Where(ingredientDto => ingredientDto.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
-        List<RecipeDto> foundRecipes = DailyIntakePage.Recipes.Where(recipeDto => recipeDto.Name.ToLower().Contains(searchTerm.ToLower())).ToList();
+        List<IngredientDto> foundIngredients = DailyIntakePage.Ingredients
+            .Where(ingredientDto => ingredientDto.Name?.Contains(request.UserInput, StringComparison.CurrentCultureIgnoreCase) ?? false)
+            .OrderBy(ingredientDto => ingredientDto.Name)
+            .ToList();
+
+        List<RecipeDto> foundRecipes = DailyIntakePage.Recipes
+            .Where(recipeDto => recipeDto.Name?.Contains(request.UserInput, StringComparison.CurrentCultureIgnoreCase) ?? false)
+            .OrderBy(recipeDto => recipeDto.Name)
+            .ToList();
 
         List<string> foundProductNames = new();
 
@@ -113,12 +120,10 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
             foundProductNames.Add(recipeDto.Name);
         }
 
-        if (foundProductNames.Count == 1)
+        return await Task.FromResult(new AutosuggestDataProviderResult<string>
         {
-            _form.ProductName = foundProductNames.First();
-        }
-
-        return await Task.FromResult(foundProductNames);
+            Data = foundProductNames.ToList()
+        });
     }
 
     private async Task HandleValidFormSubmitted()

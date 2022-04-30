@@ -12,17 +12,18 @@
             <CustomValidation @ref="_customValidation" />
             <div class="row mb-2">
                 <div class="col">
-                    <BlazoredTypeahead id="product-name"
-                                       placeholder="Ange namn"
-                                       SearchMethod="SearchForRecipeOrIngredient"
-                                       @bind-Value="_form.ProductName">
-                        <SelectedTemplate Context="contextName">
-                            @contextName
-                        </SelectedTemplate>
-                        <ResultTemplate Context="contextName">
-                            @contextName
-                        </ResultTemplate>
-                    </BlazoredTypeahead>
+                    <HxAutosuggest id="product-name"
+                                   Placeholder="Ange namn"
+                                   TItem="string"
+                                   TValue="string"
+                                   @bind-Value="@_form.ProductName"
+                                   DataProvider="ProvideSuggestionsToProductNameAutosuggest"
+                                   ShowValidationMessage=false>
+                        <ItemTemplate Context="productName">@productName</ItemTemplate>
+                        <EmptyTemplate>
+                            <span class="p-2">Kan inte hitta produkt med angivet namn.</span>
+                        </EmptyTemplate>
+                    </HxAutosuggest>
                     <ValidationMessage For="() => _form.ProductName" />
                 </div>
             </div>
