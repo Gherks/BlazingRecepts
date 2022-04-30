@@ -1,7 +1,7 @@
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazingRecept.Client.Components.PageComponents;
+namespace BlazingRecept.Client.Components.Common;
 
 public partial class NoteTooltipIcon : ComponentBase
 {
