@@ -71,7 +71,7 @@ public class IngredientService : IIngredientService
 
     public async Task<IngredientDto> SaveAsync(IngredientDto ingredientDto)
     {
-        Ingredient ingredient = _mapper.Map<Ingredient>(ingredientDto);
+        Ingredient? ingredient = _mapper.Map<Ingredient>(ingredientDto);
 
         if (ingredient.Id == Guid.Empty)
         {

@@ -79,7 +79,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
     public async Task<DailyIntakeEntryDto> SaveAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        DailyIntakeEntry dailyIntakeEntry = _mapper.Map<DailyIntakeEntry>(dailyIntakeEntryDto);
+        DailyIntakeEntry? dailyIntakeEntry = _mapper.Map<DailyIntakeEntry>(dailyIntakeEntryDto);
 
         dailyIntakeEntry.ProductId = await GetProductIdFromProductName(dailyIntakeEntryDto.ProductName);
 
@@ -90,6 +90,13 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         else
         {
             dailyIntakeEntry = await _dailyIntakeEntryRepository.UpdateAsync(dailyIntakeEntry);
+        }
+
+        if (dailyIntakeEntry == null)
+        {
+            const string messageTemplate = "Failed to add or update daily intake entry({@DailyIntakeEntryDto}), result was null.";
+            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate, dailyIntakeEntryDto);
+            throw new InvalidOperationException("Failed to add or update daily intake entry, result was null.");
         }
 
         DailyIntakeEntryDto? reloadedDailyIntakeEntryDto = await LoadDailyIntakeEntryDtoFromDailyIntakeEntry(dailyIntakeEntry);

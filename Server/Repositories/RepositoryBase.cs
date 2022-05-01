@@ -63,7 +63,7 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
     }
 
-    public virtual async Task<Type> AddAsync(Type entity)
+    public virtual async Task<Type?> AddAsync(Type entity)
     {
         try
         {
@@ -76,12 +76,14 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         {
             const string errorMessage = "Repository failed to add entity: {@Entity}";
             Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, entity);
+
+            return null;
         }
 
         return entity;
     }
 
-    public async Task<IEnumerable<Type>> AddManyAsync(IEnumerable<Type> entities)
+    public async Task<IEnumerable<Type>?> AddManyAsync(IEnumerable<Type> entities)
     {
         try
         {
@@ -97,6 +99,8 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         {
             const string errorMessage = "Repository failed to add many entities: {@Entities}";
             Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, entities);
+
+            return null;
         }
 
         return entities;

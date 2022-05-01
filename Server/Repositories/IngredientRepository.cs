@@ -77,7 +77,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
     }
 
-    public override async Task<Ingredient> AddAsync(Ingredient ingredient)
+    public override async Task<Ingredient?> AddAsync(Ingredient ingredient)
     {
         try
         {
@@ -94,6 +94,8 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         {
             const string errorMessage = "Repository failed to add ingredient: {@Ingredient}";
             Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, ingredient);
+
+            return null;
         }
 
         return ingredient;

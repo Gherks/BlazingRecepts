@@ -85,7 +85,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
     }
 
-    public override async Task<Recipe> AddAsync(Recipe recipe)
+    public override async Task<Recipe?> AddAsync(Recipe recipe)
     {
         try
         {
@@ -106,6 +106,8 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         {
             const string errorMessage = "Repository failed to add recipe: {@Recipe}";
             Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, recipe);
+
+            return null;
         }
 
         return recipe;

@@ -71,7 +71,7 @@ public class RecipeService : IRecipeService
 
     public async Task<RecipeDto> SaveAsync(RecipeDto recipeDto)
     {
-        Recipe recipe = _mapper.Map<Recipe>(recipeDto);
+        Recipe? recipe = _mapper.Map<Recipe>(recipeDto);
 
         if (recipe.Id == Guid.Empty)
         {
