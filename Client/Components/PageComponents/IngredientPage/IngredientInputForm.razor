@@ -7,11 +7,11 @@
 
 <div class="card mb-2">
     <div class="card-body">
-        <HxCollapseToggleButton Text="@GetCollapseToggleTitle()" CollapseTarget="#ingredient-input-form" Color="ThemeColor.Primary" CssClass="mb-2" />
+        <HxCollapseToggleButton Text="@GetCollapseToggleTitle()" CollapseTarget="#ingredient-input-form" Color="ThemeColor.Primary" />
         <HxCollapse Id="ingredient-input-form" OnShown="@HandleCollapseShown" OnHidden="@HandleCollapseHidden">
             <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
                 <CustomValidation @ref="_customValidation" />
-                <div class="row mb-2">
+                <div class="row my-2">
                     <div class="col-12 col-md-9 col-lg-7">
                         <input type="text" id="name" name="name" class="form-control" @ref="_nameInput" @bind="_form.Name" @onblur="@(_ => HandleNameBlur())" placeholder="Ange namn">
                         <ValidationMessage For="() => _form.Name" />
