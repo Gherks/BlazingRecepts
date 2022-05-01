@@ -72,10 +72,10 @@
                                         <td class="col-2">@ingredientDto.Calories</td>
                                         <AuthorizeView>
                                             <td class="col-1">
-                                                <button class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEditClicked(ingredientDto)">
+                                                <button class="btn btn-primary btn-sm" disabled="@(_uneditedIngredientDto != null)" @onclick="() => HandleIngredientEditClicked(ingredientDto)">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </button>
-                                                <button class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemovalModalOpen(ingredientDto)">
+                                                <button class="btn btn-danger btn-sm" disabled="@(_uneditedIngredientDto != null)" @onclick="() => HandleIngredientRemovalModalOpen(ingredientDto)">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </td>
