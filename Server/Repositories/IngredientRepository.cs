@@ -38,7 +38,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to fetch entity with id: {@Id}";
+            const string errorMessage = "Repository failed to fetch ingredient with id: {@Id}";
             Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
 
             return null;
@@ -70,10 +70,32 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to fetch many entities";
+            const string errorMessage = "Repository failed to fetch many ingredients";
             Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage);
 
             return null;
         }
+    }
+
+    public override async Task<Ingredient> AddAsync(Ingredient ingredient)
+    {
+        try
+        {
+            ingredient.Category = await _context.Category
+                .Where(category => category.Id == ingredient.Category.Id)
+                .FirstAsync();
+
+            _context.Set<Ingredient>().Add(ingredient);
+
+            await _context.SaveChangesAsync();
+            await _context.Entry(ingredient).ReloadAsync();
+        }
+        catch (Exception exception)
+        {
+            const string errorMessage = "Repository failed to add ingredient: {@Ingredient}";
+            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, ingredient);
+        }
+
+        return ingredient;
     }
 }
