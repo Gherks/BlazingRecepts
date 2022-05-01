@@ -20,7 +20,7 @@ public partial class IngredientTable : PageComponentBase
     private const string _collapseButtonStyle = "width: 128px;";
 
     private string _collapseButtonText = _collapseButtonTextExpanded;
-    private Guid _editingIngredientGuid = Guid.Empty;
+    private IngredientDto? _uneditedIngredientDto = null;
 
     private RemovalConfirmationModal<IngredientDto>? _removalConfirmationModal;
 
@@ -57,9 +57,19 @@ public partial class IngredientTable : PageComponentBase
         await Task.CompletedTask;
     }
 
-    private void HandleIngredientEditClicked(Guid editingIngredientGuid)
+    private void HandleIngredientEditClicked(IngredientDto editingIngredientDto)
     {
-        _editingIngredientGuid = editingIngredientGuid;
+        _uneditedIngredientDto = new()
+        {
+            Id = editingIngredientDto.Id,
+            Name = editingIngredientDto.Name,
+            Fat = editingIngredientDto.Fat,
+            Carbohydrates = editingIngredientDto.Carbohydrates,
+            Protein = editingIngredientDto.Protein,
+            Calories = editingIngredientDto.Calories,
+            CategoryDto = editingIngredientDto.CategoryDto
+        };
+
         StateHasChanged();
     }
 
@@ -101,14 +111,27 @@ public partial class IngredientTable : PageComponentBase
         }
 
         MessengerService.AddSuccess("Ingredienser", "Ingrediens uppdaterad!");
-        _editingIngredientGuid = Guid.Empty;
+        _uneditedIngredientDto = null;
 
         StateHasChanged();
     }
 
-    private void HandleIngredientEditCancel()
+    private void HandleIngredientEditCancel(IngredientDto editedIngredientDto)
     {
-        _editingIngredientGuid = Guid.Empty;
+        if (_uneditedIngredientDto == null)
+        {
+            const string errorMessage = "Cannot cancel ingredient table inline editing because unedited ingredient dto is not set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        editedIngredientDto.Name = _uneditedIngredientDto.Name;
+        editedIngredientDto.Fat = _uneditedIngredientDto.Fat;
+        editedIngredientDto.Carbohydrates = _uneditedIngredientDto.Carbohydrates;
+        editedIngredientDto.Protein = _uneditedIngredientDto.Protein;
+        editedIngredientDto.Calories = _uneditedIngredientDto.Calories;
+
+        _uneditedIngredientDto = null;
         StateHasChanged();
     }
 

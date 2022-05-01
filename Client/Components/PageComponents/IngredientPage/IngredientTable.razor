@@ -32,7 +32,7 @@
                         <tbody>
                             @foreach (IngredientDto ingredientDto in IngredientCollectionTypeDto.Ingredients)
                             {
-                                if (_editingIngredientGuid == ingredientDto.Id)
+                                if (_uneditedIngredientDto != null && _uneditedIngredientDto.Id == ingredientDto.Id)
                                 {
                                     <tr id="@ingredientDto.Id">
                                         <td class="col-3">
@@ -55,7 +55,7 @@
                                                 <button class="btn btn-success btn-sm" @onclick="() => HandleIngredientEditConfirmed(ingredientDto)">
                                                     <i class="fa-solid fa-check"></i>
                                                 </button>
-                                                <button class="btn btn-danger btn-sm" @onclick="() => HandleIngredientEditCancel()">
+                                                <button class="btn btn-danger btn-sm" @onclick="() => HandleIngredientEditCancel(ingredientDto)">
                                                     <i class="fa-solid fa-xmark"></i>
                                                 </button>
                                             </td>
@@ -72,7 +72,7 @@
                                         <td class="col-2">@ingredientDto.Calories</td>
                                         <AuthorizeView>
                                             <td class="col-1">
-                                                <button class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEditClicked(ingredientDto.Id)">
+                                                <button class="btn btn-primary btn-sm" @onclick="() => HandleIngredientEditClicked(ingredientDto)">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </button>
                                                 <button class="btn btn-danger btn-sm" @onclick="() => HandleIngredientRemovalModalOpen(ingredientDto)">
