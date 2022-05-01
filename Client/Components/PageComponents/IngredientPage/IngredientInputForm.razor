@@ -19,25 +19,25 @@
                 </div>
                 <div class="row mb-2">
                     <div class="col-12 col-md-9 col-lg-7 ">
-                        <input type="number" id="fat" name="fat" class="form-control" @bind="_form.Fat" placeholder="Ange fettvärde">
+                        <input type="number" step="0.1" id="fat" name="fat" class="form-control" @bind="_form.Fat" placeholder="Ange fettvärde">
                         <ValidationMessage For="() => _form.Fat" />
                     </div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-12 col-md-9 col-lg-7">
-                        <input type="number" id="carbohydrates" name="carbohydrates" class="form-control" @bind="_form.Carbohydrates" placeholder="Ange kolhydratvärde">
+                        <input type="number" step="0.1" id="carbohydrates" name="carbohydrates" class="form-control" @bind="_form.Carbohydrates" placeholder="Ange kolhydratvärde">
                         <ValidationMessage For="() => _form.Carbohydrates" />
                     </div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-12 col-md-9 col-lg-7">
-                        <input type="number" id="protein" name="protein" class="form-control" @bind="_form.Protein" placeholder="Ange proteinvärde">
+                        <input type="number" step="0.1" id="protein" name="protein" class="form-control" @bind="_form.Protein" placeholder="Ange proteinvärde">
                         <ValidationMessage For="() => _form.Protein" />
                     </div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-12 col-md-9 col-lg-7">
-                        <input type="number" id="calories" name="calories" class="form-control" @bind="_form.Calories" placeholder="Ange kalorivärde">
+                        <input type="number" step="0.1" id="calories" name="calories" class="form-control" @bind="_form.Calories" placeholder="Ange kalorivärde">
                         <ValidationMessage For="() => _form.Calories" />
                     </div>
                 </div>
