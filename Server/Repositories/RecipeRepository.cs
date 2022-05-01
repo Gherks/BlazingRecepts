@@ -92,7 +92,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
             foreach (IngredientMeasurement ingredientMeasurement in recipe.IngredientMeasurements)
             {
                 ingredientMeasurement.Ingredient = await _context.Ingredient
-                    .Where(ingredient => ingredient.Id == ingredientMeasurement.Ingredient.Id)
+                    .Where(ingredient => ingredient.Id == ingredientMeasurement.IngredientId)
                     .Include(ingredient => ingredient.Category)
                     .FirstAsync();
             }

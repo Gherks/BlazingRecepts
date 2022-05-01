@@ -82,7 +82,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         try
         {
             ingredient.Category = await _context.Category
-                .Where(category => category.Id == ingredient.Category.Id)
+                .Where(category => category.Id == ingredient.CategoryId)
                 .FirstAsync();
 
             _context.Set<Ingredient>().Add(ingredient);
