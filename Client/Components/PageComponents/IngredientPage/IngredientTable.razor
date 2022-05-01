@@ -39,16 +39,16 @@
                                             <input type="text" id="name" name="name" class="form-control" @bind="@ingredientDto.Name" placeholder="@ingredientDto.Name">
                                         </td>
                                         <td class="col-2">
-                                            <input type="text" id="fat" name="fat" class="form-control" @bind="@ingredientDto.Fat" placeholder="@ingredientDto.Fat">
+                                            <input type="number" step="0.01" min="0.01" id="fat" name="fat" class="form-control" @bind="@ingredientDto.Fat">
                                         </td>
                                         <td class="col-2">
-                                            <input type="text" id="carbohydrates" name="carbohydrates" class="form-control" @bind="@ingredientDto.Carbohydrates" placeholder="@ingredientDto.Carbohydrates">
+                                            <input type="number" step="0.01" min="0.01" id="carbohydrates" name="carbohydrates" class="form-control" @bind="@ingredientDto.Carbohydrates">
                                         </td>
                                         <td class="col-2">
-                                            <input type="text" id="protein" name="protein" class="form-control" @bind="@ingredientDto.Protein" placeholder="@ingredientDto.Protein">
+                                            <input type="number" step="0.01" min="0.01" id="protein" name="protein" class="form-control" @bind="@ingredientDto.Protein">
                                         </td>
                                         <td class="col-2">
-                                            <input type="text" id="calories" name="calories" class="form-control" @bind="@ingredientDto.Calories" placeholder="@ingredientDto.Calories">
+                                            <input type="number" step="0.01" min="0.01" id="calories" name="calories" class="form-control" @bind="@ingredientDto.Calories">
                                         </td>
                                         <AuthorizeView>
                                             <td class="col-1">
