@@ -97,6 +97,10 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
                     .FirstAsync();
             }
 
+            recipe.Category = await _context.Category
+                .Where(category => category.Id == recipe.CategoryId)
+                .FirstAsync();
+
             _context.Add(recipe);
 
             await _context.SaveChangesAsync();
