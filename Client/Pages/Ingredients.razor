@@ -3,6 +3,7 @@
 @using BlazingRecept.Client.Components.PageComponents.IngredientPage
 @using BlazingRecept.Client.Components.Common
 @using BlazingRecept.Client.Pages.Base
+@using BlazingRecept.Shared.Dto
 
 @inherits PageBase
 
@@ -19,6 +20,12 @@ else
         <AuthorizeView>
             <IngredientInputForm />
         </AuthorizeView>
-        <IngredientTables @ref="_ingredientTables" />
-    </CascadingValue>
+        @if(IngredientCollectionTypes != null)
+        {
+            foreach (IngredientCollectionTypeDto ingredientCollectionTypeDto in IngredientCollectionTypes)
+            {
+                <IngredientTable IngredientCollectionTypeDto="@ingredientCollectionTypeDto" />
+            }
+        }
+</CascadingValue>
 }

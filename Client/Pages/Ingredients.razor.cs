@@ -12,8 +12,6 @@ public partial class Ingredients : PageBase
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "IngredientsPage";
 
-    private IngredientTables? _ingredientTables;
-
     public IReadOnlyList<IngredientCollectionTypeDto>? IngredientCollectionTypes { get; private set; } = new List<IngredientCollectionTypeDto>();
 
     [Inject]
@@ -42,13 +40,6 @@ public partial class Ingredients : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (_ingredientTables == null)
-        {
-            const string errorMessage = "Ingredient table reference is null and can therefore not be refreshed.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
         int categoryIndex = ingredientDto.CategoryDto.SortOrder;
 
         IngredientCollectionTypes[categoryIndex].Ingredients.Add(ingredientDto);
@@ -56,6 +47,6 @@ public partial class Ingredients : PageBase
             .OrderBy(ingredientDto => ingredientDto.Name)
             .ToList();
 
-        _ingredientTables.Refresh();
+        StateHasChanged();
     }
 }
