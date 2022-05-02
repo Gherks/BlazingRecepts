@@ -1,7 +1,11 @@
+using BlazingRecept.Client.Components.Common;
 using BlazingRecept.Client.Components.PageComponents.DailyIntakePage;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
+using BlazingRecept.Shared.Extensions;
+using Havit.Blazor.Components.Web;
+using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
@@ -12,7 +16,8 @@ public partial class DailyIntake : PageBase
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "DailyIntake";
 
-    private DailyIntakeTable? _dailyIntakeTable;
+    private AddDailyIntakeEntryModal? _addDailyIntakeEntryModal;
+    private RemovalConfirmationModal<DailyIntakeEntryDto>? _removalConfirmationModal;
 
     internal Dictionary<Guid, List<DailyIntakeEntryDto>> DailyIntakeEntryDtoCollections { get; private set; } = new();
     internal IReadOnlyList<IngredientDto>? Ingredients { get; private set; } = null;
@@ -26,6 +31,9 @@ public partial class DailyIntake : PageBase
 
     [Inject]
     protected internal IRecipeService? RecipeService { get; private set; }
+
+    [Inject]
+    protected internal IHxMessengerService? MessengerService { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,47 +78,179 @@ public partial class DailyIntake : PageBase
         IsLoading = false;
     }
 
-    internal void InsertDailyIntakeEntryIntoCollection(DailyIntakeEntryDto dailyIntakeEntryDto)
+    public void Refresh()
     {
-        HandleUnmappedCollection(dailyIntakeEntryDto);
-
-        DailyIntakeEntryDtoCollections[dailyIntakeEntryDto.CollectionId].Add(dailyIntakeEntryDto);
+        StateHasChanged();
     }
 
-    internal void UpsertDailyIntakeEntryIntoCollection(DailyIntakeEntryDto upsertedDailyIntakeEntryDto)
+    private async Task<bool> HandleDailyIntakeEntryMoveUpInOrderAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        if (_dailyIntakeTable == null)
+        if (DailyIntakeEntryService == null)
         {
-            const string errorMessage = "Cannot upsert daily intake collection because daily intake table is not set.";
+            const string errorMessage = "Daily intake entry service has not been set before moving daily intake entry up in order.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        HandleUnmappedCollection(upsertedDailyIntakeEntryDto);
+        List<DailyIntakeEntryDto> dailyIntakeEntries = DailyIntakeEntryDtoCollections[dailyIntakeEntryDto.CollectionId];
 
-        List<DailyIntakeEntryDto> currentCollection = DailyIntakeEntryDtoCollections[upsertedDailyIntakeEntryDto.CollectionId];
+        int movedIndex = dailyIntakeEntries.IndexOf(dailyIntakeEntryDto);
 
-        int index = currentCollection.FindIndex(dailyIntakeEntryDto => dailyIntakeEntryDto.Id == upsertedDailyIntakeEntryDto.Id);
-
-        if (index >= 0)
+        if (movedIndex != 0)
         {
-            currentCollection[index] = upsertedDailyIntakeEntryDto;
-        }
-        else
-        {
-            currentCollection.Add(upsertedDailyIntakeEntryDto);
+            dailyIntakeEntries.Swap(movedIndex, movedIndex - 1);
         }
 
-        _dailyIntakeTable.Refresh();
+        UpdateSortOrderInDailyIntakeEntryCollection(dailyIntakeEntries);
+        bool reorderSuccessful = await DailyIntakeEntryService.SaveAsync(dailyIntakeEntries);
+
+        if (reorderSuccessful)
+        {
+            StateHasChanged();
+            return true;
+        }
+
+        return false;
     }
 
-    private void HandleUnmappedCollection(DailyIntakeEntryDto dailyIntakeEntryDto)
+    private async Task<bool> HandleDailyIntakeEntryMoveDownInOrderAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        bool collectionWithKeyIdExists = DailyIntakeEntryDtoCollections.ContainsKey(dailyIntakeEntryDto.CollectionId);
-
-        if (collectionWithKeyIdExists == false)
+        if (DailyIntakeEntryService == null)
         {
-            DailyIntakeEntryDtoCollections[dailyIntakeEntryDto.CollectionId] = new();
+            const string errorMessage = "Daily intake entry service has not been set before moving daily intake entry down in order.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        List<DailyIntakeEntryDto> dailyIntakeEntries = DailyIntakeEntryDtoCollections[dailyIntakeEntryDto.CollectionId];
+
+        int movedIndex = dailyIntakeEntries.IndexOf(dailyIntakeEntryDto);
+
+        if (movedIndex < dailyIntakeEntries.Count - 1)
+        {
+            dailyIntakeEntries.Swap(movedIndex, movedIndex + 1);
+        }
+
+        UpdateSortOrderInDailyIntakeEntryCollection(dailyIntakeEntries);
+        bool reorderSuccessful = await DailyIntakeEntryService.SaveAsync(dailyIntakeEntries);
+
+        if (reorderSuccessful)
+        {
+            StateHasChanged();
+            return true;
+        }
+
+        return false;
+    }
+
+    private async Task<bool> HandleDailyIntakeEntryEditSubmitAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
+    {
+        if (DailyIntakeEntryService == null)
+        {
+            const string errorMessage = "Cannot save edited daily intake entry because the daily intake entry service has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        DailyIntakeEntryDto? savedDailyIntakeEntryDto = await DailyIntakeEntryService.SaveAsync(dailyIntakeEntryDto);
+
+        if (savedDailyIntakeEntryDto == null)
+        {
+            const string errorMessage = "Something went wrong when saving an edited daily intake entry.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        UpsertDailyIntakeEntryIntoCollection(savedDailyIntakeEntryDto);
+        StateHasChanged();
+
+        return true;
+    }
+
+    private async Task<bool> HandleDailyIntakeEntryRemoveAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
+    {
+        if (_removalConfirmationModal == null)
+        {
+            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        _removalConfirmationModal.Open(dailyIntakeEntryDto, "Ta bort post för dagligt intag", dailyIntakeEntryDto.ProductName);
+        return await Task.FromResult(true);
+    }
+
+    private async Task<bool> HandleDailyIntakeEntryAddAsync(Guid collectionId)
+    {
+        if (_addDailyIntakeEntryModal == null)
+        {
+            const string errorMessage = "Cannot open add daily intake entry modal because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        _addDailyIntakeEntryModal.Open(collectionId);
+        return await Task.FromResult(true);
+    }
+
+    private void HandleAddNewCollectionClick()
+    {
+        DailyIntakeEntryDtoCollections[Guid.NewGuid()] = new();
+        StateHasChanged();
+    }
+
+    private static void UpdateSortOrderInDailyIntakeEntryCollection(List<DailyIntakeEntryDto> dailyIntakeEntries)
+    {
+        for (int index = 0; index < dailyIntakeEntries.Count; ++index)
+        {
+            dailyIntakeEntries[index].SortOrder = index;
+        }
+    }
+
+    private async Task HandleDailyIntakeEntryRemovalConfirmed(DailyIntakeEntryDto removedDailyIntakeEntryDto)
+    {
+        if (DailyIntakeEntryService == null)
+        {
+            const string errorMessage = "Daily intake entry service is not available during daily intake entry removal.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        if (MessengerService == null)
+        {
+            const string errorMessage = "Messenger service is not available during daily intake entry removal.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        Guid removedId = removedDailyIntakeEntryDto.Id;
+        Guid removedCollectionId = removedDailyIntakeEntryDto.CollectionId;
+
+        bool removalFromDatabaseSuccessful = await DailyIntakeEntryService.DeleteAsync(removedId);
+        bool removalFromCollectionSuccessful = false;
+
+        foreach (List<DailyIntakeEntryDto> dailyIntakeEntryDtos in DailyIntakeEntryDtoCollections.Values)
+        {
+            DailyIntakeEntryDto? soughtDailyIntakeEntryDto = dailyIntakeEntryDtos.Find(dailyIntakeEntryDto => dailyIntakeEntryDto.Id == removedId);
+
+            if (soughtDailyIntakeEntryDto != null)
+            {
+                dailyIntakeEntryDtos.Remove(soughtDailyIntakeEntryDto);
+
+                if (dailyIntakeEntryDtos.Count == 0)
+                {
+                    DailyIntakeEntryDtoCollections.Remove(removedCollectionId);
+                }
+
+                removalFromCollectionSuccessful = true;
+                break;
+            }
+        }
+
+        if (removalFromDatabaseSuccessful && removalFromCollectionSuccessful)
+        {
+            MessengerService.AddInformation("Dagligt intag", "Post för dagligt intag borttagen.");
+            StateHasChanged();
         }
     }
 
@@ -134,10 +274,38 @@ public partial class DailyIntake : PageBase
 
         foreach (DailyIntakeEntryDto dailyIntakeEntryDto in dailyIntakeEntryDtos)
         {
-            InsertDailyIntakeEntryIntoCollection(dailyIntakeEntryDto);
+            UpsertDailyIntakeEntryIntoCollection(dailyIntakeEntryDto);
         }
 
         SortDailyIntakeEntryCollections();
+    }
+
+    internal void UpsertDailyIntakeEntryIntoCollection(DailyIntakeEntryDto upsertedDailyIntakeEntryDto)
+    {
+        HandleUnmappedCollection(upsertedDailyIntakeEntryDto);
+
+        List<DailyIntakeEntryDto> currentCollection = DailyIntakeEntryDtoCollections[upsertedDailyIntakeEntryDto.CollectionId];
+
+        int index = currentCollection.FindIndex(dailyIntakeEntryDto => dailyIntakeEntryDto.Id == upsertedDailyIntakeEntryDto.Id);
+
+        if (index >= 0)
+        {
+            currentCollection[index] = upsertedDailyIntakeEntryDto;
+        }
+        else
+        {
+            currentCollection.Add(upsertedDailyIntakeEntryDto);
+        }
+    }
+
+    private void HandleUnmappedCollection(DailyIntakeEntryDto dailyIntakeEntryDto)
+    {
+        bool collectionWithKeyIdExists = DailyIntakeEntryDtoCollections.ContainsKey(dailyIntakeEntryDto.CollectionId);
+
+        if (collectionWithKeyIdExists == false)
+        {
+            DailyIntakeEntryDtoCollections[dailyIntakeEntryDto.CollectionId] = new();
+        }
     }
 
     private void SortDailyIntakeEntryCollections()

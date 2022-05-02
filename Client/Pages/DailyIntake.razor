@@ -3,6 +3,7 @@
 @using BlazingRecept.Client.Components.PageComponents.DailyIntakePage
 @using BlazingRecept.Client.Components.Common
 @using BlazingRecept.Client.Pages.Base
+@using BlazingRecept.Shared.Dto
 
 @inherits PageBase
 
@@ -16,6 +17,21 @@
 else
 {
     <CascadingValue Value="this">
-        <DailyIntakeTable @ref="_dailyIntakeTable" />
+        <AddDailyIntakeEntryModal @ref="_addDailyIntakeEntryModal" />
+        <RemovalConfirmationModal Type="DailyIntakeEntryDto" @ref="_removalConfirmationModal" OnConfirm="HandleDailyIntakeEntryRemovalConfirmed" />
+        @foreach (KeyValuePair<Guid, List<DailyIntakeEntryDto>> pair in DailyIntakeEntryDtoCollections)
+        {
+            <DailyIntakeTable CollectionId="@pair.Key"
+                          DailyIntakeEntryDtos="@pair.Value"
+                          OnDailyIntakeEntryMoveUpInOrderAsync="@HandleDailyIntakeEntryMoveUpInOrderAsync"
+                          OnDailyIntakeEntryMoveDownInOrderAsync="@HandleDailyIntakeEntryMoveDownInOrderAsync"
+                          OnDailyIntakeEntryEditSubmitAsync="@HandleDailyIntakeEntryEditSubmitAsync"
+                          OnDailyIntakeEntryRemoveAsync="@HandleDailyIntakeEntryRemoveAsync"
+                          OnDailyIntakeEntryAddAsync="@HandleDailyIntakeEntryAddAsync" />
+        }
+        <AuthorizeView>
+            <button class="btn btn-primary" @onclick="() => HandleAddNewCollectionClick()">Lägg till tabell</button>
+        </AuthorizeView>
     </CascadingValue>
 }
+

@@ -16,242 +16,108 @@ public partial class DailyIntakeTable : PageComponentBase
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "DailyIntakeTable";
 
-    private Guid _editingDailyIntakeEntryGuid = Guid.Empty;
+    private DailyIntakeEntryDto? _uneditedDailyIntakeEntryDto = null;
 
-    private AddDailyIntakeEntryModal? _addDailyIntakeEntryModal;
-    private RemovalConfirmationModal<DailyIntakeEntryDto>? _removalConfirmationModal;
+    [Parameter]
+    public Guid CollectionId { get; set; }
 
-    [CascadingParameter]
-    protected internal DailyIntake? DailyIntakePage { get; private set; }
+    [Parameter]
+    public List<DailyIntakeEntryDto>? DailyIntakeEntryDtos { get; set; }
 
-    [Inject]
-    protected internal IDailyIntakeEntryService? DailyIntakeEntryService { get; private set; }
+    [Parameter]
+    public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryMoveUpInOrderAsync { get; set; }
 
-    [Inject]
-    protected internal IIngredientService? IngredientService { get; private set; }
+    [Parameter]
+    public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryMoveDownInOrderAsync { get; set; }
 
-    [Inject]
-    protected internal IRecipeService? RecipeService { get; private set; }
+    [Parameter]
+    public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryEditSubmitAsync { get; set; }
 
-    [Inject]
-    protected internal IHxMessengerService? MessengerService { get; private set; }
+    [Parameter]
+    public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryRemoveAsync { get; set; }
 
-    public void HandleDailyIntakeEntryModalOpen(Guid collectionId)
+    [Parameter]
+    public Func<Guid, Task<bool>>? OnDailyIntakeEntryAddAsync { get; set; }
+
+    private async Task HandleDailyIntakeEntryMoveUpInOrderClickAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        if (_addDailyIntakeEntryModal == null)
+        if (OnDailyIntakeEntryMoveUpInOrderAsync != null)
         {
-            const string errorMessage = "Cannot open add daily intake entry modal because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        _addDailyIntakeEntryModal.Open(collectionId);
-    }
-
-    private void HandleDailyIntakeEntryEditClicked(Guid editingDailyIntakeEntryGuid)
-    {
-        _editingDailyIntakeEntryGuid = editingDailyIntakeEntryGuid;
-        StateHasChanged();
-    }
-
-    private void HandleDailyIntakeEntryRemovalModalOpen(DailyIntakeEntryDto? dailyIntakeEntryDto)
-    {
-        if (dailyIntakeEntryDto == null)
-        {
-            const string errorMessage = "Cannot start daily intake entry removal process because daily intake entry has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new ArgumentNullException(nameof(dailyIntakeEntryDto), errorMessage);
-        }
-
-        if (_removalConfirmationModal == null)
-        {
-            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        _removalConfirmationModal.Open(dailyIntakeEntryDto, "Ta bort post för dagligt intag", dailyIntakeEntryDto.ProductName);
-    }
-
-    private void HandleDailyIntakeEntryMoveUpInOrder(DailyIntakeEntryDto dailyIntakeEntryDto, Guid collectionId)
-    {
-        if (DailyIntakePage == null)
-        {
-            const string errorMessage = "DailyIntakePage page reference has not been set before moving daily intake entry up in order.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Daily intake entry service has not been set before moving daily intake entry up in order.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        List<DailyIntakeEntryDto> dailyIntakeEntries = DailyIntakePage.DailyIntakeEntryDtoCollections[collectionId];
-
-        int movedIndex = dailyIntakeEntries.IndexOf(dailyIntakeEntryDto);
-
-        if (movedIndex != 0)
-        {
-            dailyIntakeEntries.Swap(movedIndex, movedIndex - 1);
-
-        }
-
-        UpdateSortOrderInDailyIntakeEntryCollection(dailyIntakeEntries);
-        DailyIntakeEntryService.SaveAsync(dailyIntakeEntries);
-
-        StateHasChanged();
-    }
-
-    private void HandleDailyIntakeEntryMoveDownInOrder(DailyIntakeEntryDto dailyIntakeEntryDto, Guid collectionId)
-    {
-        if (DailyIntakePage == null)
-        {
-            const string errorMessage = "DailyIntakePage page reference has not been set before moving daily intake entry down in order.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Daily intake entry service has not been set before moving daily intake entry down in order.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        List<DailyIntakeEntryDto> dailyIntakeEntries = DailyIntakePage.DailyIntakeEntryDtoCollections[collectionId];
-
-        int movedIndex = dailyIntakeEntries.IndexOf(dailyIntakeEntryDto);
-
-        if (movedIndex < dailyIntakeEntries.Count - 1)
-        {
-            dailyIntakeEntries.Swap(movedIndex, movedIndex + 1);
-        }
-
-        UpdateSortOrderInDailyIntakeEntryCollection(dailyIntakeEntries);
-        DailyIntakeEntryService.SaveAsync(dailyIntakeEntries);
-
-        StateHasChanged();
-    }
-
-    private static void UpdateSortOrderInDailyIntakeEntryCollection(List<DailyIntakeEntryDto> dailyIntakeEntries)
-    {
-        for (int index = 0; index < dailyIntakeEntries.Count; ++index)
-        {
-            dailyIntakeEntries[index].SortOrder = index;
+            await OnDailyIntakeEntryMoveUpInOrderAsync.Invoke(dailyIntakeEntryDto);
         }
     }
 
-    private async Task HandleDailyIntakeEntryEditConfirmed(DailyIntakeEntryDto dailyIntakeEntryDto)
+    private async Task HandleDailyIntakeEntryMoveDownInOrderClickAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        if (DailyIntakePage == null)
+        if (OnDailyIntakeEntryMoveDownInOrderAsync != null)
         {
-            const string errorMessage = "Cannot save edited daily intake entry because the daily intake page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
+            await OnDailyIntakeEntryMoveDownInOrderAsync.Invoke(dailyIntakeEntryDto);
         }
-
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Cannot save edited daily intake entry because the daily intake entry service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (IngredientService == null)
-        {
-            const string errorMessage = "Cannot save edited daily intake entry because the ingredient service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (RecipeService == null)
-        {
-            const string errorMessage = "Cannot save edited daily intake entry because the recipe service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        DailyIntakeEntryDto? savedDailyIntakeEntryDto = await DailyIntakeEntryService.SaveAsync(dailyIntakeEntryDto);
-
-        if (savedDailyIntakeEntryDto == null)
-        {
-            const string errorMessage = "Something went wrong when saving an edited daily intake entry.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        DailyIntakePage.UpsertDailyIntakeEntryIntoCollection(savedDailyIntakeEntryDto);
-
-        _editingDailyIntakeEntryGuid = Guid.Empty;
-        StateHasChanged();
     }
 
-    private void HandleAddNewCollection()
+    private async Task HandleDailyIntakeEntryEditSubmitClickAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        if (DailyIntakePage == null)
+        if (OnDailyIntakeEntryEditSubmitAsync != null)
         {
-            const string errorMessage = "Cannot add new daily intake entry collection because the daily intake page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+            bool successfullyEdited = await OnDailyIntakeEntryEditSubmitAsync.Invoke(dailyIntakeEntryDto);
 
-        DailyIntakePage.DailyIntakeEntryDtoCollections[Guid.NewGuid()] = new();
-    }
-
-    private void HandleDailyIntakeEntryEditCancel()
-    {
-        _editingDailyIntakeEntryGuid = Guid.Empty;
-        StateHasChanged();
-    }
-
-    private async Task HandleDailyIntakeEntryRemovalConfirmed(DailyIntakeEntryDto removedDailyIntakeEntryDto)
-    {
-        if (DailyIntakePage == null)
-        {
-            const string errorMessage = "Cannot remove daily intake entry from daily intake page because daily intake page reference is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Daily intake entry service is not available during daily intake entry removal.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        Guid removedId = removedDailyIntakeEntryDto.Id;
-        Guid removedCollectionId = removedDailyIntakeEntryDto.CollectionId;
-
-        bool removalFromDatabaseSuccessful = await DailyIntakeEntryService.DeleteAsync(removedId);
-        bool removalFromCollectionSuccessful = false;
-
-        foreach (List<DailyIntakeEntryDto> dailyIntakeEntryDtos in DailyIntakePage.DailyIntakeEntryDtoCollections.Values)
-        {
-            DailyIntakeEntryDto? soughtDailyIntakeEntryDto = dailyIntakeEntryDtos.Find(dailyIntakeEntryDto => dailyIntakeEntryDto.Id == removedId);
-
-            if (soughtDailyIntakeEntryDto != null)
+            if(successfullyEdited)
             {
-                dailyIntakeEntryDtos.Remove(soughtDailyIntakeEntryDto);
-
-                if (dailyIntakeEntryDtos.Count == 0)
-                {
-                    DailyIntakePage.DailyIntakeEntryDtoCollections.Remove(removedCollectionId);
-                }
-
-                removalFromCollectionSuccessful = true;
-                break;
+                _uneditedDailyIntakeEntryDto = null;
             }
         }
+    }
 
-        if (removalFromDatabaseSuccessful && removalFromCollectionSuccessful)
+    private async Task HandleDailyIntakeEntryRemoveClickAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
+    {
+        if (OnDailyIntakeEntryRemoveAsync != null)
         {
-            MessengerService.AddInformation("Dagligt intag", "Post för dagligt intag borttagen.");
-            StateHasChanged();
+            await OnDailyIntakeEntryRemoveAsync.Invoke(dailyIntakeEntryDto);
         }
+    }
+
+    private async Task HandleDailyIntakeEntryAddClickAsync()
+    {
+        if (OnDailyIntakeEntryAddAsync != null)
+        {
+            await OnDailyIntakeEntryAddAsync.Invoke(CollectionId);
+        }
+    }
+
+    private void HandleDailyIntakeEntryEditClick(DailyIntakeEntryDto dailyIntakeEntryDto)
+    {
+        _uneditedDailyIntakeEntryDto = new()
+        {
+            Id = dailyIntakeEntryDto.Id,
+            ProductName = dailyIntakeEntryDto.ProductName,
+            Amount = dailyIntakeEntryDto.Amount,
+            Fat = dailyIntakeEntryDto.Fat,
+            Carbohydrates = dailyIntakeEntryDto.Carbohydrates,
+            Protein = dailyIntakeEntryDto.Protein,
+            Calories = dailyIntakeEntryDto.Calories,
+            ProteinPerCalorie = dailyIntakeEntryDto.ProteinPerCalorie,
+            SortOrder = dailyIntakeEntryDto.SortOrder,
+            IsRecipe = dailyIntakeEntryDto.IsRecipe,
+            ProductId = dailyIntakeEntryDto.ProductId,
+            CollectionId = dailyIntakeEntryDto.CollectionId
+        };
+
+        StateHasChanged();
+    }
+
+    private void HandleDailyIntakeEntryEditCancelClick(DailyIntakeEntryDto editedDailyIntakeEntryDto)
+    {
+        if (_uneditedDailyIntakeEntryDto == null)
+        {
+            const string errorMessage = "Cannot cancel daily intake entry table inline editing because unedited daily intake entry dto is not set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        editedDailyIntakeEntryDto.Amount = _uneditedDailyIntakeEntryDto.Amount;
+        _uneditedDailyIntakeEntryDto = null;
+
+        StateHasChanged();
     }
 
     private string GetAmount(DailyIntakeEntryDto dailyIntakeEntryDto)

@@ -180,6 +180,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
         }
 
         _processingButtonSubmit.IsProcessing = false;
+        DailyIntakePage.Refresh();
     }
 
     private bool Validate()
