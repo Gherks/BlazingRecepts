@@ -36,7 +36,7 @@ else
                                 <tr id="@recipeDto.Id" style="cursor: pointer;" @onclick="@(_ => HandleRecipeNavigation(recipeDto))">
                                     <td class="col-3">@recipeDto.Name</td>
                                     <td class="col-3">@recipeDto.GetProteinPerPortion()</td>
-                                    <td class="col-3">@recipeDto.GetProteinPerPortion()</td>
+                                    <td class="col-3">@recipeDto.GetCaloriesPerPortion()</td>
                                     <td class="col-3">@recipeDto.GetProteinPerCalorie()</td>
                                 </tr>
                             }
