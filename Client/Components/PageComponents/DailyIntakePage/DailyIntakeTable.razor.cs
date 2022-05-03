@@ -20,10 +20,10 @@ public partial class DailyIntakeTable : PageComponentBase
     public List<DailyIntakeEntryDto>? DailyIntakeEntryDtos { get; set; }
 
     [Parameter]
-    public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryMoveUpInOrderAsync { get; set; }
+    public Func<DailyIntakeTable, DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryMoveUpInOrderAsync { get; set; }
 
     [Parameter]
-    public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryMoveDownInOrderAsync { get; set; }
+    public Func<DailyIntakeTable, DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryMoveDownInOrderAsync { get; set; }
 
     [Parameter]
     public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryEditSubmitAsync { get; set; }
@@ -45,6 +45,13 @@ public partial class DailyIntakeTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
+        ConstructCheckableDailyIntakeEntryList(DailyIntakeEntryDtos);
+    }
+
+    public void ConstructCheckableDailyIntakeEntryList(List<DailyIntakeEntryDto> DailyIntakeEntryDtos)
+    {
+        _checkableDailyIntakeEntries.Clear();
+
         foreach (DailyIntakeEntryDto dailyIntakeEntryDto in DailyIntakeEntryDtos)
         {
             _checkableDailyIntakeEntries.Add(new()
@@ -53,13 +60,15 @@ public partial class DailyIntakeTable : PageComponentBase
                 DailyIntakeEntryDto = dailyIntakeEntryDto
             });
         }
+
+        StateHasChanged();
     }
 
     private async Task HandleDailyIntakeEntryMoveUpInOrderClickAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
         if (OnDailyIntakeEntryMoveUpInOrderAsync != null)
         {
-            await OnDailyIntakeEntryMoveUpInOrderAsync.Invoke(dailyIntakeEntryDto);
+            await OnDailyIntakeEntryMoveUpInOrderAsync.Invoke(this, dailyIntakeEntryDto);
         }
     }
 
@@ -67,7 +76,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (OnDailyIntakeEntryMoveDownInOrderAsync != null)
         {
-            await OnDailyIntakeEntryMoveDownInOrderAsync.Invoke(dailyIntakeEntryDto);
+            await OnDailyIntakeEntryMoveDownInOrderAsync.Invoke(this, dailyIntakeEntryDto);
         }
     }
 

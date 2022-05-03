@@ -83,7 +83,7 @@ public partial class DailyIntake : PageBase
         StateHasChanged();
     }
 
-    private async Task<bool> HandleDailyIntakeEntryMoveUpInOrderAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
+    private async Task<bool> HandleDailyIntakeEntryMoveUpInOrderAsync(DailyIntakeTable dailyIntakeTable, DailyIntakeEntryDto dailyIntakeEntryDto)
     {
         if (DailyIntakeEntryService == null)
         {
@@ -106,14 +106,14 @@ public partial class DailyIntake : PageBase
 
         if (reorderSuccessful)
         {
-            StateHasChanged();
+            dailyIntakeTable.ConstructCheckableDailyIntakeEntryList(dailyIntakeEntries);
             return true;
         }
 
         return false;
     }
 
-    private async Task<bool> HandleDailyIntakeEntryMoveDownInOrderAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
+    private async Task<bool> HandleDailyIntakeEntryMoveDownInOrderAsync(DailyIntakeTable dailyIntakeTable, DailyIntakeEntryDto dailyIntakeEntryDto)
     {
         if (DailyIntakeEntryService == null)
         {
@@ -136,7 +136,7 @@ public partial class DailyIntake : PageBase
 
         if (reorderSuccessful)
         {
-            StateHasChanged();
+            dailyIntakeTable.ConstructCheckableDailyIntakeEntryList(dailyIntakeEntries);
             return true;
         }
 
