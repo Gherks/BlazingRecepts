@@ -19,7 +19,8 @@ else
                     <table class="table table-hover table-striped table-sm">
                         <thead>
                             <tr>
-                                <th class="col-3">Namn</th>
+                                <th class="col-1"></th>
+                                <th class="col-2">Namn</th>
                                 <th class="col-1">Mängd</th>
                                 <th class="col-1">Fett</th>
                                 <th class="col-1">Kolhydrater</th>
@@ -32,10 +33,12 @@ else
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (DailyIntakeEntryDto dailyIntakeEntryDto in DailyIntakeEntryDtos)
+                            @foreach (CheckableDailyIntakeEntry checkableDailyIntakeEntryDto in _checkableDailyIntakeEntries)
                             {
-                                <tr id="@dailyIntakeEntryDto.Id">
-                                    <td class="col-3">@dailyIntakeEntryDto.ProductName</td>
+                                DailyIntakeEntryDto dailyIntakeEntryDto = checkableDailyIntakeEntryDto.DailyIntakeEntryDto;
+                                <tr id="@dailyIntakeEntryDto.Id" class=@GetDailyIntakeEntryRowClass(checkableDailyIntakeEntryDto)>
+                                    <td class="col-1"><input class="form-check-input" type="checkbox" @bind="@checkableDailyIntakeEntryDto.IsChecked"></td>
+                                    <td class="col-2">@dailyIntakeEntryDto.ProductName</td>
                                     @if (_uneditedDailyIntakeEntryDto != null && _uneditedDailyIntakeEntryDto.Id == dailyIntakeEntryDto.Id)
                                     {
                                         <td class="col-1">
@@ -87,14 +90,31 @@ else
                             }
                         </tbody>
                         <tfoot>
+                            @if(AnyRowHasBeenChecked())
+                            {
+                                <tr>
+                                    <th class="col-1"></th>
+                                    <th class="col-2">Checked</th>
+                                    <th class="col-1"></th>
+                                    <th class="col-1">@GetCheckedFatTotal()</th>
+                                    <th class="col-1">@GetCheckedCarbohydrateTotal()</th>
+                                    <th class="col-1">@GetCheckedProteinTotal()</th>
+                                    <th class="col-1">@GetCheckedCalorieTotal()</th>
+                                    <th class="col-1">@GetCheckedAverageProteinPerCalorie()</th>
+                                    <AuthorizeView>
+                                        <th class="col-3"></th>
+                                    </AuthorizeView>
+                                </tr>
+                            }
                             <tr>
-                                <th class="col-3">Total</th>
                                 <th class="col-1"></th>
-                                <th class="col-1">@GetFatTotal(DailyIntakeEntryDtos)</th>
-                                <th class="col-1">@GetCarbohydrateTotal(DailyIntakeEntryDtos)</th>
-                                <th class="col-1">@GetProteinTotal(DailyIntakeEntryDtos)</th>
-                                <th class="col-1">@GetCalorieTotal(DailyIntakeEntryDtos)</th>
-                                <th class="col-1">@GetAverageProteinPerCalorie(DailyIntakeEntryDtos)</th>
+                                <th class="col-2">Total</th>
+                                <th class="col-1"></th>
+                                <th class="col-1">@GetFatTotal()</th>
+                                <th class="col-1">@GetCarbohydrateTotal()</th>
+                                <th class="col-1">@GetProteinTotal()</th>
+                                <th class="col-1">@GetCalorieTotal()</th>
+                                <th class="col-1">@GetAverageProteinPerCalorie()</th>
                                 <AuthorizeView>
                                     <th class="col-3"></th>
                                 </AuthorizeView>

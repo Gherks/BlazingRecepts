@@ -16,6 +16,7 @@ public partial class DailyIntakeTable : PageComponentBase
     private static readonly string _logProperty = "Domain";
     private static readonly string _logDomainName = "DailyIntakeTable";
 
+    private List<CheckableDailyIntakeEntry> _checkableDailyIntakeEntries = new();
     private DailyIntakeEntryDto? _uneditedDailyIntakeEntryDto = null;
 
     [Parameter]
@@ -39,6 +40,27 @@ public partial class DailyIntakeTable : PageComponentBase
     [Parameter]
     public Func<Guid, Task<bool>>? OnDailyIntakeEntryAddAsync { get; set; }
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (DailyIntakeEntryDtos == null)
+        {
+            const string errorMessage = "Cannot load daily intake entry table because daily intake entry dto list is not set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        foreach (DailyIntakeEntryDto dailyIntakeEntryDto in DailyIntakeEntryDtos)
+        {
+            _checkableDailyIntakeEntries.Add(new()
+            {
+                IsChecked = false,
+                DailyIntakeEntryDto = dailyIntakeEntryDto
+            });
+        }
+    }
+
     private async Task HandleDailyIntakeEntryMoveUpInOrderClickAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
         if (OnDailyIntakeEntryMoveUpInOrderAsync != null)
@@ -61,7 +83,7 @@ public partial class DailyIntakeTable : PageComponentBase
         {
             bool successfullyEdited = await OnDailyIntakeEntryEditSubmitAsync.Invoke(dailyIntakeEntryDto);
 
-            if(successfullyEdited)
+            if (successfullyEdited)
             {
                 _uneditedDailyIntakeEntryDto = null;
             }
@@ -120,6 +142,22 @@ public partial class DailyIntakeTable : PageComponentBase
         StateHasChanged();
     }
 
+    private string GetDailyIntakeEntryRowClass(CheckableDailyIntakeEntry checkableDailyIntakeEntry)
+    {
+        if (checkableDailyIntakeEntry == null)
+        {
+            const string errorMessage = "Cannot set class on daily intake entry table row because checkable daily intake entry has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        return checkableDailyIntakeEntry.IsChecked ? "table-primary" : "";
+    }
+    private bool AnyRowHasBeenChecked()
+    {
+        return _checkableDailyIntakeEntries.Any(checkableDailyIntakeEntry => checkableDailyIntakeEntry.IsChecked == true);
+    }
+
     private string GetAmount(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
         if (dailyIntakeEntryDto.IsRecipe)
@@ -159,79 +197,163 @@ public partial class DailyIntakeTable : PageComponentBase
         return Math.Round(dailyIntakeEntryDto.ProteinPerCalorie, 2);
     }
 
-    private double GetFatTotal(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
+    private double GetFatTotal()
     {
-        if (dailyIntakeEntryDtos == null)
+        if (DailyIntakeEntryDtos == null)
         {
             const string errorMessage = "Cannot present daily intake grams total because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        double fatTotal = dailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Fat);
+        double fatTotal = DailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Fat);
 
         return Math.Round(fatTotal, 2);
     }
 
-    private double GetCarbohydrateTotal(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
+    private double GetCarbohydrateTotal()
     {
-        if (dailyIntakeEntryDtos == null)
+        if (DailyIntakeEntryDtos == null)
         {
             const string errorMessage = "Cannot present daily intake carbohydrate total because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        double carbohydrateTotal = dailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Carbohydrates);
+        double carbohydrateTotal = DailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Carbohydrates);
 
         return Math.Round(carbohydrateTotal, 2);
     }
 
-    private double GetProteinTotal(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
+    private double GetProteinTotal()
     {
-        if (dailyIntakeEntryDtos == null)
+        if (DailyIntakeEntryDtos == null)
         {
             const string errorMessage = "Cannot present daily intake protein total because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        double proteinTotal = dailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Protein);
+        double proteinTotal = DailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Protein);
 
         return Math.Round(proteinTotal, 2);
     }
 
-    private double GetCalorieTotal(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
+    private double GetCalorieTotal()
     {
-        if (dailyIntakeEntryDtos == null)
+        if (DailyIntakeEntryDtos == null)
         {
             const string errorMessage = "Cannot present daily intake calorie total because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        double calorieTotal = dailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Calories);
+        double calorieTotal = DailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Calories);
 
         return Math.Round(calorieTotal, 2);
     }
 
-    private double GetAverageProteinPerCalorie(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
+    private double GetAverageProteinPerCalorie()
     {
-        if (dailyIntakeEntryDtos == null)
+        if (DailyIntakeEntryDtos == null)
         {
             const string errorMessage = "Cannot present daily intake protein per gram because daily intake list is not set.";
             Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
             throw new InvalidOperationException(errorMessage);
         }
 
-        if (dailyIntakeEntryDtos.Count == 0)
+        if (DailyIntakeEntryDtos.Count == 0)
         {
             return 0;
         }
 
-        double proteinPerCalorieSum = dailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.ProteinPerCalorie);
-        double proteinPerCalorieAverage = proteinPerCalorieSum / dailyIntakeEntryDtos.Count;
+        double proteinPerCalorieSum = DailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.ProteinPerCalorie);
+        double proteinPerCalorieAverage = proteinPerCalorieSum / DailyIntakeEntryDtos.Count;
 
         return Math.Round(proteinPerCalorieAverage, 2);
+    }
+
+    private double GetCheckedFatTotal()
+    {
+        double checkedFatTotal = 0.0;
+
+        foreach(CheckableDailyIntakeEntry checkableDailyIntakeEntry in _checkableDailyIntakeEntries)
+        {
+            if(checkableDailyIntakeEntry.IsChecked)
+            {
+                checkedFatTotal += checkableDailyIntakeEntry.DailyIntakeEntryDto.Fat;
+            }
+        }
+
+        return Math.Round(checkedFatTotal, 2);
+    }
+
+    private double GetCheckedCarbohydrateTotal()
+    {
+        double checkedCarbohydrateTotal = 0.0;
+
+        foreach (CheckableDailyIntakeEntry checkableDailyIntakeEntry in _checkableDailyIntakeEntries)
+        {
+            if (checkableDailyIntakeEntry.IsChecked)
+            {
+                checkedCarbohydrateTotal += checkableDailyIntakeEntry.DailyIntakeEntryDto.Carbohydrates;
+            }
+        }
+
+        return Math.Round(checkedCarbohydrateTotal, 2);
+    }
+
+    private double GetCheckedProteinTotal()
+    {
+        double checkedProteinTotal = 0.0;
+
+        foreach (CheckableDailyIntakeEntry checkableDailyIntakeEntry in _checkableDailyIntakeEntries)
+        {
+            if (checkableDailyIntakeEntry.IsChecked)
+            {
+                checkedProteinTotal += checkableDailyIntakeEntry.DailyIntakeEntryDto.Protein;
+            }
+        }
+
+        return Math.Round(checkedProteinTotal, 2);
+    }
+
+    private double GetCheckedCalorieTotal()
+    {
+        double checkedCalorieTotal = 0.0;
+
+        foreach (CheckableDailyIntakeEntry checkableDailyIntakeEntry in _checkableDailyIntakeEntries)
+        {
+            if (checkableDailyIntakeEntry.IsChecked)
+            {
+                checkedCalorieTotal += checkableDailyIntakeEntry.DailyIntakeEntryDto.Calories;
+            }
+        }
+
+        return Math.Round(checkedCalorieTotal, 2);
+    }
+
+    private double GetCheckedAverageProteinPerCalorie()
+    {
+        double checkedProteinPerCalorie = 0.0;
+        int checkedAmount = 0;
+
+        foreach (CheckableDailyIntakeEntry checkableDailyIntakeEntry in _checkableDailyIntakeEntries)
+        {
+            if (checkableDailyIntakeEntry.IsChecked)
+            {
+                checkedProteinPerCalorie += checkableDailyIntakeEntry.DailyIntakeEntryDto.Fat;
+                checkedAmount++;
+            }
+        }
+
+        double checkedAverageProteinPerCalorie = checkedProteinPerCalorie  / checkedAmount;
+        return Math.Round(checkedAverageProteinPerCalorie, 2);
+    }
+
+    private class CheckableDailyIntakeEntry
+    {
+        public bool IsChecked { get; set; } = false;
+        public DailyIntakeEntryDto DailyIntakeEntryDto { get; set; } = new();
     }
 }
