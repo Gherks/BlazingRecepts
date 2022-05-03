@@ -180,7 +180,7 @@ public partial class DailyIntake : PageBase
         return await Task.FromResult(true);
     }
 
-    private async Task<bool> HandleDailyIntakeEntryAddAsync(Guid collectionId)
+    private async Task<bool> HandleDailyIntakeEntryAddAsync(DailyIntakeTable dailyIntakeTable, Guid collectionId)
     {
         if (_addDailyIntakeEntryModal == null)
         {
@@ -189,7 +189,7 @@ public partial class DailyIntake : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        await _addDailyIntakeEntryModal.Open(collectionId);
+        await _addDailyIntakeEntryModal.Open(dailyIntakeTable, collectionId);
         return await Task.FromResult(true);
     }
 
@@ -280,7 +280,7 @@ public partial class DailyIntake : PageBase
         SortDailyIntakeEntryCollections();
     }
 
-    internal void UpsertDailyIntakeEntryIntoCollection(DailyIntakeEntryDto upsertedDailyIntakeEntryDto)
+    internal List<DailyIntakeEntryDto> UpsertDailyIntakeEntryIntoCollection(DailyIntakeEntryDto upsertedDailyIntakeEntryDto)
     {
         HandleUnmappedCollection(upsertedDailyIntakeEntryDto);
 
@@ -296,6 +296,8 @@ public partial class DailyIntake : PageBase
         {
             currentCollection.Add(upsertedDailyIntakeEntryDto);
         }
+
+        return currentCollection;
     }
 
     private void HandleUnmappedCollection(DailyIntakeEntryDto dailyIntakeEntryDto)

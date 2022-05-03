@@ -25,6 +25,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     private HxAutosuggest<string, string>? _productName;
     private ProcessingButton? _processingButtonSubmit;
 
+    private DailyIntakeTable? _dailyIntakeTable;
     private Guid _collectionId;
     private Form _form = new();
 
@@ -48,7 +49,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
         IsLoading = false;
     }
 
-    public async Task Open(Guid collectionId)
+    public async Task Open(DailyIntakeTable dailyIntakeTable, Guid collectionId)
     {
         if (_modal == null)
         {
@@ -57,6 +58,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
+        _dailyIntakeTable = dailyIntakeTable;
         _collectionId = collectionId;
         _form = new();
 
@@ -171,6 +173,13 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
+        if (_dailyIntakeTable == null)
+        {
+            const string errorMessage = "Daily intake entry table is not available during form validation.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
         if (Validate())
         {
             DailyIntakeEntryDto newDailyIntakeEntryDto = CreateDailyIntakeEntryDtoFromForm();
@@ -178,12 +187,10 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
 
             if (savedDailyIntakeEntryDto != null && savedDailyIntakeEntryDto.Id != Guid.Empty)
             {
-                DailyIntakePage.UpsertDailyIntakeEntryIntoCollection(savedDailyIntakeEntryDto);
+                List<DailyIntakeEntryDto> updatedDailyIntakeEntryDtos = DailyIntakePage.UpsertDailyIntakeEntryIntoCollection(savedDailyIntakeEntryDto);
+                _dailyIntakeTable.ConstructCheckableDailyIntakeEntryList(updatedDailyIntakeEntryDtos);
 
-                _form = new();
                 MessengerService.AddSuccess("Dagligt intag", "Post för dagligt intag tillagd!");
-
-                StateHasChanged();
                 await _modal.HideAsync();
             }
             else

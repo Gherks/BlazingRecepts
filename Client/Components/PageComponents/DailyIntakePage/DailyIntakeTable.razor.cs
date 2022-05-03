@@ -32,7 +32,7 @@ public partial class DailyIntakeTable : PageComponentBase
     public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryRemoveAsync { get; set; }
 
     [Parameter]
-    public Func<Guid, Task<bool>>? OnDailyIntakeEntryAddAsync { get; set; }
+    public Func<DailyIntakeTable, Guid, Task<bool>>? OnDailyIntakeEntryAddAsync { get; set; }
 
     protected override void OnInitialized()
     {
@@ -105,7 +105,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (OnDailyIntakeEntryAddAsync != null)
         {
-            await OnDailyIntakeEntryAddAsync.Invoke(CollectionId);
+            await OnDailyIntakeEntryAddAsync.Invoke(this, CollectionId);
         }
     }
 
