@@ -17,10 +17,11 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
     private static readonly string _logDomainName = "AddIngredientMeasurementModal";
     private static readonly string _editFormId = "AddIngredientMeasurementModalEditForm";
 
-    private Modal? _modal;
+    private HxModal? _modal;
     private CustomValidation? _customValidation;
     private EditContext? _editContext;
 
+    private HxAutosuggest<IngredientDto, IngredientDto>? _name;
     private Form _form = new();
 
     [CascadingParameter]
@@ -37,7 +38,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
         IsLoading = false;
     }
 
-    public void Open()
+    public async Task Open()
     {
         if (_modal == null)
         {
@@ -48,10 +49,22 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
         _form = new();
         _editContext = new(_form);
-        _modal.Open();
+        await _modal.ShowAsync();
     }
 
-    private void HandleCancel()
+    private async Task HandleOnShown()
+    {
+        if (_name == null)
+        {
+            const string errorMessage = "Input for name has not been set before showing the modal.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        await _name.FocusAsync();
+    }
+
+    private async Task HandleCancel()
     {
         if (_modal == null)
         {
@@ -60,7 +73,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _modal.Close();
+        await _modal.HideAsync();
     }
 
     private async Task<AutosuggestDataProviderResult<IngredientDto>> ProvideSuggestionsToNameAutosuggest(AutosuggestDataProviderRequest request)
@@ -93,7 +106,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
         return ingredientDto.Name;
     }
 
-    private void HandleValidFormSubmitted()
+    private async Task HandleValidFormSubmitted()
     {
         if (_modal == null)
         {
@@ -115,7 +128,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
             RecipeWorkbench.ContainedIngredientMeasurements.Add(newIngredientMeasurementDto);
 
             RecipeWorkbench.Refresh();
-            _modal.Close();
+            await _modal.HideAsync();
         }
     }
 

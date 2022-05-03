@@ -176,7 +176,7 @@ public partial class DailyIntake : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _removalConfirmationModal.Open(dailyIntakeEntryDto, "Ta bort post för dagligt intag", dailyIntakeEntryDto.ProductName);
+        await _removalConfirmationModal.Open(dailyIntakeEntryDto, "Ta bort post för dagligt intag", dailyIntakeEntryDto.ProductName);
         return await Task.FromResult(true);
     }
 
@@ -189,7 +189,7 @@ public partial class DailyIntake : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _addDailyIntakeEntryModal.Open(collectionId);
+        await _addDailyIntakeEntryModal.Open(collectionId);
         return await Task.FromResult(true);
     }
 

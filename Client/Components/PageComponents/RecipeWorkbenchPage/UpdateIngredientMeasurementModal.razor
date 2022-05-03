@@ -6,8 +6,8 @@
 
 @inherits PageComponentBase
 
-<Modal @ref="_modal" Title="Uppdatera ingrediens">
-    <Body>
+<HxModal @ref="_modal" Title="Uppdatera ingrediens">
+    <BodyTemplate>
         <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
             <CustomValidation @ref="_customValidation" />
             <div class="row mb-2">
@@ -40,9 +40,9 @@
                 </div>
             </div>
         </EditForm>
-    </Body>
-    <Buttons>
+    </BodyTemplate>
+    <FooterTemplate>
         <button form="@_editFormId" class="btn btn-primary" type="submit">Uppdatera</button>
         <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Avbryt</button>
-    </Buttons>
-</Modal>
+    </FooterTemplate>
+</HxModal>

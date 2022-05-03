@@ -266,7 +266,7 @@ public partial class RecipeWorkbench : PageBase
         return recipeDto;
     }
 
-    public void HandleAddIngredientModalOpen()
+    public async Task HandleAddIngredientModalOpen()
     {
         if (_addIngredientMeasurementModal == null)
         {
@@ -275,10 +275,10 @@ public partial class RecipeWorkbench : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _addIngredientMeasurementModal.Open();
+        await _addIngredientMeasurementModal.Open();
     }
 
-    public void HandleUpdateIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
+    public async Task HandleUpdateIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
     {
         if (_updateIngredientMeasurementModal == null)
         {
@@ -287,10 +287,10 @@ public partial class RecipeWorkbench : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _updateIngredientMeasurementModal.Open(ingredientMeasurementDto);
+        await _updateIngredientMeasurementModal.Open(ingredientMeasurementDto);
     }
 
-    public void OpenIngredientRemovalModalOpen(IngredientMeasurementDto ingredientMeasurementDto)
+    public async Task OpenIngredientRemovalModalOpen(IngredientMeasurementDto ingredientMeasurementDto)
     {
         if (_removalConfirmationModal == null)
         {
@@ -299,7 +299,7 @@ public partial class RecipeWorkbench : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _removalConfirmationModal.Open(ingredientMeasurementDto.IngredientDto, "Ta bort ingrediens", ingredientMeasurementDto.IngredientDto.Name);
+        await _removalConfirmationModal.Open(ingredientMeasurementDto.IngredientDto, "Ta bort ingrediens", ingredientMeasurementDto.IngredientDto.Name);
     }
 
     public Task HandleIngredientRemovalConfirmed(IngredientDto ingredientDto)

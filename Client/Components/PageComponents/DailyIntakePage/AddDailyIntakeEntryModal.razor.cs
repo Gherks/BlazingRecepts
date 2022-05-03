@@ -19,9 +19,10 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
     private static readonly string _logDomainName = "AddDailyIntakeEntryModal";
     private static readonly string _editFormId = "AddDailyIntakeEntryModalEditForm";
 
-    private Modal? _modal;
+    private HxModal? _modal;
     private CustomValidation? _customValidation;
     private EditContext? _editContext;
+    private HxAutosuggest<string, string>? _productName;
     private ProcessingButton? _processingButtonSubmit;
 
     private Guid _collectionId;
@@ -47,7 +48,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
         IsLoading = false;
     }
 
-    public void Open(Guid collectionId)
+    public async Task Open(Guid collectionId)
     {
         if (_modal == null)
         {
@@ -60,10 +61,22 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
         _form = new();
 
         _editContext = new(_form);
-        _modal.Open();
+        await _modal.ShowAsync();
     }
 
-    private void HandleCancel()
+    private async Task HandleOnShown()
+    {
+        if (_productName == null)
+        {
+            const string errorMessage = "Add ingredient measurement modal cannot be opened because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        await _productName.FocusAsync();
+    }
+
+    private async Task HandleCancel()
     {
         if (_modal == null)
         {
@@ -72,7 +85,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _modal.Close();
+        await _modal.HideAsync();
     }
 
     private async Task<AutosuggestDataProviderResult<string>> ProvideSuggestionsToProductNameAutosuggest(AutosuggestDataProviderRequest request)
@@ -171,7 +184,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
                 MessengerService.AddSuccess("Dagligt intag", "Post för dagligt intag tillagd!");
 
                 StateHasChanged();
-                _modal.Close();
+                await _modal.HideAsync();
             }
             else
             {

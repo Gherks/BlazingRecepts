@@ -6,13 +6,14 @@
 
 @inherits PageComponentBase
 
-<Modal @ref="_modal" Title="Lägg till produkt">
-    <Body>
+<HxModal @ref="_modal" Title="Lägg till produkt" OnShown="@HandleOnShown" >
+    <BodyTemplate>
         <EditForm id="@_editFormId" EditContext="_editContext" OnValidSubmit="@HandleValidFormSubmitted">
             <CustomValidation @ref="_customValidation" />
             <div class="row mb-2">
                 <div class="col">
-                    <HxAutosuggest id="product-name"
+                    <HxAutosuggest @ref="_productName"
+                                   id="product-name"
                                    Placeholder="Ange namn"
                                    TItem="string"
                                    TValue="string"
@@ -34,9 +35,9 @@
                 </div>
             </div>
         </EditForm>
-    </Body>
-    <Buttons>
+    </BodyTemplate>
+    <FooterTemplate>
         <ProcessingButton @ref="_processingButtonSubmit" Label="Lägg till" EditFormId="@_editFormId" />
         <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Avbryt</button>
-    </Buttons>
-</Modal>
+    </FooterTemplate>
+</HxModal>

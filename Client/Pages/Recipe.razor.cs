@@ -67,7 +67,7 @@ public partial class Recipe : PageBase
         NavigationManager.NavigateTo($"recipeworkbench/{recipeDto.Id}");
     }
 
-    private void HandleRecipeRemovalModalOpen(RecipeDto recipeDto)
+    private async Task HandleRecipeRemovalModalOpen(RecipeDto recipeDto)
     {
         if (_removalConfirmationModal == null)
         {
@@ -83,7 +83,7 @@ public partial class Recipe : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _removalConfirmationModal.Open(recipeDto, "Ta bort recept", recipeDto.Name);
+        await _removalConfirmationModal.Open(recipeDto, "Ta bort recept", recipeDto.Name);
     }
 
     private async Task HandleRecipeRemovalConfirmed(RecipeDto recipeDto)

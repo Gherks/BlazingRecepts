@@ -3,6 +3,7 @@ using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Utilities;
 using BlazingRecept.Shared.Dto;
+using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Serilog;
@@ -16,7 +17,7 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
     private static readonly string _logDomainName = "UpdateIngredientMeasurementModal";
     private static readonly string _editFormId = "UpdateIngredientMeasurementModalEditForm";
 
-    private Modal? _modal;
+    private HxModal? _modal;
     private CustomValidation? _customValidation;
     private EditContext? _editContext;
 
@@ -37,7 +38,7 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
         IsLoading = false;
     }
 
-    public void Open(IngredientMeasurementDto? ingredientMeasurementDto)
+    public async Task Open(IngredientMeasurementDto? ingredientMeasurementDto)
     {
         if (ingredientMeasurementDto == null)
         {
@@ -64,10 +65,10 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
         };
 
         _editContext = new(_form);
-        _modal.Open();
+        await _modal.ShowAsync();
     }
 
-    private void HandleCancel()
+    private async Task HandleCancel()
     {
         if (_modal == null)
         {
@@ -76,10 +77,10 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _modal.Close();
+        await _modal.HideAsync();
     }
 
-    private void HandleValidFormSubmitted()
+    private async Task HandleValidFormSubmitted()
     {
         if (RecipeWorkbench == null)
         {
@@ -117,7 +118,7 @@ public partial class UpdateIngredientMeasurementModal : PageComponentBase
             EditIngredientMeasurementDtoWithForm(ingredientMeasurementDto);
 
             RecipeWorkbench.Refresh();
-            _modal.Close();
+            await _modal.HideAsync();
         }
     }
 

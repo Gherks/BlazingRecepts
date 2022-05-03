@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Havit.Blazor.Components.Web.Bootstrap;
+using Microsoft.AspNetCore.Components;
 using Serilog;
 
 namespace BlazingRecept.Client.Components.Common;
@@ -11,12 +12,12 @@ public partial class RemovalConfirmationModal<Type> : ComponentBase
     private Type? _entity = default;
     private string _title = string.Empty;
     private string _name = string.Empty;
-    private Modal? _modal;
+    private HxModal? _modal;
 
     [Parameter]
     public Func<Type, Task>? OnConfirm { get; set; }
 
-    public void Open(Type entity, string title, string name)
+    public async Task Open(Type entity, string title, string name)
     {
         if (_modal == null)
         {
@@ -29,10 +30,10 @@ public partial class RemovalConfirmationModal<Type> : ComponentBase
         _name = name;
         _entity = entity;
 
-        _modal.Open();
+        await _modal.ShowAsync();
     }
 
-    private void HandleConfirm()
+    private async Task HandleConfirm()
     {
         if (_modal == null)
         {
@@ -55,11 +56,11 @@ public partial class RemovalConfirmationModal<Type> : ComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        OnConfirm.Invoke(_entity);
-        _modal.Close();
+        await OnConfirm.Invoke(_entity);
+        await _modal.HideAsync();
     }
 
-    private void HandleCancel()
+    private async Task HandleCancel()
     {
         if (_modal == null)
         {
@@ -68,6 +69,6 @@ public partial class RemovalConfirmationModal<Type> : ComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _modal.Close();
+        await _modal.HideAsync();
     }
 }

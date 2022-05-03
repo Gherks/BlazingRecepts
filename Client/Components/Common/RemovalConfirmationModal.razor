@@ -4,12 +4,12 @@
 
 @typeparam Type
 
-<Modal @ref="_modal" Title="@_title">
-    <Body>
+<HxModal @ref="_modal" Title="@_title">
+    <BodyTemplate>
         <p>Är du säker på att du vill ta bort <b>@_name</b></p>
-    </Body>
-    <Buttons>
+    </BodyTemplate>
+    <FooterTemplate>
         <button class="btn btn-primary" type="button" @onclick="@(_ => HandleConfirm())">Yes</button>
         <button class="btn btn-secondary" type="button" @onclick="@(_ => HandleCancel())">Cancel</button>
-    </Buttons>
-</Modal>
+    </FooterTemplate>
+</HxModal>

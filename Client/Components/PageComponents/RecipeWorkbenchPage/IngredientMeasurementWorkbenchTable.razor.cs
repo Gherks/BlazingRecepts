@@ -54,7 +54,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
         StateHasChanged();
     }
 
-    private void HandleIngredientEdit(IngredientMeasurementDto ingredientMeasurementDto)
+    private async Task HandleIngredientEdit(IngredientMeasurementDto ingredientMeasurementDto)
     {
         if (RecipeWorkbench == null)
         {
@@ -63,10 +63,10 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        RecipeWorkbench.HandleUpdateIngredientModalOpen(ingredientMeasurementDto);
+        await RecipeWorkbench.HandleUpdateIngredientModalOpen(ingredientMeasurementDto);
     }
 
-    private void HandleIngredientRemoval(IngredientMeasurementDto ingredientMeasurementDto)
+    private async Task HandleIngredientRemoval(IngredientMeasurementDto ingredientMeasurementDto)
     {
         if (RecipeWorkbench == null)
         {
@@ -75,7 +75,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        RecipeWorkbench.OpenIngredientRemovalModalOpen(ingredientMeasurementDto);
+        await RecipeWorkbench.OpenIngredientRemovalModalOpen(ingredientMeasurementDto);
     }
 
     private IReadOnlyList<IngredientMeasurementDto> GetIngredientMeasurementContainedInRecipe()

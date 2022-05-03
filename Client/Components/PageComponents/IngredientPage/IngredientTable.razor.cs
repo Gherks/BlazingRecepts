@@ -73,7 +73,7 @@ public partial class IngredientTable : PageComponentBase
         StateHasChanged();
     }
 
-    private void HandleIngredientRemovalModalOpen(IngredientDto? ingredientDto)
+    private async Task HandleIngredientRemovalModalOpen(IngredientDto? ingredientDto)
     {
         if (ingredientDto == null)
         {
@@ -89,7 +89,7 @@ public partial class IngredientTable : PageComponentBase
             throw new InvalidOperationException(errorMessage);
         }
 
-        _removalConfirmationModal.Open(ingredientDto, "Ta bort recept", ingredientDto.Name);
+        await _removalConfirmationModal.Open(ingredientDto, "Ta bort recept", ingredientDto.Name);
     }
 
     private async Task HandleIngredientEditConfirmed(IngredientDto ingredientDto)
