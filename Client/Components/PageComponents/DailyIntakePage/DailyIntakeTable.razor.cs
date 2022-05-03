@@ -1,11 +1,5 @@
-using BlazingRecept.Client.Components.Common;
 using BlazingRecept.Client.Components.PageComponents.Base;
-using BlazingRecept.Client.Pages;
-using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using BlazingRecept.Shared.Extensions;
-using Havit.Blazor.Components.Web;
-using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
@@ -277,9 +271,9 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         double checkedFatTotal = 0.0;
 
-        foreach(CheckableDailyIntakeEntry checkableDailyIntakeEntry in _checkableDailyIntakeEntries)
+        foreach (CheckableDailyIntakeEntry checkableDailyIntakeEntry in _checkableDailyIntakeEntries)
         {
-            if(checkableDailyIntakeEntry.IsChecked)
+            if (checkableDailyIntakeEntry.IsChecked)
             {
                 checkedFatTotal += checkableDailyIntakeEntry.DailyIntakeEntryDto.Fat;
             }
@@ -347,7 +341,7 @@ public partial class DailyIntakeTable : PageComponentBase
             }
         }
 
-        double checkedAverageProteinPerCalorie = checkedProteinPerCalorie  / checkedAmount;
+        double checkedAverageProteinPerCalorie = checkedProteinPerCalorie / checkedAmount;
         return Math.Round(checkedAverageProteinPerCalorie, 2);
     }
 
