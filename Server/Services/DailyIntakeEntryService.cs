@@ -207,13 +207,19 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
     private void AddIngredientDataIntoDailyIntakeEntry(DailyIntakeEntryDto dailyIntakeEntryDto, IngredientDto ingredientDto)
     {
         double gramMultiplier = dailyIntakeEntryDto.Amount * 0.01;
+        double proteinPerCalorie = Math.Round(ingredientDto.Protein / ingredientDto.Calories, 2);
+
+        if (double.IsNaN(proteinPerCalorie))
+        {
+            proteinPerCalorie = 0.0;
+        }
 
         dailyIntakeEntryDto.ProductName = ingredientDto.Name;
         dailyIntakeEntryDto.Fat = ingredientDto.Fat * gramMultiplier;
         dailyIntakeEntryDto.Carbohydrates = ingredientDto.Carbohydrates * gramMultiplier;
         dailyIntakeEntryDto.Protein = ingredientDto.Protein * gramMultiplier;
         dailyIntakeEntryDto.Calories = ingredientDto.Calories * gramMultiplier;
-        dailyIntakeEntryDto.ProteinPerCalorie = Math.Round(ingredientDto.Protein / ingredientDto.Calories, 2);
+        dailyIntakeEntryDto.ProteinPerCalorie = proteinPerCalorie;
         dailyIntakeEntryDto.IsRecipe = false;
         dailyIntakeEntryDto.ProductId = ingredientDto.Id;
     }
