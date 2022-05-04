@@ -29,6 +29,7 @@ public partial class RemovalConfirmationModal<Type> : ComponentBase
         _title = title;
         _name = name;
         _entity = entity;
+        StateHasChanged();
 
         await _modal.ShowAsync();
     }
