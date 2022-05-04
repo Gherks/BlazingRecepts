@@ -64,6 +64,12 @@ public partial class DailyIntakeTable : PageComponentBase
         StateHasChanged();
     }
 
+    private void HandleRowClick(CheckableDailyIntakeEntry checkableDailyIntakeEntryDto)
+    {
+        checkableDailyIntakeEntryDto.IsChecked = !checkableDailyIntakeEntryDto.IsChecked;
+        StateHasChanged();
+    }
+
     private async Task HandleDailyIntakeEntryMoveUpInOrderClickAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
         if (OnDailyIntakeEntryMoveUpInOrderAsync != null)
