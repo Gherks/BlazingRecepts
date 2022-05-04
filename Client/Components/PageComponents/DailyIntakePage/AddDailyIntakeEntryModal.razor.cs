@@ -189,6 +189,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
             {
                 List<DailyIntakeEntryDto> updatedDailyIntakeEntryDtos = DailyIntakePage.UpsertDailyIntakeEntryIntoCollection(savedDailyIntakeEntryDto);
                 _dailyIntakeTable.ConstructCheckableDailyIntakeEntryList(updatedDailyIntakeEntryDtos);
+                _dailyIntakeTable = null;
 
                 MessengerService.AddSuccess("Dagligt intag", "Post för dagligt intag tillagd!");
                 await _modal.HideAsync();

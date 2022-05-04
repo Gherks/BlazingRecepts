@@ -23,11 +23,11 @@ else
         {
             <DailyIntakeTable CollectionId="@pair.Key"
                           DailyIntakeEntryDtos="@pair.Value"
+                          OnDailyIntakeEntryAddAsync="@HandleDailyIntakeEntryAddAsync"
                           OnDailyIntakeEntryMoveUpInOrderAsync="@HandleDailyIntakeEntryMoveUpInOrderAsync"
                           OnDailyIntakeEntryMoveDownInOrderAsync="@HandleDailyIntakeEntryMoveDownInOrderAsync"
                           OnDailyIntakeEntryEditSubmitAsync="@HandleDailyIntakeEntryEditSubmitAsync"
-                          OnDailyIntakeEntryRemoveAsync="@HandleDailyIntakeEntryRemoveAsync"
-                          OnDailyIntakeEntryAddAsync="@HandleDailyIntakeEntryAddAsync" />
+                          OnDailyIntakeEntryRemoveAsync="@HandleDailyIntakeEntryRemoveAsync" />
         }
         <AuthorizeView>
             <button class="btn btn-primary" @onclick="() => HandleAddNewCollectionClick()">Lägg till tabell</button>

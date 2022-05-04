@@ -18,6 +18,7 @@ public partial class DailyIntake : PageBase
 
     private AddDailyIntakeEntryModal? _addDailyIntakeEntryModal;
     private RemovalConfirmationModal<DailyIntakeEntryDto>? _removalConfirmationModal;
+    private DailyIntakeTable? _dailyIntakeTable;
 
     internal Dictionary<Guid, List<DailyIntakeEntryDto>> DailyIntakeEntryDtoCollections { get; private set; } = new();
     internal IReadOnlyList<IngredientDto>? Ingredients { get; private set; } = null;
@@ -81,6 +82,19 @@ public partial class DailyIntake : PageBase
     public void Refresh()
     {
         StateHasChanged();
+    }
+
+    private async Task<bool> HandleDailyIntakeEntryAddAsync(DailyIntakeTable dailyIntakeTable, Guid collectionId)
+    {
+        if (_addDailyIntakeEntryModal == null)
+        {
+            const string errorMessage = "Cannot open add daily intake entry modal because modal has not been set.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
+        await _addDailyIntakeEntryModal.Open(dailyIntakeTable, collectionId);
+        return await Task.FromResult(true);
     }
 
     private async Task<bool> HandleDailyIntakeEntryMoveUpInOrderAsync(DailyIntakeTable dailyIntakeTable, DailyIntakeEntryDto dailyIntakeEntryDto)
@@ -167,7 +181,7 @@ public partial class DailyIntake : PageBase
         return true;
     }
 
-    private async Task<bool> HandleDailyIntakeEntryRemoveAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
+    private async Task<bool> HandleDailyIntakeEntryRemoveAsync(DailyIntakeTable dailyIntakeTable, DailyIntakeEntryDto dailyIntakeEntryDto)
     {
         if (_removalConfirmationModal == null)
         {
@@ -176,20 +190,8 @@ public partial class DailyIntake : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
+        _dailyIntakeTable = dailyIntakeTable;
         await _removalConfirmationModal.Open(dailyIntakeEntryDto, "Ta bort post för dagligt intag", dailyIntakeEntryDto.ProductName);
-        return await Task.FromResult(true);
-    }
-
-    private async Task<bool> HandleDailyIntakeEntryAddAsync(DailyIntakeTable dailyIntakeTable, Guid collectionId)
-    {
-        if (_addDailyIntakeEntryModal == null)
-        {
-            const string errorMessage = "Cannot open add daily intake entry modal because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        await _addDailyIntakeEntryModal.Open(dailyIntakeTable, collectionId);
         return await Task.FromResult(true);
     }
 
@@ -223,6 +225,13 @@ public partial class DailyIntake : PageBase
             throw new InvalidOperationException(errorMessage);
         }
 
+        if (_dailyIntakeTable == null)
+        {
+            const string errorMessage = "Daily intake entry table is not available during daily intake entry removal.";
+            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+
         Guid removedId = removedDailyIntakeEntryDto.Id;
         Guid removedCollectionId = removedDailyIntakeEntryDto.CollectionId;
 
@@ -240,6 +249,11 @@ public partial class DailyIntake : PageBase
                 if (dailyIntakeEntryDtos.Count == 0)
                 {
                     DailyIntakeEntryDtoCollections.Remove(removedCollectionId);
+                }
+                else
+                {
+                    _dailyIntakeTable.ConstructCheckableDailyIntakeEntryList(dailyIntakeEntryDtos);
+                    _dailyIntakeTable = null;
                 }
 
                 removalFromCollectionSuccessful = true;

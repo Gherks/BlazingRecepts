@@ -20,6 +20,9 @@ public partial class DailyIntakeTable : PageComponentBase
     public List<DailyIntakeEntryDto>? DailyIntakeEntryDtos { get; set; }
 
     [Parameter]
+    public Func<DailyIntakeTable, Guid, Task<bool>>? OnDailyIntakeEntryAddAsync { get; set; }
+
+    [Parameter]
     public Func<DailyIntakeTable, DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryMoveUpInOrderAsync { get; set; }
 
     [Parameter]
@@ -29,10 +32,7 @@ public partial class DailyIntakeTable : PageComponentBase
     public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryEditSubmitAsync { get; set; }
 
     [Parameter]
-    public Func<DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryRemoveAsync { get; set; }
-
-    [Parameter]
-    public Func<DailyIntakeTable, Guid, Task<bool>>? OnDailyIntakeEntryAddAsync { get; set; }
+    public Func<DailyIntakeTable, DailyIntakeEntryDto, Task<bool>>? OnDailyIntakeEntryRemoveAsync { get; set; }
 
     protected override void OnInitialized()
     {
@@ -97,7 +97,7 @@ public partial class DailyIntakeTable : PageComponentBase
     {
         if (OnDailyIntakeEntryRemoveAsync != null)
         {
-            await OnDailyIntakeEntryRemoveAsync.Invoke(dailyIntakeEntryDto);
+            await OnDailyIntakeEntryRemoveAsync.Invoke(this, dailyIntakeEntryDto);
         }
     }
 
