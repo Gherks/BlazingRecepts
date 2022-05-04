@@ -49,6 +49,12 @@ public partial class IngredientMeasurementTable : PageComponentBase
         IsLoading = false;
     }
 
+    private void HandleRowClick(CheckableIngredientMeasurement checkableIngredientMeasurement)
+    {
+        checkableIngredientMeasurement.IsChecked = !checkableIngredientMeasurement.IsChecked;
+        StateHasChanged();
+    }
+
     private string GetMeasurement(IngredientMeasurementDto ingredientMeasurementDto)
     {
         if (ingredientMeasurementDto == null)
