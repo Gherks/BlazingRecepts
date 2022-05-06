@@ -2,16 +2,13 @@
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
-using Serilog;
 
 namespace BlazingRecept.Server.Services;
 
 public class RecipeService : IRecipeService
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeService";
-
     private readonly IRecipeRepository _recipeRepository;
     private readonly IMapper _mapper;
 
@@ -59,12 +56,7 @@ public class RecipeService : IRecipeService
     {
         IReadOnlyList<Recipe>? recipes = await _recipeRepository.ListAllAsync();
 
-        if (recipes == null)
-        {
-            const string errorMessage = "Failed to fetch all recipes from repository.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(recipes, "Failed to fetch all recipes from repository.");
 
         return recipes.Select(recipe => _mapper.Map<RecipeDto>(recipe)).ToList();
     }

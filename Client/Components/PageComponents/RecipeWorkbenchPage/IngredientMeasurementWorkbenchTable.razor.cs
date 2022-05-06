@@ -4,26 +4,17 @@ using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using BlazingRecept.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 
 public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "IngredientMeasurementWorkbenchTable";
-
     [CascadingParameter]
     protected internal RecipeWorkbench? RecipeWorkbench { get; private set; }
 
     private void HandleIngredientMoveUpInOrder(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "RecipeWorkbench page reference has not been set before moving ingredient measurement up in order.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench, "RecipeWorkbench page reference has not been set before moving ingredient measurement up in order.");
 
         int movedIndex = RecipeWorkbench.ContainedIngredientMeasurements.IndexOf(ingredientMeasurementDto);
 
@@ -37,12 +28,7 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
 
     private void HandleIngredientMoveDownInOrder(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "RecipeWorkbench page reference has not been set before moving ingredient measurement down in order.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench, "RecipeWorkbench page reference has not been set before moving ingredient measurement down in order.");
 
         int movedIndex = RecipeWorkbench.ContainedIngredientMeasurements.IndexOf(ingredientMeasurementDto);
 
@@ -56,36 +42,21 @@ public partial class IngredientMeasurementWorkbenchTable : PageComponentBase
 
     private async Task HandleIngredientEdit(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "RecipeWorkbench page reference has not been set before trying to edit ingredient measurement.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench, "RecipeWorkbench page reference has not been set before trying to edit ingredient measurement.");
 
         await RecipeWorkbench.HandleUpdateIngredientModalOpen(ingredientMeasurementDto);
     }
 
     private async Task HandleIngredientRemoval(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "RecipeWorkbench page reference has not been set before trying to delete ingredient measurement from recipe.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench, "RecipeWorkbench page reference has not been set before trying to delete ingredient measurement from recipe.");
 
         await RecipeWorkbench.OpenIngredientRemovalModalOpen(ingredientMeasurementDto);
     }
 
     private IReadOnlyList<IngredientMeasurementDto> GetIngredientMeasurementContainedInRecipe()
     {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "RecipeWorkbench page reference has not been set before trying to access ingredient measurements within recipe.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench, "RecipeWorkbench page reference has not been set before trying to access ingredient measurements within recipe.");
 
         return RecipeWorkbench.ContainedIngredientMeasurements;
     }

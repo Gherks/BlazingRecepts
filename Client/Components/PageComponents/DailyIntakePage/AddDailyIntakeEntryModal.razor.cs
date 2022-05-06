@@ -4,19 +4,17 @@ using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.DailyIntakePage;
 
 public partial class AddDailyIntakeEntryModal : PageComponentBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "AddDailyIntakeEntryModal";
     private static readonly string _editFormId = "AddDailyIntakeEntryModalEditForm";
 
     private HxModal? _modal;
@@ -51,12 +49,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
 
     public async Task Open(DailyIntakeTable dailyIntakeTable, Guid collectionId)
     {
-        if (_modal == null)
-        {
-            const string errorMessage = "Add ingredient measurement modal cannot be opened because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_modal, "Add ingredient measurement modal cannot be opened because modal has not been set.");
 
         _dailyIntakeTable = dailyIntakeTable;
         _collectionId = collectionId;
@@ -68,50 +61,23 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
 
     private async Task HandleOnShown()
     {
-        if (_productName == null)
-        {
-            const string errorMessage = "Add ingredient measurement modal cannot be opened because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_productName, "Add ingredient measurement modal cannot be opened because modal has not been set.");
 
         await _productName.FocusAsync();
     }
 
     private async Task HandleCancel()
     {
-        if (_modal == null)
-        {
-            const string errorMessage = "Add ingredient measurement modal cannot be closed because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_modal, "Add ingredient measurement modal cannot be closed because modal has not been set.");
 
         await _modal.HideAsync();
     }
 
     private async Task<AutosuggestDataProviderResult<string>> ProvideSuggestionsToProductNameAutosuggest(AutosuggestDataProviderRequest request)
     {
-        if (DailyIntakePage == null)
-        {
-            const string errorMessage = "DailyIntake page reference has not been set during ingredient input search procedure.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (DailyIntakePage.Ingredients == null)
-        {
-            const string errorMessage = "DailyIntake page reference contains no ingredients during daily intake ingredient input search procedure.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (DailyIntakePage.Recipes == null)
-        {
-            const string errorMessage = "DailyIntake page reference contains no recipes during daily intake recipe input search procedure.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakePage, "DailyIntake page reference has not been set during ingredient input search procedure.");
+        Contracts.LogAndThrowWhenNull(DailyIntakePage.Ingredients, "DailyIntake page reference contains no ingredients during daily intake ingredient input search procedure.");
+        Contracts.LogAndThrowWhenNull(DailyIntakePage.Recipes, "DailyIntake page reference contains no recipes during daily intake recipe input search procedure.");
 
         List<IngredientDto> foundIngredients = DailyIntakePage.Ingredients
             .Where(ingredientDto => ingredientDto.Name?.Contains(request.UserInput, StringComparison.CurrentCultureIgnoreCase) ?? false)
@@ -143,42 +109,14 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
 
     private async Task HandleValidFormSubmitted()
     {
-        if (_processingButtonSubmit == null)
-        {
-            const string errorMessage = "Add ingredient measurement modal form cannot be validated because processing button has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_processingButtonSubmit, "Add ingredient measurement modal form cannot be validated because processing button has not been set.");
 
         _processingButtonSubmit.IsProcessing = true;
 
-        if (_modal == null)
-        {
-            const string errorMessage = "Add ingredient measurement modal form cannot be validated because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (DailyIntakePage == null)
-        {
-            const string errorMessage = "Daily intake page reference is not available during form validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Daily intake entry service is not available during form validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_dailyIntakeTable == null)
-        {
-            const string errorMessage = "Daily intake entry table is not available during form validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_modal, "Add ingredient measurement modal form cannot be validated because modal has not been set.");
+        Contracts.LogAndThrowWhenNull(DailyIntakePage, "Daily intake page reference is not available during form validation.");
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryService, "Daily intake entry service is not available during form validation.");
+        Contracts.LogAndThrowWhenNull(_dailyIntakeTable, "Daily intake entry table is not available during form validation.");
 
         if (Validate())
         {
@@ -206,12 +144,7 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
 
     private bool Validate()
     {
-        if (_customValidation == null)
-        {
-            const string errorMessage = "Custom validation object is not available during validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_customValidation, "Custom validation object is not available during validation.");
 
         _customValidation.ClearErrors();
 
@@ -237,26 +170,9 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
 
     private DailyIntakeEntryDto CreateDailyIntakeEntryDtoFromForm()
     {
-        if (DailyIntakePage == null)
-        {
-            const string errorMessage = "Cannot create daily intake entry dto from form because daily intake page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.ProductName == null)
-        {
-            const string errorMessage = "Cannot create daily intake entry dto from form because name in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.Amount == null)
-        {
-            const string errorMessage = "Cannot create daily intake entry dto from form because amount in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakePage, "Cannot create daily intake entry dto from form because daily intake page reference has not been set.");
+        Contracts.LogAndThrowWhenNull(_form.ProductName, "Cannot create daily intake entry dto from form because name in form has not been set.");
+        Contracts.LogAndThrowWhenNull(_form.Amount, "Cannot create daily intake entry dto from form because amount in form has not been set.");
 
         DailyIntakeEntryDto dailyIntakeEntryDto = new()
         {

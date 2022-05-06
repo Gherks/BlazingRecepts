@@ -10,7 +10,6 @@ namespace BlazingRecept.Client.Services;
 public class CategoryService : ICategoryService
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "CategoryService";
     private static readonly string _apiAddress = "api/categories";
 
     private readonly HttpClient _publicHttpClient;
@@ -34,7 +33,7 @@ public class CategoryService : ICategoryService
         catch (Exception exception)
         {
             const string messageTemplate = "Failed while fetching category with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
         }
 
         return null;
@@ -54,7 +53,7 @@ public class CategoryService : ICategoryService
         catch (Exception exception)
         {
             const string messageTemplate = "Failed while fetching categories of certain type: {@CategoryType}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, categoryType);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, categoryType);
         }
 
         return null;

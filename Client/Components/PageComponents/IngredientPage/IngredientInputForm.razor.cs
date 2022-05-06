@@ -4,20 +4,18 @@ using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Serilog;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.IngredientPage;
 
 public partial class IngredientInputForm : PageComponentBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "IngredientInputForm";
     private static readonly string _editFormId = "IngredientInputFormEditForm";
 
     private Form _form = new();
@@ -94,19 +92,8 @@ public partial class IngredientInputForm : PageComponentBase
             return;
         }
 
-        if (_customValidation == null)
-        {
-            const string errorMessage = "Custom validation object is not available during blur validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (IngredientService == null)
-        {
-            const string errorMessage = "Ingredient service is not available during blur validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_customValidation, "Custom validation object is not available during blur validation.");
+        Contracts.LogAndThrowWhenNull(IngredientService, "Ingredient service is not available during blur validation.");
 
         Dictionary<string, List<string>> errors = new();
 
@@ -132,28 +119,12 @@ public partial class IngredientInputForm : PageComponentBase
 
     private async Task HandleValidFormSubmitted()
     {
-        if (_processingButtonSubmit == null)
-        {
-            const string errorMessage = "Cannot add new ingredient because processing button has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_processingButtonSubmit, "Cannot add new ingredient because processing button has not been set.");
 
         _processingButtonSubmit.IsProcessing = true;
 
-        if (IngredientService == null)
-        {
-            const string errorMessage = "Cannot add new ingredient because ingredient service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (IngredientsPage == null)
-        {
-            const string errorMessage = "Cannot add new ingredient because ingredient page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(IngredientService, "Cannot add new ingredient because ingredient service has not been set.");
+        Contracts.LogAndThrowWhenNull(IngredientsPage, "Cannot add new ingredient because ingredient page reference has not been set.");
 
         if (await Validate())
         {
@@ -179,19 +150,8 @@ public partial class IngredientInputForm : PageComponentBase
 
     private async Task<bool> Validate()
     {
-        if (_customValidation == null)
-        {
-            const string errorMessage = "Custom validation object is not available during validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (IngredientService == null)
-        {
-            const string errorMessage = "Ingredient service is not available during validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_customValidation, "Custom validation object is not available during validation.");
+        Contracts.LogAndThrowWhenNull(IngredientService, "Ingredient service is not available during validation.");
 
         _customValidation.ClearErrors();
 
@@ -238,49 +198,15 @@ public partial class IngredientInputForm : PageComponentBase
 
     private IngredientDto CreateIngredientDtoFromForm()
     {
-        if (_categoryDtos == null)
-        {
-            const string errorMessage = "Cannot create ingredient dto from form because category list has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_categoryDtos, "Cannot create ingredient dto from form because category list has not been set.");
 
         CategoryDto? categoryDto = _categoryDtos.FirstOrDefault(categoryDto => categoryDto.Id == _form.CategoryDtoId);
 
-        if (categoryDto == null)
-        {
-            const string errorMessage = "Cannot create ingredient dto from form because selected category in form does not exist.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.Fat == null)
-        {
-            const string errorMessage = "Cannot create ingredient dto from form because fat in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.Carbohydrates == null)
-        {
-            const string errorMessage = "Cannot create ingredient dto from form because carbohydrates in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.Protein == null)
-        {
-            const string errorMessage = "Cannot create ingredient dto from form because protein in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.Calories == null)
-        {
-            const string errorMessage = "Cannot create ingredient dto from form because calories in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(categoryDto, "Cannot create ingredient dto from form because selected category in form does not exist.");
+        Contracts.LogAndThrowWhenNull(_form.Fat, "Cannot create ingredient dto from form because fat in form has not been set.");
+        Contracts.LogAndThrowWhenNull(_form.Carbohydrates, "Cannot create ingredient dto from form because carbohydrates in form has not been set.");
+        Contracts.LogAndThrowWhenNull(_form.Protein, "Cannot create ingredient dto from form because protein in form has not been set.");
+        Contracts.LogAndThrowWhenNull(_form.Calories, "Cannot create ingredient dto from form because calories in form has not been set.");
 
         return new()
         {

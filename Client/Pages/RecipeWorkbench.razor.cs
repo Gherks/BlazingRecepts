@@ -4,6 +4,7 @@ using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web;
 using Microsoft.AspNetCore.Components;
@@ -16,7 +17,6 @@ namespace BlazingRecept.Client.Pages;
 public partial class RecipeWorkbench : PageBase
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeWorkbenchPage";
     private static readonly string _editFormId = "RecipeWorkbenchEditForm";
 
     private Form _form = new();
@@ -59,28 +59,11 @@ public partial class RecipeWorkbench : PageBase
 
     protected override async Task OnInitializedAsync()
     {
+        Contracts.LogAndThrowWhenNull(RecipeService, "Cannot fetch recipe because recipe service is null.");
+        Contracts.LogAndThrowWhenNull(IngredientService, "Cannot fetch ingredients because ingredient service is null.");
+        Contracts.LogAndThrowWhenNull(CategoryService, "Cannot fetch categories because category service is null.");
+
         IsLoading = true;
-
-        if (RecipeService == null)
-        {
-            const string errorMessage = "Cannot fetch recipe because recipe service is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (IngredientService == null)
-        {
-            const string errorMessage = "Cannot fetch ingredients because ingredient service is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (CategoryService == null)
-        {
-            const string errorMessage = "Cannot fetch categories because category service is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
 
         _editContext = new(_form);
         Ingredients = await IngredientService.GetAllAsync();
@@ -126,28 +109,12 @@ public partial class RecipeWorkbench : PageBase
 
     private async Task HandleValidFormSubmitted()
     {
-        if (_processingButtonSubmit == null)
-        {
-            const string errorMessage = "Cannot create submitted recipe because processing button has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_processingButtonSubmit, "Cannot create submitted recipe because processing button has not been set.");
 
         _processingButtonSubmit.IsProcessing = true;
 
-        if (RecipeService == null)
-        {
-            const string errorMessage = "Cannot create submitted recipe because recipe service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (NavigationManager == null)
-        {
-            const string errorMessage = "Cannot create submitted recipe because navigation manager has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipeService, "Cannot create submitted recipe because recipe service has not been set.");
+        Contracts.LogAndThrowWhenNull(NavigationManager, "Cannot create submitted recipe because navigation manager has not been set.");
 
         if (await Validate())
         {
@@ -169,19 +136,8 @@ public partial class RecipeWorkbench : PageBase
 
     private async Task<bool> Validate()
     {
-        if (_customValidation == null)
-        {
-            const string errorMessage = "Cannot validate recipe because custom validation object has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (RecipeService == null)
-        {
-            const string errorMessage = "Cannot validate recipe because recipe service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_customValidation, "Cannot validate recipe because custom validation object has not been set.");
+        Contracts.LogAndThrowWhenNull(RecipeService, "Cannot validate recipe because recipe service has not been set.");
 
         _customValidation.ClearErrors();
 
@@ -225,28 +181,12 @@ public partial class RecipeWorkbench : PageBase
 
     private RecipeDto CreateRecipeDtoFromForm()
     {
-        if (_categoryDtos == null)
-        {
-            const string errorMessage = "Cannot create recipe dto from form because category list has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_categoryDtos, "Cannot create recipe dto from form because category list has not been set.");
 
         CategoryDto? categoryDto = _categoryDtos.FirstOrDefault(categoryDto => categoryDto.Id == _form.CategoryDtoId);
 
-        if (categoryDto == null)
-        {
-            const string errorMessage = "Cannot create recipe dto from form because selected category in form does not exist.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.PortionAmount == null)
-        {
-            const string errorMessage = "Cannot create recipe dto from form because portion amount in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(categoryDto, "Cannot create recipe dto from form because selected category in form does not exist.");
+        Contracts.LogAndThrowWhenNull(_form.PortionAmount, "Cannot create recipe dto from form because portion amount in form has not been set.");
 
         RecipeDto recipeDto = new()
         {
@@ -268,36 +208,21 @@ public partial class RecipeWorkbench : PageBase
 
     public async Task HandleAddIngredientModalOpen()
     {
-        if (_addIngredientMeasurementModal == null)
-        {
-            const string errorMessage = "Cannot open add ingredient modal because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_addIngredientMeasurementModal, "Cannot open add ingredient modal because modal has not been set.");
 
         await _addIngredientMeasurementModal.Open();
     }
 
     public async Task HandleUpdateIngredientModalOpen(IngredientMeasurementDto? ingredientMeasurementDto)
     {
-        if (_updateIngredientMeasurementModal == null)
-        {
-            const string errorMessage = "Cannot open update ingredient modal because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_updateIngredientMeasurementModal, "Cannot open update ingredient modal because modal has not been set.");
 
         await _updateIngredientMeasurementModal.Open(ingredientMeasurementDto);
     }
 
     public async Task OpenIngredientRemovalModalOpen(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (_removalConfirmationModal == null)
-        {
-            const string errorMessage = "Cannot open removal confirmation modal because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_removalConfirmationModal, "Cannot open removal confirmation modal because modal has not been set.");
 
         await _removalConfirmationModal.Open(ingredientMeasurementDto.IngredientDto, "Ta bort ingrediens", ingredientMeasurementDto.IngredientDto.Name);
     }
@@ -315,7 +240,7 @@ public partial class RecipeWorkbench : PageBase
         else
         {
             const string errorMessage = "Couldn't remove ingredient from edited recipe because sought ingredient doesn't exist in recipe.";
-            Log.ForContext(_logProperty, _logDomainName).Warning(errorMessage);
+            Log.ForContext(_logProperty, GetType().Name).Warning(errorMessage);
         }
 
         return Task.CompletedTask;

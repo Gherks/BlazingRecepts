@@ -1,4 +1,5 @@
 using BlazingRecept.Client.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Serilog;
@@ -11,7 +12,6 @@ namespace BlazingRecept.Client.Services;
 public class IngredientService : IIngredientService
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "IngredientService";
     private static readonly string _apiAddress = "api/ingredients";
 
     private readonly HttpClient _publicHttpClient;
@@ -40,7 +40,7 @@ public class IngredientService : IIngredientService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while checking existence of ingredient with name: {@Name}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, name);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, name);
         }
 
         return false;
@@ -60,7 +60,7 @@ public class IngredientService : IIngredientService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while fetching ingredient with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
         }
 
         return null;
@@ -87,7 +87,7 @@ public class IngredientService : IIngredientService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while fetching all ingredients.";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage);
         }
 
         return null;
@@ -97,21 +97,11 @@ public class IngredientService : IIngredientService
     {
         IReadOnlyList<IngredientDto>? ingredientDtos = await GetAllAsync();
 
-        if (ingredientDtos == null)
-        {
-            const string errorMessage = "Failed while fetching all ingredients sorted because fetched and unsorted ingredient dto list is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(ingredientDtos, "Failed while fetching all ingredients sorted because fetched and unsorted ingredient dto list is null.");
 
         IReadOnlyList<CategoryDto>? categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
 
-        if (categoryDtos == null)
-        {
-            const string errorMessage = "Failed while fetching all ingredients sorted because fetched category dto list is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(categoryDtos, "Failed while fetching all ingredients sorted because fetched category dto list is null.");
 
         List<IngredientCollectionTypeDto> ingredientCollectionTypes = new();
 
@@ -156,7 +146,7 @@ public class IngredientService : IIngredientService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while saving ingredient: {@IngredientDto}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, ingredientDto);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, ingredientDto);
         }
 
         return null;
@@ -177,7 +167,7 @@ public class IngredientService : IIngredientService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while deleting ingredient with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
         }
 
         return false;

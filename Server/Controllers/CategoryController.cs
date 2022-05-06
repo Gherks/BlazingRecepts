@@ -11,7 +11,6 @@ namespace BlazingRecept.Server.Controllers;
 public class CategoryController : ControllerBase
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "CategoryController";
 
     private readonly ICategoryService _categoryService;
 
@@ -46,7 +45,7 @@ public class CategoryController : ControllerBase
         else
         {
             const string errorMessage = "Controller couldn't fetch category because given integer({@CategoryType}) doesn't map to a category type.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, categoryType);
+            Log.ForContext(_logProperty, GetType().Name).Error(errorMessage, categoryType);
 
             return BadRequest();
         }

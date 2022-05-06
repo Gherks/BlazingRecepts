@@ -1,19 +1,17 @@
 ﻿using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Pages;
 using BlazingRecept.Client.Utilities;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Serilog;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipeWorkbenchPage;
 
 public partial class AddIngredientMeasurementModal : PageComponentBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "AddIngredientMeasurementModal";
     private static readonly string _editFormId = "AddIngredientMeasurementModalEditForm";
 
     private HxModal? _modal;
@@ -39,12 +37,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
     public async Task Open()
     {
-        if (_modal == null)
-        {
-            const string errorMessage = "Add ingredient measurement modal cannot be opened because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_modal, "Add ingredient measurement modal cannot be opened because modal has not been set.");
 
         _form = new();
         _editContext = new(_form);
@@ -53,43 +46,22 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
     private async Task HandleOnShown()
     {
-        if (_name == null)
-        {
-            const string errorMessage = "Input for name has not been set before showing the modal.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_name, "Input for name has not been set before showing the modal.");
 
         await _name.FocusAsync();
     }
 
     private async Task HandleCancel()
     {
-        if (_modal == null)
-        {
-            const string errorMessage = "Add ingredient measurement modal cannot be closed because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_modal, "Add ingredient measurement modal cannot be closed because modal has not been set.");
 
         await _modal.HideAsync();
     }
 
     private async Task<AutosuggestDataProviderResult<IngredientDto>> ProvideSuggestionsToNameAutosuggest(AutosuggestDataProviderRequest request)
     {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "Cannot provide ingredient suggestions to name autosuggest because recipe workbench page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (RecipeWorkbench.Ingredients == null)
-        {
-            const string errorMessage = "Cannot provide ingredient suggestions to name autosuggest because recipe workbench ingredient list has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench, "Cannot provide ingredient suggestions to name autosuggest because recipe workbench page reference has not been set.");
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench.Ingredients, "Cannot provide ingredient suggestions to name autosuggest because recipe workbench ingredient list has not been set.");
 
         return await Task.FromResult(new AutosuggestDataProviderResult<IngredientDto>
         {
@@ -107,19 +79,8 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
     private async Task HandleValidFormSubmitted()
     {
-        if (_modal == null)
-        {
-            const string errorMessage = "Cannot add ingredient measurement because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "Cannot add ingredient measurement because recipe workbench page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_modal, "Cannot add ingredient measurement because modal has not been set.");
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench, "Cannot add ingredient measurement because recipe workbench page reference has not been set.");
 
         if (Validate())
         {
@@ -133,19 +94,8 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
     private bool Validate()
     {
-        if (_customValidation == null)
-        {
-            const string errorMessage = "Custom validation is not set during add ingredient measurement modal validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form == null)
-        {
-            const string errorMessage = "Form is not set during add ingredient measurement modal validation.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_customValidation, "Custom validation is not set during add ingredient measurement modal validation.");
+        Contracts.LogAndThrowWhenNull(_form, "Form is not set during add ingredient measurement modal validation.");
 
         _customValidation.ClearErrors();
 
@@ -186,33 +136,10 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
     private IngredientMeasurementDto CreateIngredientMeasurementDtoFromForm()
     {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "Cannot create ingredient measurement dto from form because recipe workbench page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.IngredientDto == null)
-        {
-            const string errorMessage = "Cannot create ingredient measurement dto from form because ingredient dto in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.Measurement == null)
-        {
-            const string errorMessage = "Cannot create ingredient measurement dto from form because measurement in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_form.Grams == null)
-        {
-            const string errorMessage = "Cannot create ingredient measurement dto from form because grams in form has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench, "Cannot create ingredient measurement dto from form because recipe workbench page reference has not been set.");
+        Contracts.LogAndThrowWhenNull(_form.IngredientDto, "Cannot create ingredient measurement dto from form because ingredient dto in form has not been set.");
+        Contracts.LogAndThrowWhenNull(_form.Measurement, "Cannot create ingredient measurement dto from form because measurement in form has not been set.");
+        Contracts.LogAndThrowWhenNull(_form.Grams, "Cannot create ingredient measurement dto from form because grams in form has not been set.");
 
         return new()
         {
@@ -227,12 +154,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
 
     private bool IngredientAlreadyAdded(IngredientDto IngredientDto)
     {
-        if (RecipeWorkbench == null)
-        {
-            const string errorMessage = "RecipeWorkbench page reference has not been set before checking for ingredient duplicates in edited recipe.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipeWorkbench, "RecipeWorkbench page reference has not been set before checking for ingredient duplicates in edited recipe.");
 
         return RecipeWorkbench.ContainedIngredientMeasurements.Any(ingredientMeasurement => ingredientMeasurement.IngredientDto.Id == IngredientDto.Id);
     }

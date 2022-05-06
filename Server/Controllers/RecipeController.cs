@@ -12,7 +12,6 @@ namespace BlazingRecept.Server.Controllers;
 public class RecipeController : ControllerBase
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeController";
     private static readonly string[] _scopeRequiredByApi = new string[] { "API.Access" };
 
     private readonly IRecipeService _recipeService;
@@ -85,7 +84,7 @@ public class RecipeController : ControllerBase
         catch (Exception exception)
         {
             const string errorMessage = "Controller failed while saving recipe: {@RecipeDto}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, recipeDto);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, recipeDto);
 
             return BadRequest();
         }
@@ -106,7 +105,7 @@ public class RecipeController : ControllerBase
         }
 
         const string errorMessage = "Controller failed to delete recipe with id: {@Id}";
-        Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, id);
+        Log.ForContext(_logProperty, GetType().Name).Error(errorMessage, id);
 
         return BadRequest();
     }

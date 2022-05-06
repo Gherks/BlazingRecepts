@@ -1,4 +1,5 @@
-﻿using BlazingRecept.Shared.SerilogDto;
+﻿using BlazingRecept.Shared;
+using BlazingRecept.Shared.SerilogDto;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Serilog;
@@ -12,29 +13,16 @@ namespace BlazingRecept.Server.Controllers;
 [Route("api/logs")]
 public sealed class LogController : ControllerBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "LogController";
-
     [HttpPost]
     public void PostAsync(JsonDocument logEventsJsonDocument)
     {
         string jsonString = logEventsJsonDocument.RootElement.GetRawText();
 
-        if (jsonString == null)
-        {
-            const string errorMessage = "Cannot process log events because content of log events json document is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(jsonString, "Cannot process log events because content of log events json document is null.");
 
         LogEventDto[]? logEventDtos = JsonConvert.DeserializeObject<LogEventDto[]>(jsonString);
 
-        if (logEventDtos == null)
-        {
-            const string errorMessage = "Cannot process log events because deserialized log event dto list is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(logEventDtos, "Cannot process log events because deserialized log event dto list is null.");
 
         foreach (LogEventDto logEventDto in logEventDtos)
         {

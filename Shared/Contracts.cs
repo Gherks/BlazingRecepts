@@ -7,7 +7,7 @@ namespace BlazingRecept.Shared;
 
 public static class Contracts
 {
-    private const string _logProperty = "Domain";
+    private static string _logProperty = "Domain";
 
     public static void LogAndThrowWhenNull([NotNull] object? value, string errorMessage)
     {

@@ -1,4 +1,5 @@
 ﻿using BlazingRecept.Client.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Serilog;
@@ -10,7 +11,6 @@ namespace BlazingRecept.Client.Services;
 public class RecipeService : IRecipeService
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeService";
     private static readonly string _apiAddress = "api/recipes";
 
     private readonly HttpClient _publicHttpClient;
@@ -35,7 +35,7 @@ public class RecipeService : IRecipeService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while checking existence of recipe with name: {@Name}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, name);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, name);
         }
 
         return false;
@@ -51,12 +51,7 @@ public class RecipeService : IRecipeService
             {
                 RecipeDto? recipeDto = await response.Content.ReadFromJsonAsync<RecipeDto>();
 
-                if (recipeDto == null)
-                {
-                    const string errorMessage = "Failed to read returned recipe dto after successfuly fetching it.";
-                    Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                    throw new InvalidOperationException(errorMessage);
-                }
+                Contracts.LogAndThrowWhenNull(recipeDto, "Failed to read returned recipe dto after successfuly fetching it.");
 
                 SortIngredientMeasurements(recipeDto);
 
@@ -66,7 +61,7 @@ public class RecipeService : IRecipeService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while fetching recipe with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
         }
 
         return null;
@@ -82,12 +77,7 @@ public class RecipeService : IRecipeService
             {
                 IReadOnlyList<RecipeDto>? recipeDtos = await response.Content.ReadFromJsonAsync<IReadOnlyList<RecipeDto>>();
 
-                if (recipeDtos == null)
-                {
-                    const string errorMessage = "Failed to read returned recipe dto list after successfuly fetching it.";
-                    Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                    throw new InvalidOperationException(errorMessage);
-                }
+                Contracts.LogAndThrowWhenNull(recipeDtos, "Failed to read returned recipe dto list after successfuly fetching it.");
 
                 foreach (RecipeDto recipeDto in recipeDtos)
                 {
@@ -100,7 +90,7 @@ public class RecipeService : IRecipeService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while fetching all recipes.";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage);
         }
 
         return null;
@@ -116,12 +106,7 @@ public class RecipeService : IRecipeService
             {
                 RecipeDto? savedRecipeDto = await response.Content.ReadFromJsonAsync<RecipeDto>();
 
-                if (savedRecipeDto == null)
-                {
-                    const string errorMessage = "Failed to read returned recipe dto after successfuly saving it.";
-                    Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                    throw new InvalidOperationException(errorMessage);
-                }
+                Contracts.LogAndThrowWhenNull(savedRecipeDto, "Failed to read returned recipe dto after successfuly saving it.");
 
                 SortIngredientMeasurements(savedRecipeDto);
 
@@ -135,7 +120,7 @@ public class RecipeService : IRecipeService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while saving recipe: {@RecipeDto}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, recipeDto);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, recipeDto);
         }
 
         return null;
@@ -156,7 +141,7 @@ public class RecipeService : IRecipeService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while deleting recipe with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
         }
 
         return false;

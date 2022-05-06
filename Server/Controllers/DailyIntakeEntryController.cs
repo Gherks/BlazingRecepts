@@ -12,7 +12,6 @@ namespace BlazingRecept.Server.Controllers;
 public class DailyIntakeEntryController : ControllerBase
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "DailyIntakeEntryController";
     private static readonly string[] _scopeRequiredByApi = new string[] { "API.Access" };
 
     private readonly IDailyIntakeEntryService _dailyIntakeEntryService;
@@ -85,7 +84,7 @@ public class DailyIntakeEntryController : ControllerBase
         catch (Exception exception)
         {
             const string errorMessage = "Controller failed while saving daily intake entry: {@DailyIntakeEntryDto}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, dailyIntakeEntryDto);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, dailyIntakeEntryDto);
 
             return BadRequest();
         }
@@ -119,7 +118,7 @@ public class DailyIntakeEntryController : ControllerBase
         catch (Exception exception)
         {
             const string errorMessage = "Controller failed while saving daily intake entries: {@DailyIntakeEntryDtos}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, dailyIntakeEntryDtos);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, dailyIntakeEntryDtos);
 
             return BadRequest();
         }
@@ -140,7 +139,7 @@ public class DailyIntakeEntryController : ControllerBase
         }
 
         const string errorMessage = "Controller failed to delete daily intake entry with id: {@Id}";
-        Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, id);
+        Log.ForContext(_logProperty, GetType().Name).Error(errorMessage, id);
 
         return BadRequest($"Failed to delete daily intake entry.");
     }

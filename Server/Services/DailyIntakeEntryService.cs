@@ -2,6 +2,7 @@ using AutoMapper;
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using BlazingRecept.Shared.Extensions;
 using Serilog;
@@ -11,7 +12,6 @@ namespace BlazingRecept.Server.Services;
 public class DailyIntakeEntryService : IDailyIntakeEntryService
 {
     private const string _logProperty = "Domain";
-    private const string _logDomainName = "DailyIntakeEntryService";
 
     private readonly IDailyIntakeEntryRepository _dailyIntakeEntryRepository;
     private readonly IRecipeService _recipeService;
@@ -51,12 +51,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
     {
         IReadOnlyList<DailyIntakeEntry>? dailyIntakeEntries = await _dailyIntakeEntryRepository.ListAllAsync();
 
-        if (dailyIntakeEntries == null)
-        {
-            const string errorMessage = "Failed to fetch all daily intake entries from repository.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(dailyIntakeEntries, "Failed to fetch all daily intake entries from repository.");
 
         List<DailyIntakeEntryDto> dailyIntakeEntryDtos = new();
 
@@ -64,12 +59,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         {
             DailyIntakeEntryDto? dailyIntakeEntryDto = await LoadDailyIntakeEntryDtoFromDailyIntakeEntry(dailyIntakeEntry);
 
-            if (dailyIntakeEntryDto == null)
-            {
-                const string errorMessage = "Failed while loading one of many daily intake entries into a daily intake entry dto.";
-                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                throw new InvalidOperationException(errorMessage);
-            }
+            Contracts.LogAndThrowWhenNull(dailyIntakeEntryDto, "Failed while loading one of many daily intake entries into a daily intake entry dto.");
 
             dailyIntakeEntryDtos.Add(dailyIntakeEntryDto);
         }
@@ -92,21 +82,11 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
             dailyIntakeEntry = await _dailyIntakeEntryRepository.UpdateAsync(dailyIntakeEntry);
         }
 
-        if (dailyIntakeEntry == null)
-        {
-            const string messageTemplate = "Failed to add or update daily intake entry({@DailyIntakeEntryDto}), result was null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate, dailyIntakeEntryDto);
-            throw new InvalidOperationException("Failed to add or update daily intake entry, result was null.");
-        }
+        Contracts.LogAndThrowWhenNull(dailyIntakeEntry, "Failed to add or update daily intake entry({@DailyIntakeEntryDto}), result was null.");
 
         DailyIntakeEntryDto? reloadedDailyIntakeEntryDto = await LoadDailyIntakeEntryDtoFromDailyIntakeEntry(dailyIntakeEntry);
 
-        if (reloadedDailyIntakeEntryDto == null)
-        {
-            const string messageTemplate = "Failed to reload added or updated daily intake entry({@DailyIntakeEntryDto}), result was null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(messageTemplate, dailyIntakeEntryDto);
-            throw new InvalidOperationException("Failed to reload added or updated daily intake entry, result was null.");
-        }
+        Contracts.LogAndThrowWhenNull(reloadedDailyIntakeEntryDto, "Failed to reload added or updated daily intake entry({@DailyIntakeEntryDto}), result was null.");
 
         return reloadedDailyIntakeEntryDto;
     }
@@ -133,7 +113,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
             catch (Exception exception)
             {
                 const string errorMessage = "Something went wrong while saving and/or updating multiple daily intake entries: ({@DailyIntakeEntries})";
-                Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, dailyIntakeEntryDtos);
+                Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, dailyIntakeEntryDtos);
             }
         }
 
@@ -171,7 +151,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         }
 
         const string errorMessage = "Could not find product id from given product name because product with given name was not found in neither recipes nor ingredients.";
-        Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
+        Log.ForContext(_logProperty, GetType().Name).Error(errorMessage);
         throw new InvalidOperationException(errorMessage);
     }
 
@@ -189,16 +169,9 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         {
             IngredientDto? ingredientDto = await _ingredientService.GetByIdAsync(dailyIntakeEntryDto.ProductId);
 
-            if (ingredientDto != null)
-            {
-                AddIngredientDataIntoDailyIntakeEntry(dailyIntakeEntryDto, ingredientDto);
-            }
-            else
-            {
-                const string errorMessage = "Cannot load daily intake entry by id from services because its product was not found in neither recipes nor ingredients.";
-                Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-                throw new InvalidOperationException(errorMessage);
-            }
+            Contracts.LogAndThrowWhenNull(ingredientDto, "Cannot load daily intake entry by id from services because its product was not found in neither recipes nor ingredients.");
+
+            AddIngredientDataIntoDailyIntakeEntry(dailyIntakeEntryDto, ingredientDto);
         }
 
         return dailyIntakeEntryDto;

@@ -3,15 +3,11 @@ using BlazingRecept.Client.Pages;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipePage;
 
 public partial class IngredientMeasurementTable : PageComponentBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "IngredientMeasurementTable";
-
     private List<CheckableIngredientMeasurement> _checkableIngredientMeasurements = new();
 
     [CascadingParameter]
@@ -23,19 +19,8 @@ public partial class IngredientMeasurementTable : PageComponentBase
 
         await base.OnInitializedAsync();
 
-        if (RecipePage == null)
-        {
-            const string errorMessage = "Cannot ingredient measurement table rows because recipe page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (RecipePage.RecipeDto == null)
-        {
-            const string errorMessage = "Cannot ingredient measurement table rows because recipe has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot ingredient measurement table rows because recipe page reference has not been set.");
+        Contracts.LogAndThrowWhenNull(RecipePage.RecipeDto, "Cannot ingredient measurement table rows because recipe has not been set.");
 
         foreach (IngredientMeasurementDto ingredientMeasurementDto in RecipePage.RecipeDto.IngredientMeasurementDtos)
         {
@@ -57,24 +42,14 @@ public partial class IngredientMeasurementTable : PageComponentBase
 
     private string GetMeasurement(IngredientMeasurementDto ingredientMeasurementDto)
     {
-        if (ingredientMeasurementDto == null)
-        {
-            const string errorMessage = "Cannot access ingredient measurement within recipe because passed ingredient measurement has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(ingredientMeasurementDto, "Cannot access ingredient measurement within recipe because passed ingredient measurement has not been set.");
 
         return ingredientMeasurementDto.Measurement.ToString() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
     }
 
     private string GetIngredientMeasurementRowClass(CheckableIngredientMeasurement checkableIngredientMeasurement)
     {
-        if (checkableIngredientMeasurement == null)
-        {
-            const string errorMessage = "Cannot set class on ingredient measurement table row because checkable ingredient measurement has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(checkableIngredientMeasurement, "Cannot set class on ingredient measurement table row because checkable ingredient measurement has not been set.");
 
         return checkableIngredientMeasurement.IsChecked ? "table-primary" : "";
     }

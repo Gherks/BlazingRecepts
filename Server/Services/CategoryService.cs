@@ -2,17 +2,14 @@
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
-using Serilog;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Server.Services;
 
 public class CategoryService : ICategoryService
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "CategoryService";
-
     private readonly ICategoryRepository _categoryRepository;
     private readonly IMapper _mapper;
 
@@ -38,12 +35,7 @@ public class CategoryService : ICategoryService
     {
         IReadOnlyList<Category>? categories = await _categoryRepository.ListAllOfTypeAsync(categoryType);
 
-        if (categories == null)
-        {
-            const string errorMessage = "Fetched category list from repository was null, tried to fetch all of category type: {@CategoryType}";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, categoryType);
-            throw new InvalidOperationException("Fetched category list from repository was null.");
-        }
+        Contracts.LogAndThrowWhenNull(categories, "Fetched category list from repository was null, tried to fetch all of category type: {@CategoryType}");
 
         List<CategoryDto> categoryDtos = categories.Select(ingredientCategory => _mapper.Map<CategoryDto>(ingredientCategory)).ToList();
 

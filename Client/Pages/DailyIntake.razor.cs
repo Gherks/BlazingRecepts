@@ -2,20 +2,17 @@ using BlazingRecept.Client.Components.Common;
 using BlazingRecept.Client.Components.PageComponents.DailyIntakePage;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using BlazingRecept.Shared.Extensions;
 using Havit.Blazor.Components.Web;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 
 namespace BlazingRecept.Client.Pages;
 
 public partial class DailyIntake : PageBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "DailyIntake";
-
     private AddDailyIntakeEntryModal? _addDailyIntakeEntryModal;
     private RemovalConfirmationModal<DailyIntakeEntryDto>? _removalConfirmationModal;
     private DailyIntakeTable? _dailyIntakeTable;
@@ -38,43 +35,22 @@ public partial class DailyIntake : PageBase
 
     protected override async Task OnInitializedAsync()
     {
+        Contracts.LogAndThrowWhenNull(IngredientService, "Cannot fetch ingredients because ingredient service is not set.");
+        Contracts.LogAndThrowWhenNull(RecipeService, "Cannot fetch recipes because recipe service is not set.");
+
         IsLoading = true;
 
         await base.OnInitializedAsync();
-
-        if (IngredientService == null)
-        {
-            const string errorMessage = "Cannot fetch ingredients because ingredient service is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (RecipeService == null)
-        {
-            const string errorMessage = "Cannot fetch recipes because recipe service is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
 
         await LoadDailyIntakeEntriesToCollections();
 
         Ingredients = await IngredientService.GetAllAsync();
 
-        if (Ingredients == null)
-        {
-            const string errorMessage = "Cannot properly present daily intake page because it could not fetch list of all ingredients.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(Ingredients, "Cannot properly present daily intake page because it could not fetch list of all ingredients.");
 
         Recipes = await RecipeService.GetAllAsync();
 
-        if (Recipes == null)
-        {
-            const string errorMessage = "Cannot properly present daily intake page because it could not fetch list of all recipes.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(Recipes, "Cannot properly present daily intake page because it could not fetch list of all recipes.");
 
         IsLoading = false;
     }
@@ -86,12 +62,7 @@ public partial class DailyIntake : PageBase
 
     private async Task<bool> HandleDailyIntakeEntryAddAsync(DailyIntakeTable dailyIntakeTable, Guid collectionId)
     {
-        if (_addDailyIntakeEntryModal == null)
-        {
-            const string errorMessage = "Cannot open add daily intake entry modal because modal has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_addDailyIntakeEntryModal, "Cannot open add daily intake entry modal because modal has not been set.");
 
         await _addDailyIntakeEntryModal.Open(dailyIntakeTable, collectionId);
         return await Task.FromResult(true);
@@ -99,12 +70,7 @@ public partial class DailyIntake : PageBase
 
     private async Task<bool> HandleDailyIntakeEntryMoveUpInOrderAsync(DailyIntakeTable dailyIntakeTable, DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Daily intake entry service has not been set before moving daily intake entry up in order.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryService, "Daily intake entry service has not been set before moving daily intake entry up in order.");
 
         List<DailyIntakeEntryDto> dailyIntakeEntries = DailyIntakeEntryDtoCollections[dailyIntakeEntryDto.CollectionId];
 
@@ -129,12 +95,7 @@ public partial class DailyIntake : PageBase
 
     private async Task<bool> HandleDailyIntakeEntryMoveDownInOrderAsync(DailyIntakeTable dailyIntakeTable, DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Daily intake entry service has not been set before moving daily intake entry down in order.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryService, "Daily intake entry service has not been set before moving daily intake entry down in order.");
 
         List<DailyIntakeEntryDto> dailyIntakeEntries = DailyIntakeEntryDtoCollections[dailyIntakeEntryDto.CollectionId];
 
@@ -159,21 +120,11 @@ public partial class DailyIntake : PageBase
 
     private async Task<bool> HandleDailyIntakeEntryEditSubmitAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Cannot save edited daily intake entry because the daily intake entry service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryService, "Cannot save edited daily intake entry because the daily intake entry service has not been set.");
 
         DailyIntakeEntryDto? savedDailyIntakeEntryDto = await DailyIntakeEntryService.SaveAsync(dailyIntakeEntryDto);
 
-        if (savedDailyIntakeEntryDto == null)
-        {
-            const string errorMessage = "Something went wrong when saving an edited daily intake entry.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(savedDailyIntakeEntryDto, "Something went wrong when saving an edited daily intake entry.");
 
         UpsertDailyIntakeEntryIntoCollection(savedDailyIntakeEntryDto);
         StateHasChanged();
@@ -183,12 +134,7 @@ public partial class DailyIntake : PageBase
 
     private async Task<bool> HandleDailyIntakeEntryRemoveAsync(DailyIntakeTable dailyIntakeTable, DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        if (_removalConfirmationModal == null)
-        {
-            const string errorMessage = "Confirmation modal cannot be opened because it has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_removalConfirmationModal, "Confirmation modal cannot be opened because it has not been set.");
 
         _dailyIntakeTable = dailyIntakeTable;
         await _removalConfirmationModal.Open(dailyIntakeEntryDto, "Ta bort post för dagligt intag", dailyIntakeEntryDto.ProductName);
@@ -211,26 +157,9 @@ public partial class DailyIntake : PageBase
 
     private async Task HandleDailyIntakeEntryRemovalConfirmed(DailyIntakeEntryDto removedDailyIntakeEntryDto)
     {
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Daily intake entry service is not available during daily intake entry removal.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (MessengerService == null)
-        {
-            const string errorMessage = "Messenger service is not available during daily intake entry removal.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (_dailyIntakeTable == null)
-        {
-            const string errorMessage = "Daily intake entry table is not available during daily intake entry removal.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryService, "Daily intake entry service is not available during daily intake entry removal.");
+        Contracts.LogAndThrowWhenNull(MessengerService, "Messenger service is not available during daily intake entry removal.");
+        Contracts.LogAndThrowWhenNull(_dailyIntakeTable, "Daily intake entry table is not available during daily intake entry removal.");
 
         Guid removedId = removedDailyIntakeEntryDto.Id;
         Guid removedCollectionId = removedDailyIntakeEntryDto.CollectionId;
@@ -270,21 +199,11 @@ public partial class DailyIntake : PageBase
 
     private async Task LoadDailyIntakeEntriesToCollections()
     {
-        if (DailyIntakeEntryService == null)
-        {
-            const string errorMessage = "Cannot fetch daily intake entry because daily intake service is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryService, "Cannot fetch daily intake entry because daily intake service is not set.");
 
         IReadOnlyList<DailyIntakeEntryDto>? dailyIntakeEntryDtos = await DailyIntakeEntryService.GetAllAsync();
 
-        if (dailyIntakeEntryDtos == null)
-        {
-            const string errorMessage = "Cannot load daily intake entry collection because fetched list of entries was null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(dailyIntakeEntryDtos, "Cannot load daily intake entry collection because fetched list of entries was null.");
 
         foreach (DailyIntakeEntryDto dailyIntakeEntryDto in dailyIntakeEntryDtos)
         {

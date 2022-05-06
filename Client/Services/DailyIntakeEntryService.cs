@@ -10,7 +10,6 @@ namespace BlazingRecept.Client.Services;
 public class DailyIntakeEntryService : IDailyIntakeEntryService
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "DailyIntakeService";
     private static readonly string _apiAddress = "api/daily-intake-entries";
 
     private readonly HttpClient _publicHttpClient;
@@ -35,7 +34,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         catch (Exception exception)
         {
             const string messageTemplate = "Failed while checking existence of daily intake entry with name: {@Name}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, name);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, name);
         }
 
         return false;
@@ -55,7 +54,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         catch (Exception exception)
         {
             const string messageTemplate = "Failed while fetching daily intake entry with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
         }
 
         return null;
@@ -75,7 +74,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         catch (Exception exception)
         {
             const string messageTemplate = "Failed while fetching all daily intake collections.";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate);
         }
 
         return null;
@@ -99,7 +98,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         catch (Exception exception)
         {
             const string messageTemplate = "Failed while saving daily intake entry: {@DailyIntakeEntryDto}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, dailyIntakeEntryDto);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDto);
         }
 
         return null;
@@ -120,7 +119,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         catch (Exception exception)
         {
             const string messageTemplate = "Failed while saving daily intake entries: {@DailyIntakeEntryDtos}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, dailyIntakeEntryDtos);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDtos);
         }
 
         return false;
@@ -141,7 +140,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         catch (Exception exception)
         {
             const string messageTemplate = "Failed while deleting daily intake entry with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, messageTemplate, id);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
         }
 
         return false;

@@ -1,16 +1,13 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipesPage;
 
 public partial class RecipeCategoryTable : PageComponentBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeCategoryTable";
-
     private IReadOnlyList<RecipeDto>? _recipeDtos = new List<RecipeDto>();
 
     private Dictionary<char, List<RecipeDto>> _recipeCategories = new();
@@ -23,16 +20,11 @@ public partial class RecipeCategoryTable : PageComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        Contracts.LogAndThrowWhenNull(RecipeService, "Cannot initialize RecipeCategoryTable because recipe service has not been set.");
+
         IsLoading = true;
 
         await base.OnInitializedAsync();
-
-        if (RecipeService == null)
-        {
-            const string errorMessage = "Cannot initialize RecipeCategoryTable because recipe service has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
 
         _recipeDtos = await RecipeService.GetAllAsync();
 
@@ -43,12 +35,7 @@ public partial class RecipeCategoryTable : PageComponentBase
 
     private void CategorizeByName()
     {
-        if (_recipeDtos == null)
-        {
-            const string errorMessage = "Cannot categorize recipes because there are no recipes to categorize.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_recipeDtos, "Cannot categorize recipes because there are no recipes to categorize.");
 
         _recipeCategories.Clear();
 
@@ -72,12 +59,7 @@ public partial class RecipeCategoryTable : PageComponentBase
 
     private void HandleRecipeNavigation(RecipeDto recipeDto)
     {
-        if (NavigationManager == null)
-        {
-            const string errorMessage = "Cannot navigate to recipe page because navigation manager has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(NavigationManager, "Cannot navigate to recipe page because navigation manager has not been set.");
 
         NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
     }

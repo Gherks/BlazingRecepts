@@ -1,6 +1,7 @@
 ﻿using BlazingRecept.Server.Context;
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
+using BlazingRecept.Shared;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -9,7 +10,6 @@ namespace BlazingRecept.Server.Repositories;
 public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
 {
     private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeRepository";
 
     public RecipeRepository(BlazingReceptContext context) : base(context)
     {
@@ -24,7 +24,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         catch (Exception exception)
         {
             const string errorMessage = "Repository failed check existence of recipe with name: {@Name}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, name);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, name);
 
             return false;
         }
@@ -44,7 +44,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         catch (Exception exception)
         {
             const string errorMessage = "Repository failed to fetch recipe with id: {@Id}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, id);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
 
             return null;
         }
@@ -59,7 +59,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         catch (Exception exception)
         {
             const string errorMessage = "Repository failed to fetch recipe with name: {@Name}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, name);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, name);
 
             return null;
         }
@@ -79,7 +79,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         catch (Exception exception)
         {
             const string errorMessage = "Repository failed to fetch all recipes.";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage);
 
             return null;
         }
@@ -109,7 +109,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         catch (Exception exception)
         {
             const string errorMessage = "Repository failed to add recipe: {@Recipe}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, recipe);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, recipe);
 
             return null;
         }
@@ -121,12 +121,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
     {
         Recipe? currentRecipe = await GetByIdAsync(updatedRecipe.Id);
 
-        if (currentRecipe == null)
-        {
-            const string errorMessage = "Failed to fetch current state of recipe before updating it: {@UpdatedRecipe}";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage, updatedRecipe);
-            throw new InvalidOperationException("Failed to fetch current state of recipe before updating it.");
-        }
+        Contracts.LogAndThrowWhenNull(currentRecipe, "Failed to fetch current state of recipe before updating it: {@UpdatedRecipe}");
 
         try
         {
@@ -146,7 +141,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         catch (Exception exception)
         {
             const string errorMessage = "Repository failed to update recipe: {@Recipe}";
-            Log.ForContext(_logProperty, _logDomainName).Error(exception, errorMessage, currentRecipe);
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, currentRecipe);
         }
 
         return currentRecipe;

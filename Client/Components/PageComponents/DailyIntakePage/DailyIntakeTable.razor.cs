@@ -1,15 +1,12 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.DailyIntakePage;
 
 public partial class DailyIntakeTable : PageComponentBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "DailyIntakeTable";
-
     private List<CheckableDailyIntakeEntry> _checkableDailyIntakeEntries = new();
     private DailyIntakeEntryDto? _uneditedDailyIntakeEntryDto = null;
 
@@ -36,14 +33,9 @@ public partial class DailyIntakeTable : PageComponentBase
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryDtos, "Cannot load daily intake entry table because daily intake entry dto list is not set.");
 
-        if (DailyIntakeEntryDtos == null)
-        {
-            const string errorMessage = "Cannot load daily intake entry table because daily intake entry dto list is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        base.OnInitialized();
 
         ConstructCheckableDailyIntakeEntryList(DailyIntakeEntryDtos);
     }
@@ -138,12 +130,7 @@ public partial class DailyIntakeTable : PageComponentBase
 
     private void HandleDailyIntakeEntryEditCancelClick(DailyIntakeEntryDto editedDailyIntakeEntryDto)
     {
-        if (_uneditedDailyIntakeEntryDto == null)
-        {
-            const string errorMessage = "Cannot cancel daily intake entry table inline editing because unedited daily intake entry dto is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(_uneditedDailyIntakeEntryDto, "Cannot cancel daily intake entry table inline editing because unedited daily intake entry dto is not set.");
 
         editedDailyIntakeEntryDto.Amount = _uneditedDailyIntakeEntryDto.Amount;
         _uneditedDailyIntakeEntryDto = null;
@@ -153,15 +140,11 @@ public partial class DailyIntakeTable : PageComponentBase
 
     private string GetDailyIntakeEntryRowClass(CheckableDailyIntakeEntry checkableDailyIntakeEntry)
     {
-        if (checkableDailyIntakeEntry == null)
-        {
-            const string errorMessage = "Cannot set class on daily intake entry table row because checkable daily intake entry has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(checkableDailyIntakeEntry, "Cannot set class on daily intake entry table row because checkable daily intake entry has not been set.");
 
         return checkableDailyIntakeEntry.IsChecked ? "table-primary" : "";
     }
+
     private bool AnyRowHasBeenChecked()
     {
         return _checkableDailyIntakeEntries.Any(checkableDailyIntakeEntry => checkableDailyIntakeEntry.IsChecked == true);
@@ -208,12 +191,7 @@ public partial class DailyIntakeTable : PageComponentBase
 
     private double GetFatTotal()
     {
-        if (DailyIntakeEntryDtos == null)
-        {
-            const string errorMessage = "Cannot present daily intake grams total because daily intake list is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryDtos, "Cannot present daily intake grams total because daily intake list is not set.");
 
         double fatTotal = DailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Fat);
 
@@ -222,12 +200,7 @@ public partial class DailyIntakeTable : PageComponentBase
 
     private double GetCarbohydrateTotal()
     {
-        if (DailyIntakeEntryDtos == null)
-        {
-            const string errorMessage = "Cannot present daily intake carbohydrate total because daily intake list is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryDtos, "Cannot present daily intake carbohydrate total because daily intake list is not set.");
 
         double carbohydrateTotal = DailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Carbohydrates);
 
@@ -236,12 +209,7 @@ public partial class DailyIntakeTable : PageComponentBase
 
     private double GetProteinTotal()
     {
-        if (DailyIntakeEntryDtos == null)
-        {
-            const string errorMessage = "Cannot present daily intake protein total because daily intake list is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryDtos, "Cannot present daily intake protein total because daily intake list is not set.");
 
         double proteinTotal = DailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Protein);
 
@@ -250,12 +218,7 @@ public partial class DailyIntakeTable : PageComponentBase
 
     private double GetCalorieTotal()
     {
-        if (DailyIntakeEntryDtos == null)
-        {
-            const string errorMessage = "Cannot present daily intake calorie total because daily intake list is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryDtos, "Cannot present daily intake calorie total because daily intake list is not set.");
 
         double calorieTotal = DailyIntakeEntryDtos.Sum(dailyIntakeEntryDto => dailyIntakeEntryDto.Calories);
 
@@ -264,12 +227,7 @@ public partial class DailyIntakeTable : PageComponentBase
 
     private double GetAverageProteinPerCalorie()
     {
-        if (DailyIntakeEntryDtos == null)
-        {
-            const string errorMessage = "Cannot present daily intake protein per gram because daily intake list is not set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(DailyIntakeEntryDtos, "Cannot present daily intake protein per gram because daily intake list is not set.");
 
         if (DailyIntakeEntryDtos.Count == 0)
         {

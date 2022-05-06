@@ -1,16 +1,13 @@
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 
 namespace BlazingRecept.Client.Pages;
 
 public partial class Ingredients : PageBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "IngredientsPage";
-
     public IReadOnlyList<IngredientCollectionTypeDto>? IngredientCollectionTypes { get; private set; } = new List<IngredientCollectionTypeDto>();
 
     [Inject]
@@ -32,12 +29,7 @@ public partial class Ingredients : PageBase
 
     public void AddNewIngredientToCollection(IngredientDto ingredientDto)
     {
-        if (IngredientCollectionTypes == null)
-        {
-            const string errorMessage = "Cannot add new ingredient to collection because ingredient collection is null.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(IngredientCollectionTypes, "Cannot add new ingredient to collection because ingredient collection is null.");
 
         int categoryIndex = ingredientDto.CategoryDto.SortOrder;
 

@@ -1,16 +1,13 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Pages;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 
 namespace BlazingRecept.Client.Components.PageComponents.RecipePage;
 
 public partial class RecipeNutritionChart : PageComponentBase
 {
-    private static readonly string _logProperty = "Domain";
-    private static readonly string _logDomainName = "RecipeNutritionChart";
-
     private NutritionalChartItem[]? _nutritionalChartItems = null;
 
     [CascadingParameter]
@@ -18,23 +15,12 @@ public partial class RecipeNutritionChart : PageComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot ingredient measurement table rows because recipe page reference has not been set.");
+        Contracts.LogAndThrowWhenNull(RecipePage.RecipeDto, "Cannot ingredient measurement table rows because recipe has not been set.");
+
         IsLoading = true;
 
         await base.OnInitializedAsync();
-
-        if (RecipePage == null)
-        {
-            const string errorMessage = "Cannot ingredient measurement table rows because recipe page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (RecipePage.RecipeDto == null)
-        {
-            const string errorMessage = "Cannot ingredient measurement table rows because recipe has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
 
         LoadChartItems();
 
@@ -43,19 +29,8 @@ public partial class RecipeNutritionChart : PageComponentBase
 
     private void LoadChartItems()
     {
-        if (RecipePage == null)
-        {
-            const string errorMessage = "Cannot construct nutritional chart items because recipe page reference has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
-
-        if (RecipePage.RecipeDto == null)
-        {
-            const string errorMessage = "Cannot construct nutritional chart items because recipe has not been set.";
-            Log.ForContext(_logProperty, _logDomainName).Error(errorMessage);
-            throw new InvalidOperationException(errorMessage);
-        }
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot construct nutritional chart items because recipe page reference has not been set.");
+        Contracts.LogAndThrowWhenNull(RecipePage.RecipeDto, "Cannot construct nutritional chart items because recipe has not been set.");
 
         _nutritionalChartItems = new NutritionalChartItem[] {
             new()
