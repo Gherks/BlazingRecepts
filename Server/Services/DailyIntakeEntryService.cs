@@ -82,11 +82,11 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
             dailyIntakeEntry = await _dailyIntakeEntryRepository.UpdateAsync(dailyIntakeEntry);
         }
 
-        Contracts.LogAndThrowWhenNull(dailyIntakeEntry, "Failed to add or update daily intake entry({@DailyIntakeEntryDto}), result was null.");
+        Contracts.LogAndThrowWhenNull(dailyIntakeEntry, $"Failed to add or update daily intake entry({dailyIntakeEntryDto}), result was null.");
 
         DailyIntakeEntryDto? reloadedDailyIntakeEntryDto = await LoadDailyIntakeEntryDtoFromDailyIntakeEntry(dailyIntakeEntry);
 
-        Contracts.LogAndThrowWhenNull(reloadedDailyIntakeEntryDto, "Failed to reload added or updated daily intake entry({@DailyIntakeEntryDto}), result was null.");
+        Contracts.LogAndThrowWhenNull(reloadedDailyIntakeEntryDto, $"Failed to reload added or updated daily intake entry({dailyIntakeEntryDto}), result was null.");
 
         return reloadedDailyIntakeEntryDto;
     }
@@ -112,8 +112,8 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
             }
             catch (Exception exception)
             {
-                const string errorMessage = "Something went wrong while saving and/or updating multiple daily intake entries: ({@DailyIntakeEntries})";
-                Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, dailyIntakeEntryDtos);
+                string messageTemplate = $"Something went wrong while saving and/or updating multiple daily intake entries: {dailyIntakeEntryDtos}";
+                Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDtos);
             }
         }
 

@@ -83,8 +83,8 @@ public class IngredientController : ControllerBase
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Controller failed while saving ingredient: {@IngredientDto}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, ingredientDto);
+            const string messageTemplate = "Controller failed while saving ingredient: {@IngredientDto}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, ingredientDto);
 
             return BadRequest();
         }
@@ -104,8 +104,8 @@ public class IngredientController : ControllerBase
             return Ok(ingredientRemoved);
         }
 
-        const string errorMessage = "Controller failed to delete ingredient with id: {@Id}";
-        Log.ForContext(_logProperty, GetType().Name).Error(errorMessage, id);
+        const string messageTemplate = "Controller failed to delete ingredient with id: {@Id}";
+        Log.ForContext(_logProperty, GetType().Name).Error(messageTemplate, id);
 
         return BadRequest();
     }

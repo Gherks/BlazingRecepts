@@ -25,8 +25,8 @@ public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
         }
         catch (Exception exception)
         {
-            string errorMessage = "Repository failed to delete recipe with id: {@CategoryType}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, categoryType);
+            string messageTemplate = "Repository failed to delete recipe with id: {@CategoryType}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, categoryType);
 
             return null;
         }

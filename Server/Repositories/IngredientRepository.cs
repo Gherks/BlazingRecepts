@@ -22,7 +22,9 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, "Repository failed check existence of ingredient with name: {@Name}", name);
+            const string messageTemplate = "Repository failed check existence of ingredient with name: {@Name}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, name);
+
             return false;
         }
     }
@@ -37,8 +39,8 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to fetch ingredient with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
+            const string messageTemplate = "Repository failed to fetch ingredient with id: {@Id}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
 
             return null;
         }
@@ -52,8 +54,8 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to fetch recipe with name: {@Name}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, name);
+            const string messageTemplate = "Repository failed to fetch recipe with name: {@Name}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, name);
 
             return null;
         }
@@ -91,8 +93,8 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to add ingredient: {@Ingredient}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, ingredient);
+            const string messageTemplate = "Repository failed to add ingredient: {@Ingredient}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, ingredient);
 
             return null;
         }

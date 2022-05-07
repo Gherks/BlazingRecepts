@@ -25,8 +25,8 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to check existence of entity with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
+            const string messageTemplate = "Repository failed to check existence of entity with id: {@Id}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
 
             return false;
         }
@@ -40,8 +40,8 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to fetch entity with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
+            const string messageTemplate = "Repository failed to fetch entity with id: {@Id}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
 
             return null;
         }
@@ -73,8 +73,8 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to add entity: {@Entity}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, entity);
+            const string messageTemplate = "Repository failed to add entity: {@Entity}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, entity);
 
             return null;
         }
@@ -96,8 +96,8 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to add many entities: {@Entities}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, entities);
+            const string messageTemplate = "Repository failed to add many entities: {@Entities}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, entities);
 
             return null;
         }
@@ -116,8 +116,8 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to update entity: {@Entity}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, entity);
+            const string messageTemplate = "Repository failed to update entity: {@Entity}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, entity);
         }
 
         return entity;
@@ -141,8 +141,8 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to update many entities: {@Entities}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, entities);
+            const string messageTemplate = "Repository failed to update many entities: {@Entities}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, entities);
         }
     }
 
@@ -157,8 +157,8 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to delete entity: {@Entity}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, entity);
+            const string messageTemplate = "Repository failed to delete entity: {@Entity}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, entity);
 
             return false;
         }
@@ -175,8 +175,8 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to delete many entities: {@Entities}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, entities);
+            const string messageTemplate = "Repository failed to delete many entities: {@Entities}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, entities);
 
             return false;
         }

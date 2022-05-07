@@ -35,7 +35,7 @@ public class CategoryService : ICategoryService
     {
         IReadOnlyList<Category>? categories = await _categoryRepository.ListAllOfTypeAsync(categoryType);
 
-        Contracts.LogAndThrowWhenNull(categories, "Fetched category list from repository was null, tried to fetch all of category type: {@CategoryType}");
+        Contracts.LogAndThrowWhenNull(categories, $"Fetched category list from repository was null, tried to fetch all of category type: {categoryType}");
 
         List<CategoryDto> categoryDtos = categories.Select(ingredientCategory => _mapper.Map<CategoryDto>(ingredientCategory)).ToList();
 

@@ -83,8 +83,8 @@ public class DailyIntakeEntryController : ControllerBase
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Controller failed while saving daily intake entry: {@DailyIntakeEntryDto}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, dailyIntakeEntryDto);
+            const string messageTemplate = "Controller failed while saving daily intake entry: {@DailyIntakeEntryDto}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDto);
 
             return BadRequest();
         }
@@ -117,8 +117,8 @@ public class DailyIntakeEntryController : ControllerBase
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Controller failed while saving daily intake entries: {@DailyIntakeEntryDtos}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, dailyIntakeEntryDtos);
+            const string messageTemplate = "Controller failed while saving daily intake entries: {@DailyIntakeEntryDtos}";
+            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDtos);
 
             return BadRequest();
         }
@@ -138,8 +138,8 @@ public class DailyIntakeEntryController : ControllerBase
             return Ok(dailyIntakeEntryRemoved);
         }
 
-        const string errorMessage = "Controller failed to delete daily intake entry with id: {@Id}";
-        Log.ForContext(_logProperty, GetType().Name).Error(errorMessage, id);
+        const string messageTemplate = "Controller failed to delete daily intake entry with id: {@Id}";
+        Log.ForContext(_logProperty, GetType().Name).Error(messageTemplate, id);
 
         return BadRequest($"Failed to delete daily intake entry.");
     }

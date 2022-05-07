@@ -44,8 +44,8 @@ public class CategoryController : ControllerBase
         }
         else
         {
-            const string errorMessage = "Controller couldn't fetch category because given integer({@CategoryType}) doesn't map to a category type.";
-            Log.ForContext(_logProperty, GetType().Name).Error(errorMessage, categoryType);
+            const string messageTemplate = "Controller couldn't fetch category because given integer({@CategoryType}) doesn't map to a category type.";
+            Log.ForContext(_logProperty, GetType().Name).Error(messageTemplate, categoryType);
 
             return BadRequest();
         }
