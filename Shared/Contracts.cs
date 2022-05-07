@@ -13,12 +13,15 @@ public static class Contracts
     {
         if (value is null)
         {
-            Log.ForContext(_logProperty, NameOfCallingClass()).Error(errorMessage);
+            string callingClassDescription = GetCallingClassDescription();
+            string callingClassName = GetCallingClassName(callingClassDescription);
+
+            Log.ForContext(_logProperty, callingClassName).Error(errorMessage);
             throw new ArgumentNullException(nameof(value), errorMessage);
         }
     }
 
-    private static string NameOfCallingClass()
+    private static string GetCallingClassDescription()
     {
         string? fullName;
         Type? declaringType;
@@ -51,5 +54,21 @@ public static class Contracts
         }
 
         return fullName;
+    }
+
+    private static string GetCallingClassName(string callingClassDescription)
+    {
+        int callingClassNameStartIndex = callingClassDescription.LastIndexOf(".");
+        int callingClassNameEndIndex = callingClassDescription.IndexOf("+", callingClassNameStartIndex);
+
+        if (callingClassNameStartIndex == -1 || callingClassNameEndIndex == -1)
+        {
+            return "Unrecognized";
+        }
+
+        int startIndex = callingClassNameStartIndex + 1;
+        int endIndex = callingClassNameEndIndex - callingClassNameStartIndex - 1;
+
+        return callingClassDescription.Substring(startIndex, endIndex);
     }
 }
