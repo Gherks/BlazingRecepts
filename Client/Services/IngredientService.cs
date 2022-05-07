@@ -78,7 +78,7 @@ public class IngredientService : IIngredientService
 
                 if (ingredientDtos == null)
                 {
-                    throw new InvalidOperationException("Failed because fetched ingredient list is null.");
+                    throw new NullReferenceException("Failed because fetched ingredient list is null.");
                 }
 
                 return ingredientDtos;

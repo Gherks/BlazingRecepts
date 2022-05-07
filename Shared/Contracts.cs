@@ -14,7 +14,7 @@ public static class Contracts
         if (value is null)
         {
             string callingClassDescription = GetCallingClassDescription();
-            string callingClassName = GetCallingClassName(callingClassDescription);
+            string callingClassName = GetCallingClassNameFromDescription(callingClassDescription);
 
             Log.ForContext(_logProperty, callingClassName).Error(errorMessage);
             throw new ArgumentNullException(nameof(value), errorMessage);
@@ -56,7 +56,7 @@ public static class Contracts
         return fullName;
     }
 
-    private static string GetCallingClassName(string callingClassDescription)
+    private static string GetCallingClassNameFromDescription(string callingClassDescription)
     {
         int callingClassNameStartIndex = callingClassDescription.LastIndexOf(".");
         int callingClassNameEndIndex = callingClassDescription.IndexOf("+", callingClassNameStartIndex);
