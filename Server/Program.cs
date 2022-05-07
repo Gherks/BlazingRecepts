@@ -1,3 +1,4 @@
+using Azure.Identity;
 using BlazingRecept.Server.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
@@ -23,6 +24,17 @@ builder.Host.UseSerilog((hostBuilderContext, serviceProvider, loggerConfiguratio
     .Enrich.FromLogContext()
     .ReadFrom.Configuration(hostBuilderContext.Configuration));
 
+// Configure Azure key vault
+if (builder.Environment.IsProduction())
+{
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://{builder.Configuration["AzureKeyVaultName"]}.vault.azure.net/"),
+        new DefaultAzureCredential(new DefaultAzureCredentialOptions
+        {
+            ManagedIdentityClientId = builder.Configuration["AzureADManagedIdentityClientId"]
+        }));
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,6 +49,8 @@ else
     app.UseHsts();
 }
 
+//app.UseMiddleware<CustomExceptionHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseSwagger();
@@ -44,7 +58,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "BlazingRecept API V1");
     });
-
 }
 
 app.UseHttpsRedirection();
