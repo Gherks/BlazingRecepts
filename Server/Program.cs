@@ -29,10 +29,7 @@ if (builder.Environment.IsProduction())
 {
     builder.Configuration.AddAzureKeyVault(
         new Uri($"https://{builder.Configuration["AzureKeyVaultName"]}.vault.azure.net/"),
-        new DefaultAzureCredential(new DefaultAzureCredentialOptions
-        {
-            ManagedIdentityClientId = builder.Configuration["AzureADManagedIdentityClientId"]
-        }));
+        new DefaultAzureCredential());
 }
 
 var app = builder.Build();
