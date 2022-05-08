@@ -19,6 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Contracts\BlazingRecept.Contracts.csproj" />
 		<ProjectReference Include="..\Shared\BlazingRecept.Shared.csproj" />
 	</ItemGroup>
 

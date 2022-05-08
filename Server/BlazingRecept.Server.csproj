@@ -27,6 +27,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Client\BlazingRecept.Client.csproj" />
+		<ProjectReference Include="..\Contracts\BlazingRecept.Contracts.csproj" />
 		<ProjectReference Include="..\Shared\BlazingRecept.Shared.csproj" />
 	</ItemGroup>
 

@@ -177,7 +177,8 @@ public static class Log
             skipFrames++;
             fullName = declaringType.FullName;
         }
-        while (declaringType.Module.Name.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase));
+        while (declaringType.Module.Name.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase) ||
+            declaringType.Module.Name.Equals("BlazingRecept.Contracts.dll", StringComparison.OrdinalIgnoreCase));
 
         if (fullName == null)
         {
@@ -190,7 +191,12 @@ public static class Log
     private static string GetCallingClassNameFromDescription(string callingClassDescription)
     {
         int callingClassNameStartIndex = callingClassDescription.LastIndexOf(".");
-        int callingClassNameEndIndex = callingClassDescription.IndexOf("+", callingClassNameStartIndex);
+        int callingClassNameEndIndex = callingClassDescription.IndexOf("`", callingClassNameStartIndex);
+
+        if (callingClassNameEndIndex == -1)
+        {
+            callingClassNameEndIndex = callingClassDescription.IndexOf("+", callingClassNameStartIndex);
+        }
 
         if (callingClassNameStartIndex == -1 || callingClassNameEndIndex == -1)
         {
