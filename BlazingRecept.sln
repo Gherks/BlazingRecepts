@@ -8,6 +8,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingRecept.Client", "Cli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingRecept.Shared", "Shared\BlazingRecept.Shared.csproj", "{B95BF90B-99C0-45CE-905E-1229E790AC58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazingRecept.Contracts", "Contracts\BlazingRecept.Contracts.csproj", "{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,18 @@ Global
 		{B95BF90B-99C0-45CE-905E-1229E790AC58}.Release|x64.Build.0 = Release|Any CPU
 		{B95BF90B-99C0-45CE-905E-1229E790AC58}.Release|x86.ActiveCfg = Release|Any CPU
 		{B95BF90B-99C0-45CE-905E-1229E790AC58}.Release|x86.Build.0 = Release|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Debug|x64.Build.0 = Debug|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Debug|x86.Build.0 = Debug|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Release|x64.ActiveCfg = Release|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Release|x64.Build.0 = Release|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Release|x86.ActiveCfg = Release|Any CPU
+		{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
