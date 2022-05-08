@@ -1,9 +1,9 @@
 ﻿using BlazingRecept.Server.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
-using Serilog;
 
 namespace BlazingRecept.Server.Controllers;
 
@@ -11,7 +11,6 @@ namespace BlazingRecept.Server.Controllers;
 [Route("api/ingredients")]
 public class IngredientController : ControllerBase
 {
-    private static readonly string _logProperty = "Domain";
     private static readonly string[] _scopeRequiredByApi = new string[] { "API.Access" };
 
     private readonly IIngredientService _ingredientService;
@@ -83,9 +82,7 @@ public class IngredientController : ControllerBase
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Controller failed while saving ingredient: {@IngredientDto}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, ingredientDto);
-
+            Log.Error(exception, $"Controller failed while saving ingredient: {ingredientDto}");
             return BadRequest();
         }
     }
@@ -104,9 +101,7 @@ public class IngredientController : ControllerBase
             return Ok(ingredientRemoved);
         }
 
-        const string messageTemplate = "Controller failed to delete ingredient with id: {@Id}";
-        Log.ForContext(_logProperty, GetType().Name).Error(messageTemplate, id);
-
+        Log.Error($"Controller failed to delete ingredient with id: {id}");
         return BadRequest();
     }
 }

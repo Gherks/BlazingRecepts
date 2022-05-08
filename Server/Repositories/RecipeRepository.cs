@@ -3,14 +3,11 @@ using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Shared;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 namespace BlazingRecept.Server.Repositories;
 
 public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
 {
-    private static readonly string _logProperty = "Domain";
-
     public RecipeRepository(BlazingReceptContext context) : base(context)
     {
     }
@@ -23,9 +20,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Repository failed check existence of recipe with name: {@Name}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, name);
-
+            Log.Error(exception, $"Repository failed check existence of recipe with name: {name}");
             return false;
         }
     }
@@ -43,9 +38,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Repository failed to fetch recipe with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
-
+            Log.Error(exception, $"Repository failed to fetch recipe with id: {id}");
             return null;
         }
     }
@@ -58,9 +51,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Repository failed to fetch recipe with name: {@Name}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, name);
-
+            Log.Error(exception, $"Repository failed to fetch recipe with name: {name}");
             return null;
         }
     }
@@ -78,9 +69,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to fetch all recipes.";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage);
-
+            Log.Error(exception, "Repository failed to fetch all recipes.");
             return null;
         }
     }
@@ -108,9 +97,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Repository failed to add recipe: {@Recipe}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, recipe);
-
+            Log.Error(exception, $"Repository failed to add recipe: {recipe}");
             return null;
         }
 
@@ -140,8 +127,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Repository failed to update recipe: {@Recipe}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, currentRecipe);
+            Log.Error(exception, $"Repository failed to update recipe: {currentRecipe}");
         }
 
         return currentRecipe;

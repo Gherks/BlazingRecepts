@@ -2,7 +2,6 @@ using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Serilog;
 using System.Net;
 using System.Net.Http.Json;
 using static BlazingRecept.Shared.Enums;
@@ -11,7 +10,6 @@ namespace BlazingRecept.Client.Services;
 
 public class IngredientService : IIngredientService
 {
-    private static readonly string _logProperty = "Domain";
     private static readonly string _apiAddress = "api/ingredients";
 
     private readonly HttpClient _publicHttpClient;
@@ -39,8 +37,7 @@ public class IngredientService : IIngredientService
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Failed while checking existence of ingredient with name: {@Name}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, name);
+            Log.Error(exception, $"Failed while checking existence of ingredient with name: {name}");
         }
 
         return false;
@@ -59,8 +56,7 @@ public class IngredientService : IIngredientService
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Failed while fetching ingredient with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
+            Log.Error(exception, $"Failed while fetching ingredient with id: {id}");
         }
 
         return null;
@@ -87,7 +83,7 @@ public class IngredientService : IIngredientService
         catch (Exception exception)
         {
             const string errorMessage = "Failed while fetching all ingredients.";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage);
+            Log.Error(exception, errorMessage);
         }
 
         return null;
@@ -145,8 +141,7 @@ public class IngredientService : IIngredientService
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Failed while saving ingredient: {@IngredientDto}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, ingredientDto);
+            Log.Error(exception, $"Failed while saving ingredient: {ingredientDto}");
         }
 
         return null;
@@ -166,8 +161,7 @@ public class IngredientService : IIngredientService
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Failed while deleting ingredient with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
+            Log.Error(exception, $"Failed while deleting ingredient with id: {id}");
         }
 
         return false;

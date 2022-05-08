@@ -1,9 +1,9 @@
 ﻿using BlazingRecept.Server.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
-using Serilog;
 
 namespace BlazingRecept.Server.Controllers;
 
@@ -11,7 +11,6 @@ namespace BlazingRecept.Server.Controllers;
 [Route("api/daily-intake-entries")]
 public class DailyIntakeEntryController : ControllerBase
 {
-    private static readonly string _logProperty = "Domain";
     private static readonly string[] _scopeRequiredByApi = new string[] { "API.Access" };
 
     private readonly IDailyIntakeEntryService _dailyIntakeEntryService;
@@ -83,9 +82,7 @@ public class DailyIntakeEntryController : ControllerBase
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Controller failed while saving daily intake entry: {@DailyIntakeEntryDto}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDto);
-
+            Log.Error(exception, $"Controller failed while saving daily intake entry: {dailyIntakeEntryDto}");
             return BadRequest();
         }
     }
@@ -117,9 +114,7 @@ public class DailyIntakeEntryController : ControllerBase
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Controller failed while saving daily intake entries: {@DailyIntakeEntryDtos}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDtos);
-
+            Log.Error(exception, $"Controller failed while saving daily intake entries: {dailyIntakeEntryDtos}");
             return BadRequest();
         }
     }
@@ -138,9 +133,7 @@ public class DailyIntakeEntryController : ControllerBase
             return Ok(dailyIntakeEntryRemoved);
         }
 
-        const string messageTemplate = "Controller failed to delete daily intake entry with id: {@Id}";
-        Log.ForContext(_logProperty, GetType().Name).Error(messageTemplate, id);
-
+        Log.Error($"Controller failed to delete daily intake entry with id: {id}");
         return BadRequest($"Failed to delete daily intake entry.");
     }
 }

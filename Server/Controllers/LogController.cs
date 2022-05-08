@@ -2,7 +2,6 @@
 using BlazingRecept.Shared.SerilogDto;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Serilog;
 using Serilog.Events;
 using Serilog.Parsing;
 using System.Text.Json;
@@ -35,11 +34,11 @@ public sealed class LogController : ControllerBase
                 List<LogEventProperty> properties = BuildLogEventProperties(logEventDto);
 
                 LogEvent logEvent = new LogEvent(logEventDto.Timestamp, level, exception, messageTemplate, properties);
-                Log.Write(logEvent);
+                Serilog.Log.Write(logEvent);
             }
             else
             {
-                Log.Information($"ClientLog (Failed to determine log level) - {logEventDto.RenderedMessage}");
+                Serilog.Log.Information($"ClientLog (Failed to determine log level) - {logEventDto.RenderedMessage}");
             }
         }
     }

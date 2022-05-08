@@ -1,15 +1,13 @@
 ﻿using BlazingRecept.Server.Context;
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
+using BlazingRecept.Shared;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 namespace BlazingRecept.Server.Repositories;
 
 public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepository
 {
-    private static readonly string _logProperty = "Domain";
-
     public IngredientRepository(BlazingReceptContext context) : base(context)
     {
     }
@@ -22,9 +20,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Repository failed check existence of ingredient with name: {@Name}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, name);
-
+            Log.Error(exception, $"Repository failed check existence of ingredient with name: {name}");
             return false;
         }
     }
@@ -39,9 +35,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Repository failed to fetch ingredient with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
-
+            Log.Error(exception, $"Repository failed to fetch ingredient with id: {id}");
             return null;
         }
     }
@@ -54,9 +48,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Repository failed to fetch recipe with name: {@Name}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, name);
-
+            Log.Error(exception, $"Repository failed to fetch recipe with name: {name}");
             return null;
         }
     }
@@ -71,9 +63,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Repository failed to fetch many ingredients";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage);
-
+            Log.Error(exception, "Repository failed to fetch many ingredients");
             return null;
         }
     }
@@ -93,9 +83,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Repository failed to add ingredient: {@Ingredient}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, ingredient);
-
+            Log.Error(exception, $"Repository failed to add ingredient: {ingredient}");
             return null;
         }
 

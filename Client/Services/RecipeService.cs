@@ -2,7 +2,6 @@
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Serilog;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -10,7 +9,6 @@ namespace BlazingRecept.Client.Services;
 
 public class RecipeService : IRecipeService
 {
-    private static readonly string _logProperty = "Domain";
     private static readonly string _apiAddress = "api/recipes";
 
     private readonly HttpClient _publicHttpClient;
@@ -34,8 +32,7 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Failed while checking existence of recipe with name: {@Name}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, name);
+            Log.Error(exception, $"Failed while checking existence of recipe with name: {name}");
         }
 
         return false;
@@ -60,8 +57,7 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Failed while fetching recipe with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
+            Log.Error(exception, $"Failed while fetching recipe with id: {id}");
         }
 
         return null;
@@ -89,8 +85,7 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Failed while fetching all recipes.";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage);
+            Log.Error(exception, "Failed while fetching all recipes.");
         }
 
         return null;
@@ -119,8 +114,7 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Failed while saving recipe: {@RecipeDto}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, recipeDto);
+            Log.Error(exception, $"Failed while saving recipe: {recipeDto}");
         }
 
         return null;
@@ -140,8 +134,7 @@ public class RecipeService : IRecipeService
         }
         catch (Exception exception)
         {
-            const string errorMessage = "Failed while deleting recipe with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, errorMessage, id);
+            Log.Error(exception, $"Failed while deleting recipe with id: {id}");
         }
 
         return false;

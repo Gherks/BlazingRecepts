@@ -9,14 +9,12 @@ using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Serilog;
 using static BlazingRecept.Shared.Enums;
 
 namespace BlazingRecept.Client.Pages;
 
 public partial class RecipeWorkbench : PageBase
 {
-    private static readonly string _logProperty = "Domain";
     private static readonly string _editFormId = "RecipeWorkbenchEditForm";
 
     private Form _form = new();
@@ -239,8 +237,7 @@ public partial class RecipeWorkbench : PageBase
         }
         else
         {
-            const string errorMessage = "Couldn't remove ingredient from edited recipe because sought ingredient doesn't exist in recipe.";
-            Log.ForContext(_logProperty, GetType().Name).Warning(errorMessage);
+            Log.Warning("Couldn't remove ingredient from edited recipe because sought ingredient doesn't exist in recipe.");
         }
 
         return Task.CompletedTask;

@@ -1,7 +1,7 @@
 using BlazingRecept.Client.Services.Interfaces;
+using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Serilog;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -9,7 +9,6 @@ namespace BlazingRecept.Client.Services;
 
 public class DailyIntakeEntryService : IDailyIntakeEntryService
 {
-    private static readonly string _logProperty = "Domain";
     private static readonly string _apiAddress = "api/daily-intake-entries";
 
     private readonly HttpClient _publicHttpClient;
@@ -33,8 +32,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while checking existence of daily intake entry with name: {@Name}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, name);
+            Log.Error(exception, $"Failed while checking existence of daily intake entry with name: {name}");
         }
 
         return false;
@@ -53,8 +51,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while fetching daily intake entry with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
+            Log.Error(exception, $"Failed while fetching daily intake entry with id: {id}");
         }
 
         return null;
@@ -73,8 +70,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while fetching all daily intake collections.";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate);
+            Log.Error(exception, "Failed while fetching all daily intake collections.");
         }
 
         return null;
@@ -97,8 +93,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while saving daily intake entry: {@DailyIntakeEntryDto}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDto);
+             Log.Error(exception, $"Failed while saving daily intake entry: {dailyIntakeEntryDto}");
         }
 
         return null;
@@ -118,8 +113,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while saving daily intake entries: {@DailyIntakeEntryDtos}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDtos);
+            Log.Error(exception, $"Failed while saving daily intake entries: {dailyIntakeEntryDtos}");
         }
 
         return false;
@@ -139,8 +133,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         }
         catch (Exception exception)
         {
-            const string messageTemplate = "Failed while deleting daily intake entry with id: {@Id}";
-            Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, id);
+            Log.Error(exception, $"Failed while deleting daily intake entry with id: {@id}");
         }
 
         return false;

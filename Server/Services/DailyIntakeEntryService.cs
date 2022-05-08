@@ -5,14 +5,11 @@ using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using BlazingRecept.Shared.Extensions;
-using Serilog;
 
 namespace BlazingRecept.Server.Services;
 
 public class DailyIntakeEntryService : IDailyIntakeEntryService
 {
-    private const string _logProperty = "Domain";
-
     private readonly IDailyIntakeEntryRepository _dailyIntakeEntryRepository;
     private readonly IRecipeService _recipeService;
     private readonly IIngredientService _ingredientService;
@@ -112,8 +109,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
             }
             catch (Exception exception)
             {
-                string messageTemplate = $"Something went wrong while saving and/or updating multiple daily intake entries: {dailyIntakeEntryDtos}";
-                Log.ForContext(_logProperty, GetType().Name).Error(exception, messageTemplate, dailyIntakeEntryDtos);
+                Log.Error(exception, $"Something went wrong while saving and/or updating multiple daily intake entries: {dailyIntakeEntryDtos}");
             }
         }
 
@@ -151,7 +147,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         }
 
         const string errorMessage = "Could not find product id from given product name because product with given name was not found in neither recipes nor ingredients.";
-        Log.ForContext(_logProperty, GetType().Name).Error(errorMessage);
+        Log.Error(errorMessage);
         throw new InvalidOperationException(errorMessage);
     }
 
