@@ -9,7 +9,7 @@ public static class Contracts
         if (value is null)
         {
             Log.Error(errorMessage);
-            throw new ArgumentNullException(nameof(value), errorMessage);
+            throw new NullReferenceException(errorMessage);
         }
     }
 }

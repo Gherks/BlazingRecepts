@@ -20,6 +20,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Contracts\BlazingRecept.Contracts.csproj" />
+		<ProjectReference Include="..\Logging\BlazingRecept.Logging.csproj" />
 		<ProjectReference Include="..\Shared\BlazingRecept.Shared.csproj" />
 	</ItemGroup>
 

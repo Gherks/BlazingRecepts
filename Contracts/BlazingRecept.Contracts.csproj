@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\BlazingRecept.Shared.csproj" />
+    <ProjectReference Include="..\Logging\BlazingRecept.Logging.csproj" />
   </ItemGroup>
 
 </Project>
