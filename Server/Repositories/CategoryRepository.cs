@@ -1,7 +1,7 @@
-﻿using BlazingRecept.Server.Context;
+﻿using BlazingRecept.Logging;
+using BlazingRecept.Server.Context;
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
-using BlazingRecept.Shared;
 using Microsoft.EntityFrameworkCore;
 using static BlazingRecept.Shared.Enums;
 

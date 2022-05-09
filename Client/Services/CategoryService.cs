@@ -1,5 +1,5 @@
 ﻿using BlazingRecept.Client.Services.Interfaces;
-using BlazingRecept.Shared;
+using BlazingRecept.Logging;
 using BlazingRecept.Shared.Dto;
 using System.Net;
 using System.Net.Http.Json;

@@ -4,6 +4,7 @@ using BlazingRecept.Client.Extensions;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
 using BlazingRecept.Client.Utilities;
+using BlazingRecept.Logging;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web;

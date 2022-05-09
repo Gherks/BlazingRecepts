@@ -1,5 +1,5 @@
 using BlazingRecept.Client.Services.Interfaces;
-using BlazingRecept.Shared;
+using BlazingRecept.Logging;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using System.Net;

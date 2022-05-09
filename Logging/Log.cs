@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace BlazingRecept.Shared;
+namespace BlazingRecept.Logging;
 
 public static class Log
 {

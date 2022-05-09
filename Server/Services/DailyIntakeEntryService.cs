@@ -1,4 +1,5 @@
 using AutoMapper;
+using BlazingRecept.Logging;
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
