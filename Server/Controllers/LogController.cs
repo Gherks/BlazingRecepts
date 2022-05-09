@@ -1,4 +1,4 @@
-﻿using BlazingRecept.Shared;
+﻿using BlazingRecept.Contract;
 using BlazingRecept.Shared.SerilogDto;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

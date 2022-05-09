@@ -1,8 +1,8 @@
-﻿using BlazingRecept.Logging;
+﻿using BlazingRecept.Contract;
+using BlazingRecept.Logging;
 using BlazingRecept.Server.Context;
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
-using BlazingRecept.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazingRecept.Server.Repositories;

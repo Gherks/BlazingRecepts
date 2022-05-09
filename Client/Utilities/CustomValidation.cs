@@ -1,4 +1,4 @@
-using BlazingRecept.Shared;
+using BlazingRecept.Contract;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 

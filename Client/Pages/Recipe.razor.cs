@@ -1,7 +1,7 @@
 using BlazingRecept.Client.Components.Common;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
-using BlazingRecept.Shared;
+using BlazingRecept.Contract;
 using BlazingRecept.Shared.Dto;
 using Havit.Blazor.Components.Web;
 using Havit.Blazor.Components.Web.Bootstrap;

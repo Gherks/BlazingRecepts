@@ -1,5 +1,6 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
 using BlazingRecept.Client.Pages;
+using BlazingRecept.Contract;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 using BlazingRecept.Shared.Extensions;

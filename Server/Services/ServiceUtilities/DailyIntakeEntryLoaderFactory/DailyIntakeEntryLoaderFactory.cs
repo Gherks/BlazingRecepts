@@ -1,6 +1,6 @@
+using BlazingRecept.Contract;
 using BlazingRecept.Logging;
 using BlazingRecept.Server.Services.ServiceUtilities.DailyIntakeEntryLoaders;
-using BlazingRecept.Shared;
 
 namespace BlazingRecept.Server.Services.ServiceUtilities.DailyIntakeEntryLoaderFactory;
 

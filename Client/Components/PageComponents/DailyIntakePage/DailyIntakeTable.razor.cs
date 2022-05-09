@@ -1,5 +1,5 @@
 using BlazingRecept.Client.Components.PageComponents.Base;
-using BlazingRecept.Shared;
+using BlazingRecept.Contract;
 using BlazingRecept.Shared.Dto;
 using Microsoft.AspNetCore.Components;
 

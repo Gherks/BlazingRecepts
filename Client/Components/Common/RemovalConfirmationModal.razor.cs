@@ -1,4 +1,4 @@
-﻿using BlazingRecept.Shared;
+﻿using BlazingRecept.Contract;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 

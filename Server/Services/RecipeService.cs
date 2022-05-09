@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using BlazingRecept.Contract;
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
-using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
 
 namespace BlazingRecept.Server.Services;

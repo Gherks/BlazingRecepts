@@ -2,7 +2,7 @@ using BlazingRecept.Client.Components.Common;
 using BlazingRecept.Client.Components.PageComponents.DailyIntakePage;
 using BlazingRecept.Client.Pages.Base;
 using BlazingRecept.Client.Services.Interfaces;
-using BlazingRecept.Shared;
+using BlazingRecept.Contract;
 using BlazingRecept.Shared.Dto;
 using BlazingRecept.Shared.Extensions;
 using Havit.Blazor.Components.Web;

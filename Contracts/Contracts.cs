@@ -1,7 +1,7 @@
 ﻿using BlazingRecept.Logging;
 using System.Diagnostics.CodeAnalysis;
 
-namespace BlazingRecept.Shared;
+namespace BlazingRecept.Contract;
 
 public static class Contracts
 {
