@@ -3,6 +3,8 @@ using BlazingRecept.Server.Repositories;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services;
 using BlazingRecept.Server.Services.Interfaces;
+using BlazingRecept.Server.Services.ServiceUtilities.DailyIntakeEntryLoaderFactory;
+using BlazingRecept.Server.Services.ServiceUtilities.DailyIntakeEntryLoaders;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazingRecept.Server.Extensions;
@@ -39,6 +41,10 @@ public static class BlazingReceptServiceCollectionExtensions
         builder.Services.AddScoped<IDailyIntakeEntryRepository, DailyIntakeEntryRepository>();
         builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
         builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
+
+        builder.Services.AddScoped<IDailyIntakeEntryLoaderFactory, DailyIntakeEntryLoaderFactory>();
+        builder.Services.AddTransient<DailyIntakeEntryFromRecipeLoader>();
+        builder.Services.AddTransient<DailyIntakeEntryFromIngredientLoader>();
 
         return builder;
     }

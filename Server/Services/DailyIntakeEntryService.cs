@@ -2,29 +2,32 @@ using AutoMapper;
 using BlazingRecept.Server.Entities;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
+using BlazingRecept.Server.Services.ServiceUtilities.DailyIntakeEntryLoaderFactory;
+using BlazingRecept.Server.Services.ServiceUtilities.DailyIntakeEntryLoaders;
 using BlazingRecept.Shared;
 using BlazingRecept.Shared.Dto;
-using BlazingRecept.Shared.Extensions;
 
 namespace BlazingRecept.Server.Services;
 
 public class DailyIntakeEntryService : IDailyIntakeEntryService
 {
     private readonly IDailyIntakeEntryRepository _dailyIntakeEntryRepository;
-    private readonly IRecipeService _recipeService;
-    private readonly IIngredientService _ingredientService;
+    private readonly IReadOnlyList<IDailyIntakeEntryLoader> dailyIntakeEntryLoaders;
     private readonly IMapper _mapper;
 
     public DailyIntakeEntryService(
         IDailyIntakeEntryRepository dailyIntakeEntryRepository,
-        IRecipeService recipeService,
-        IIngredientService ingredientService,
-        IMapper mapper)
+        IMapper mapper,
+        IDailyIntakeEntryLoaderFactory dailyIntakeEntryLoaderFactory)
     {
         _dailyIntakeEntryRepository = dailyIntakeEntryRepository;
-        _recipeService = recipeService;
-        _ingredientService = ingredientService;
         _mapper = mapper;
+
+        dailyIntakeEntryLoaders = new List<IDailyIntakeEntryLoader>()
+        {
+            dailyIntakeEntryLoaderFactory.Create("Recipe"),
+            dailyIntakeEntryLoaderFactory.Create("Ingredient")
+        };
     }
 
     public async Task<bool> AnyAsync(Guid id)
@@ -130,23 +133,17 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
     private async Task<Guid> GetProductIdFromProductName(string productName)
     {
-        RecipeDto? recipeDto = await _recipeService.GetByNameAsync(productName);
-
-        if (recipeDto != null)
+        foreach (IDailyIntakeEntryLoader dailyIntakeEntryLoader in dailyIntakeEntryLoaders)
         {
-            return recipeDto.Id;
-        }
-        else
-        {
-            IngredientDto? ingredientDto = await _ingredientService.GetByNameAsync(productName);
+            Guid? productId = await dailyIntakeEntryLoader.GetProductIdFromProductName(productName);
 
-            if (ingredientDto != null)
+            if (productId != null)
             {
-                return ingredientDto.Id;
+                return productId.Value;
             }
         }
 
-        const string errorMessage = "Could not find product id from given product name because product with given name was not found in neither recipes nor ingredients.";
+        const string errorMessage = "Could not find product id from given product name because product with given name was not found in any daily intake entry loader.";
         Log.Error(errorMessage);
         throw new InvalidOperationException(errorMessage);
     }
@@ -155,55 +152,18 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
     {
         DailyIntakeEntryDto dailyIntakeEntryDto = _mapper.Map<DailyIntakeEntryDto>(dailyIntakeEntry);
 
-        RecipeDto? recipeDto = await _recipeService.GetByIdAsync(dailyIntakeEntryDto.ProductId);
-
-        if (recipeDto != null)
+        foreach (IDailyIntakeEntryLoader dailyIntakeEntryLoader in dailyIntakeEntryLoaders)
         {
-            AddRecipeDataIntoDailyIntakeEntry(dailyIntakeEntryDto, recipeDto);
-        }
-        else
-        {
-            IngredientDto? ingredientDto = await _ingredientService.GetByIdAsync(dailyIntakeEntryDto.ProductId);
+            DailyIntakeEntryDto? loadedDailyIntakeEntryDto = await dailyIntakeEntryLoader.LoadProductDataForDailyIntakeEntryDto(dailyIntakeEntryDto);
 
-            Contracts.LogAndThrowWhenNull(ingredientDto, "Cannot load daily intake entry by id from services because its product was not found in neither recipes nor ingredients.");
-
-            AddIngredientDataIntoDailyIntakeEntry(dailyIntakeEntryDto, ingredientDto);
+            if (loadedDailyIntakeEntryDto != null)
+            {
+                return loadedDailyIntakeEntryDto;
+            }
         }
 
-        return dailyIntakeEntryDto;
-    }
-
-    private void AddIngredientDataIntoDailyIntakeEntry(DailyIntakeEntryDto dailyIntakeEntryDto, IngredientDto ingredientDto)
-    {
-        double gramMultiplier = dailyIntakeEntryDto.Amount * 0.01;
-        double proteinPerCalorie = Math.Round(ingredientDto.Protein / ingredientDto.Calories, 2);
-
-        if (double.IsNaN(proteinPerCalorie))
-        {
-            proteinPerCalorie = 0.0;
-        }
-
-        dailyIntakeEntryDto.ProductName = ingredientDto.Name;
-        dailyIntakeEntryDto.Fat = ingredientDto.Fat * gramMultiplier;
-        dailyIntakeEntryDto.Carbohydrates = ingredientDto.Carbohydrates * gramMultiplier;
-        dailyIntakeEntryDto.Protein = ingredientDto.Protein * gramMultiplier;
-        dailyIntakeEntryDto.Calories = ingredientDto.Calories * gramMultiplier;
-        dailyIntakeEntryDto.ProteinPerCalorie = proteinPerCalorie;
-        dailyIntakeEntryDto.IsRecipe = false;
-        dailyIntakeEntryDto.ProductId = ingredientDto.Id;
-    }
-
-    private void AddRecipeDataIntoDailyIntakeEntry(DailyIntakeEntryDto dailyIntakeEntryDto, RecipeDto recipeDto)
-    {
-        double portionMultiplier = dailyIntakeEntryDto.Amount;
-
-        dailyIntakeEntryDto.ProductName = recipeDto.Name;
-        dailyIntakeEntryDto.Fat = recipeDto.GetFatPerPortion() * portionMultiplier;
-        dailyIntakeEntryDto.Carbohydrates = recipeDto.GetCarbohydratesPerPortion() * portionMultiplier;
-        dailyIntakeEntryDto.Protein = recipeDto.GetProteinPerPortion() * portionMultiplier;
-        dailyIntakeEntryDto.Calories = recipeDto.GetCaloriesPerPortion() * portionMultiplier;
-        dailyIntakeEntryDto.ProteinPerCalorie = recipeDto.GetProteinPerCalorie();
-        dailyIntakeEntryDto.IsRecipe = true;
-        dailyIntakeEntryDto.ProductId = recipeDto.Id;
+        const string errorMessage = "Could not load daily intake entry dto from any daily intake entry loader.";
+        Log.Error(errorMessage);
+        throw new InvalidOperationException(errorMessage);
     }
 }
