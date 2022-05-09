@@ -178,7 +178,7 @@ public static class Log
             fullName = declaringType.FullName;
         }
         while (declaringType.Module.Name.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase) ||
-            declaringType.Module.Name.Equals("BlazingRecept.Contracts.dll", StringComparison.OrdinalIgnoreCase));
+            declaringType.Module.Name.Equals("BlazingRecept.Contract.dll", StringComparison.OrdinalIgnoreCase));
 
         if (fullName == null)
         {

@@ -8,9 +8,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingRecept.Client", "Cli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingRecept.Shared", "Shared\BlazingRecept.Shared.csproj", "{B95BF90B-99C0-45CE-905E-1229E790AC58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazingRecept.Contracts", "Contracts\BlazingRecept.Contracts.csproj", "{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingRecept.Contract", "Contracts\BlazingRecept.Contract.csproj", "{1DC5AB7C-4C05-4B62-BB50-A62E6AA55307}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazingRecept.Logging", "Logging\BlazingRecept.Logging.csproj", "{BFD4AD84-C952-4BFA-82A2-9A322FEBB335}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingRecept.Logging", "Logging\BlazingRecept.Logging.csproj", "{BFD4AD84-C952-4BFA-82A2-9A322FEBB335}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
