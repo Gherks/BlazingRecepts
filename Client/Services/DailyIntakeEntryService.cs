@@ -93,7 +93,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
         }
         catch (Exception exception)
         {
-             Log.Error(exception, $"Failed while saving daily intake entry: {dailyIntakeEntryDto}");
+            Log.Error(exception, $"Failed while saving daily intake entry: {dailyIntakeEntryDto}");
         }
 
         return null;
