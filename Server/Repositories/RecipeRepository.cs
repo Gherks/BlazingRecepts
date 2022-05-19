@@ -113,7 +113,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
 
         try
         {
-            UpdateRecipeIngredientMeasurements(currentRecipe, updatedRecipe);
+            await UpdateRecipeIngredientMeasurements(currentRecipe, updatedRecipe);
 
             currentRecipe.Name = updatedRecipe.Name;
             currentRecipe.Instructions = updatedRecipe.Instructions;
@@ -134,7 +134,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         return currentRecipe;
     }
 
-    private void UpdateRecipeIngredientMeasurements(Recipe currentRecipe, Recipe updatedRecipe)
+    private async Task UpdateRecipeIngredientMeasurements(Recipe currentRecipe, Recipe updatedRecipe)
     {
         for (int index = 0; index < currentRecipe.IngredientMeasurements.Count; ++index)
         {
@@ -167,6 +167,11 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
         {
             if (ingredientMeasurementInUpdatedRecipe.Id == Guid.Empty)
             {
+                ingredientMeasurementInUpdatedRecipe.Ingredient = await _context.Ingredient
+                        .Where(ingredient => ingredient.Id == ingredientMeasurementInUpdatedRecipe.IngredientId)
+                        .Include(ingredient => ingredient.Category)
+                        .FirstAsync();
+
                 currentRecipe.IngredientMeasurements.Add(ingredientMeasurementInUpdatedRecipe);
             }
         }
