@@ -12,8 +12,24 @@ namespace BlazingRecept.Client.Pages;
 public partial class Recipe : PageBase
 {
     private RemovalConfirmationModal<RecipeDto>? _removalConfirmationModal;
+    private int _originalPortionAmount = 1;
+    private int _currentPortionAmount = 1;
 
     public RecipeDto? RecipeDto { get; private set; } = new RecipeDto();
+    public int CurrentPortionAmount
+    {
+        get => _currentPortionAmount;
+        set
+        {
+            if (value > 0)
+            {
+                _currentPortionAmount = value;
+                StateHasChanged();
+            }
+        }
+    }
+    
+    public double PortionScalingFactor => _originalPortionAmount > 0 ? (double)_currentPortionAmount / _originalPortionAmount : 1.0;
 
     [Parameter]
     public Guid RecipeId { get; set; }
@@ -36,6 +52,12 @@ public partial class Recipe : PageBase
         await base.OnInitializedAsync();
 
         RecipeDto = await RecipeService.GetByIdAsync(RecipeId);
+        
+        if (RecipeDto != null)
+        {
+            _originalPortionAmount = RecipeDto.PortionAmount;
+            _currentPortionAmount = RecipeDto.PortionAmount;
+        }
 
         IsLoading = false;
     }
