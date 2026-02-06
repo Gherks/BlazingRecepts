@@ -9,6 +9,7 @@ namespace BlazingRecept.Client.Components.PageComponents.RecipePage;
 
 public partial class IngredientMeasurementTable : PageComponentBase
 {
+    private const double PERCENTAGE_TO_DECIMAL = 0.01;
     private List<CheckableIngredientMeasurement> _checkableIngredientMeasurements = new();
 
     [CascadingParameter]
@@ -67,7 +68,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
     {
         Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled fat because recipe page reference is null.");
         double scaledGrams = ingredientMeasurementDto.Grams * RecipePage.PortionScalingFactor;
-        double fat = ingredientMeasurementDto.IngredientDto.Fat * scaledGrams * 0.01f;
+        double fat = ingredientMeasurementDto.IngredientDto.Fat * scaledGrams * PERCENTAGE_TO_DECIMAL;
         return Math.Round(fat, 2);
     }
 
@@ -75,7 +76,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
     {
         Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled carbohydrates because recipe page reference is null.");
         double scaledGrams = ingredientMeasurementDto.Grams * RecipePage.PortionScalingFactor;
-        double carbohydrates = ingredientMeasurementDto.IngredientDto.Carbohydrates * scaledGrams * 0.01f;
+        double carbohydrates = ingredientMeasurementDto.IngredientDto.Carbohydrates * scaledGrams * PERCENTAGE_TO_DECIMAL;
         return Math.Round(carbohydrates, 2);
     }
 
@@ -83,7 +84,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
     {
         Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled protein because recipe page reference is null.");
         double scaledGrams = ingredientMeasurementDto.Grams * RecipePage.PortionScalingFactor;
-        double protein = ingredientMeasurementDto.IngredientDto.Protein * scaledGrams * 0.01f;
+        double protein = ingredientMeasurementDto.IngredientDto.Protein * scaledGrams * PERCENTAGE_TO_DECIMAL;
         return Math.Round(protein, 2);
     }
 
@@ -91,7 +92,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
     {
         Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled calories because recipe page reference is null.");
         double scaledGrams = ingredientMeasurementDto.Grams * RecipePage.PortionScalingFactor;
-        double calories = ingredientMeasurementDto.IngredientDto.Calories * scaledGrams * 0.01f;
+        double calories = ingredientMeasurementDto.IngredientDto.Calories * scaledGrams * PERCENTAGE_TO_DECIMAL;
         return Math.Round(calories, 2);
     }
 
@@ -110,7 +111,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
         double totalFat = 0.0;
         foreach (IngredientMeasurementDto ingredientMeasurementDto in RecipePage.RecipeDto.IngredientMeasurementDtos)
         {
-            totalFat += ingredientMeasurementDto.IngredientDto.Fat * ingredientMeasurementDto.Grams * 0.01f;
+            totalFat += ingredientMeasurementDto.IngredientDto.Fat * ingredientMeasurementDto.Grams * PERCENTAGE_TO_DECIMAL;
         }
         return Math.Round(totalFat * RecipePage.PortionScalingFactor, 2);
     }
@@ -122,7 +123,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
         double totalCarbohydrates = 0.0;
         foreach (IngredientMeasurementDto ingredientMeasurementDto in RecipePage.RecipeDto.IngredientMeasurementDtos)
         {
-            totalCarbohydrates += ingredientMeasurementDto.IngredientDto.Carbohydrates * ingredientMeasurementDto.Grams * 0.01f;
+            totalCarbohydrates += ingredientMeasurementDto.IngredientDto.Carbohydrates * ingredientMeasurementDto.Grams * PERCENTAGE_TO_DECIMAL;
         }
         return Math.Round(totalCarbohydrates * RecipePage.PortionScalingFactor, 2);
     }
@@ -134,7 +135,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
         double totalProtein = 0.0;
         foreach (IngredientMeasurementDto ingredientMeasurementDto in RecipePage.RecipeDto.IngredientMeasurementDtos)
         {
-            totalProtein += ingredientMeasurementDto.IngredientDto.Protein * ingredientMeasurementDto.Grams * 0.01f;
+            totalProtein += ingredientMeasurementDto.IngredientDto.Protein * ingredientMeasurementDto.Grams * PERCENTAGE_TO_DECIMAL;
         }
         return Math.Round(totalProtein * RecipePage.PortionScalingFactor, 2);
     }
@@ -146,7 +147,7 @@ public partial class IngredientMeasurementTable : PageComponentBase
         double totalCalories = 0.0;
         foreach (IngredientMeasurementDto ingredientMeasurementDto in RecipePage.RecipeDto.IngredientMeasurementDtos)
         {
-            totalCalories += ingredientMeasurementDto.IngredientDto.Calories * ingredientMeasurementDto.Grams * 0.01f;
+            totalCalories += ingredientMeasurementDto.IngredientDto.Calories * ingredientMeasurementDto.Grams * PERCENTAGE_TO_DECIMAL;
         }
         return Math.Round(totalCalories * RecipePage.PortionScalingFactor, 2);
     }
