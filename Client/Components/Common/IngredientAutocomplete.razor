@@ -1,6 +1,7 @@
 @using BlazingRecept.Shared.Dto
 @using BlazingRecept.Client.Services.Interfaces
 @inject IIngredientSearchService IngredientSearchService
+@implements IDisposable
 
 <div class="ingredient-autocomplete">
     <input type="text" 
@@ -9,6 +10,7 @@
            @bind-value="@SearchText" 
            @bind-value:event="oninput"
            @onfocus="HandleInputFocus"
+           @onblur="HandleInputBlur"
            placeholder="@Placeholder"
            @attributes="AdditionalAttributes" />
     
@@ -21,7 +23,7 @@
     
     @if (_showResults && _searchResults.Count > 0)
     {
-        <div class="autocomplete-results">
+        <div class="autocomplete-results" @onmousedown:preventDefault="true">
             @foreach (var result in _searchResults)
             {
                 <div class="autocomplete-item" @onclick="() => SelectResult(result)">
@@ -41,6 +43,9 @@
 </div>
 
 @code {
+    private const int BlurDelayMs = 200; // Delay to allow click events on results to fire before blur closes the dropdown
+    private const int DebounceDelayMs = 300; // Debounce delay to avoid excessive API calls
+    
     private ElementReference _inputElement;
     private List<IngredientSearchResultDto> _searchResults = new();
     private bool _showResults = false;
@@ -78,7 +83,20 @@
     private void DebounceSearch()
     {
         _debounceTimer?.Dispose();
-        _debounceTimer = new System.Threading.Timer(async _ => await PerformSearch(), null, 300, Timeout.Infinite);
+        _debounceTimer = new System.Threading.Timer(_ => PerformSearchSafe(), null, DebounceDelayMs, Timeout.Infinite);
+    }
+
+    private void PerformSearchSafe()
+    {
+        try
+        {
+            Task.Run(async () => await PerformSearch()).Wait();
+        }
+        catch (Exception ex)
+        {
+            // Log error but don't crash the component
+            Console.WriteLine($"Error during ingredient search: {ex.Message}");
+        }
     }
 
     private async Task PerformSearch()
@@ -117,6 +135,7 @@
         _searchText = result.Name;
         _showResults = false;
         _searchResults.Clear();
+        await SearchTextChanged.InvokeAsync(_searchText);
         await OnResultSelected.InvokeAsync(result);
         StateHasChanged();
     }
@@ -127,6 +146,19 @@
         {
             _showResults = true;
         }
+    }
+
+    private void HandleInputBlur()
+    {
+        // Use a small delay to allow click events to fire on the results
+        Task.Delay(BlurDelayMs).ContinueWith(_ => 
+        {
+            InvokeAsync(() =>
+            {
+                _showResults = false;
+                StateHasChanged();
+            });
+        });
     }
 
     public void Dispose()

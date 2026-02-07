@@ -10,7 +10,7 @@ namespace BlazingRecept.Client.Services;
 public class IngredientSearchService : IIngredientSearchService
 {
     private readonly HttpClient _httpClient;
-    private static readonly Dictionary<string, string> _englishToSwedishTranslations = new()
+    private static readonly Dictionary<string, string> _englishToSwedish = new()
     {
         // Common ingredients translations
         { "chicken", "kyckling" },
@@ -133,13 +133,16 @@ public class IngredientSearchService : IIngredientSearchService
 
     private string TranslateToSwedish(string englishWord)
     {
-        var lowerQuery = englishWord.ToLowerInvariant();
+        var lowerQuery = englishWord.ToLowerInvariant().Trim();
         
-        foreach (var translation in _englishToSwedishTranslations)
+        // Use exact word matching to avoid false matches
+        var words = lowerQuery.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        
+        foreach (var word in words)
         {
-            if (lowerQuery.Contains(translation.Key))
+            if (_englishToSwedish.TryGetValue(word, out var translation))
             {
-                return translation.Value;
+                return translation;
             }
         }
         
