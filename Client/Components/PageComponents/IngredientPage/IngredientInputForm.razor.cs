@@ -22,11 +22,9 @@ public partial class IngredientInputForm : PageComponentBase
 
     private CustomValidation? _customValidation;
     private EditContext? _editContext;
-    private ElementReference _nameInput;
     private ProcessingButton? _processingButtonSubmit;
 
     private bool _collapseIsShow = false;
-    private bool _shouldMoveFocusToNameElement = false;
 
     private IReadOnlyList<CategoryDto>? _categoryDtos = new List<CategoryDto>();
 
@@ -61,28 +59,33 @@ public partial class IngredientInputForm : PageComponentBase
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-
-        if (_shouldMoveFocusToNameElement)
-        {
-            _shouldMoveFocusToNameElement = false;
-            await _nameInput.FocusAsync();
-        }
     }
 
     private string GetCollapseToggleTitle()
     {
-        return _collapseIsShow ? "Dölj formulär" : "Visa formulär";
+        return _collapseIsShow ? "Dï¿½lj formulï¿½r" : "Visa formulï¿½r";
     }
 
     private async Task HandleCollapseShown()
     {
         _collapseIsShow = true;
-        await _nameInput.FocusAsync();
     }
 
     private void HandleCollapseHidden()
     {
         _collapseIsShow = false;
+    }
+
+    private void HandleIngredientSelected(IngredientSearchResultDto selectedIngredient)
+    {
+        // Auto-populate the form fields with the selected ingredient data
+        _form.Name = selectedIngredient.Name;
+        _form.Fat = selectedIngredient.Fat;
+        _form.Carbohydrates = selectedIngredient.Carbohydrates;
+        _form.Protein = selectedIngredient.Protein;
+        _form.Calories = selectedIngredient.Calories;
+        
+        StateHasChanged();
     }
 
     private async Task HandleNameBlur()
@@ -137,11 +140,10 @@ public partial class IngredientInputForm : PageComponentBase
                 IngredientsPage.AddNewIngredientToCollection(ingredientDto);
 
                 _form = new();
-                _shouldMoveFocusToNameElement = true;
             }
             else
             {
-                MessengerService.AddError("Ingredienser", "Kunde ej lägga till ingrediens.");
+                MessengerService.AddError("Ingredienser", "Kunde ej lï¿½gga till ingrediens.");
             }
         }
 
@@ -160,7 +162,7 @@ public partial class IngredientInputForm : PageComponentBase
         if (string.IsNullOrWhiteSpace(_form.Name))
         {
             errors.Add(nameof(_form.Name), new List<string>() {
-                "Namn måste anges."
+                "Namn mï¿½ste anges."
             });
         }
         else
@@ -183,7 +185,7 @@ public partial class IngredientInputForm : PageComponentBase
         if (_form.CategoryDtoId == Guid.Empty)
         {
             errors.Add(nameof(_form.CategoryDtoId), new List<string>() {
-                "Ingredienskategori måste anges."
+                "Ingredienskategori mï¿½ste anges."
             });
         }
 

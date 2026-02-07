@@ -1,0 +1,136 @@
+@using BlazingRecept.Shared.Dto
+@using BlazingRecept.Client.Services.Interfaces
+@inject IIngredientSearchService IngredientSearchService
+
+<div class="ingredient-autocomplete">
+    <input type="text" 
+           class="form-control" 
+           @ref="_inputElement"
+           @bind-value="@SearchText" 
+           @bind-value:event="oninput"
+           @onfocus="HandleInputFocus"
+           placeholder="@Placeholder"
+           @attributes="AdditionalAttributes" />
+    
+    @if (_isSearching)
+    {
+        <div class="autocomplete-loading">
+            <small class="text-muted">Söker...</small>
+        </div>
+    }
+    
+    @if (_showResults && _searchResults.Count > 0)
+    {
+        <div class="autocomplete-results">
+            @foreach (var result in _searchResults)
+            {
+                <div class="autocomplete-item" @onclick="() => SelectResult(result)">
+                    <div class="autocomplete-item-name">@result.Name</div>
+                    <div class="autocomplete-item-macros">
+                        <small class="text-muted">
+                            Kcal: @result.Calories.ToString("F1") | 
+                            F: @result.Fat.ToString("F1")g | 
+                            K: @result.Carbohydrates.ToString("F1")g | 
+                            P: @result.Protein.ToString("F1")g
+                        </small>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private ElementReference _inputElement;
+    private List<IngredientSearchResultDto> _searchResults = new();
+    private bool _showResults = false;
+    private bool _isSearching = false;
+    private System.Threading.Timer? _debounceTimer;
+    private string _searchText = string.Empty;
+
+    [Parameter]
+    public string SearchText 
+    { 
+        get => _searchText;
+        set
+        {
+            if (_searchText != value)
+            {
+                _searchText = value;
+                SearchTextChanged.InvokeAsync(value);
+                DebounceSearch();
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> SearchTextChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<IngredientSearchResultDto> OnResultSelected { get; set; }
+
+    [Parameter]
+    public string Placeholder { get; set; } = "Ange ingrediensnamn";
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private void DebounceSearch()
+    {
+        _debounceTimer?.Dispose();
+        _debounceTimer = new System.Threading.Timer(async _ => await PerformSearch(), null, 300, Timeout.Infinite);
+    }
+
+    private async Task PerformSearch()
+    {
+        if (string.IsNullOrWhiteSpace(_searchText) || _searchText.Length < 2)
+        {
+            await InvokeAsync(() =>
+            {
+                _searchResults.Clear();
+                _showResults = false;
+                _isSearching = false;
+                StateHasChanged();
+            });
+            return;
+        }
+
+        await InvokeAsync(() =>
+        {
+            _isSearching = true;
+            StateHasChanged();
+        });
+
+        var results = await IngredientSearchService.SearchAsync(_searchText);
+
+        await InvokeAsync(() =>
+        {
+            _searchResults = results.ToList();
+            _showResults = true;
+            _isSearching = false;
+            StateHasChanged();
+        });
+    }
+
+    private async Task SelectResult(IngredientSearchResultDto result)
+    {
+        _searchText = result.Name;
+        _showResults = false;
+        _searchResults.Clear();
+        await OnResultSelected.InvokeAsync(result);
+        StateHasChanged();
+    }
+
+    private void HandleInputFocus()
+    {
+        if (_searchResults.Count > 0)
+        {
+            _showResults = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        _debounceTimer?.Dispose();
+    }
+}
