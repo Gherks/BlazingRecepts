@@ -13,15 +13,6 @@ public partial class RecipeCards : PageComponentBase
     [Inject]
     protected internal NavigationManager? NavigationManager { get; private set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        IsLoading = true;
-
-        await base.OnInitializedAsync();
-
-        IsLoading = false;
-    }
-
     private void HandleRecipeNavigation(RecipeDto recipeDto)
     {
         Contracts.LogAndThrowWhenNull(NavigationManager, "Cannot navigate to recipe page because navigation manager has not been set.");
