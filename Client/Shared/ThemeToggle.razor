@@ -12,7 +12,8 @@
     {
         if (firstRender)
         {
-            currentTheme = await JSRuntime.InvokeAsync<string>("getTheme");
+            var theme = await JSRuntime.InvokeAsync<string>("getTheme");
+            currentTheme = string.IsNullOrEmpty(theme) ? "light" : theme;
             StateHasChanged();
         }
     }
