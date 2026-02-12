@@ -152,35 +152,6 @@ public partial class IngredientMeasurementTable : PageComponentBase
         return Math.Round(totalCalories * RecipePage.PortionScalingFactor, 2);
     }
 
-    private double GetGramsPerPortion()
-    {
-        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get grams per portion because recipe page reference is null.");
-        double gramsPerPortion = Math.Round(GetScaledTotalGrams() / RecipePage.CurrentPortionAmount, 2);
-        return double.IsNaN(gramsPerPortion) ? 0.0 : gramsPerPortion;
-    }
-
-    private double GetProteinPerPortion()
-    {
-        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get protein per portion because recipe page reference is null.");
-        double proteinPerPortion = Math.Round(GetScaledTotalProtein() / RecipePage.CurrentPortionAmount, 2);
-        return double.IsNaN(proteinPerPortion) ? 0.0 : proteinPerPortion;
-    }
-
-    private double GetCaloriesPerPortion()
-    {
-        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get calories per portion because recipe page reference is null.");
-        double caloriesPerPortion = Math.Round(GetScaledTotalCalories() / RecipePage.CurrentPortionAmount, 2);
-        return double.IsNaN(caloriesPerPortion) ? 0.0 : caloriesPerPortion;
-    }
-
-    private double GetProteinPerCalorie()
-    {
-        double totalCalories = GetScaledTotalCalories();
-        if (totalCalories == 0) return 0.0;
-        double proteinPerCalorie = Math.Round(GetScaledTotalProtein() / totalCalories, 2);
-        return double.IsNaN(proteinPerCalorie) ? 0.0 : proteinPerCalorie;
-    }
-
     private class CheckableIngredientMeasurement
     {
         public bool IsChecked { get; set; } = false;
