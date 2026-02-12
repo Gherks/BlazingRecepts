@@ -48,7 +48,12 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
     {
         try
         {
-            return await _context.Set<Recipe>().FirstAsync(recipe => recipe.Name.ToLower() == name.ToLower());
+            return await _context.Set<Recipe>()
+                .Include(recipe => recipe.Category)
+                .Include(recipe => recipe.IngredientMeasurements)
+                    .ThenInclude(ingredientMeasurement => ingredientMeasurement.Ingredient)
+                        .ThenInclude(ingredient => ingredient.Category)
+                .FirstAsync(recipe => recipe.Name.ToLower() == name.ToLower());
         }
         catch (Exception exception)
         {
@@ -79,12 +84,16 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
     {
         try
         {
+            // Batch load all ingredients to avoid N+1 query problem
+            var ingredientIds = recipe.IngredientMeasurements.Select(im => im.IngredientId).ToList();
+            var ingredients = await _context.Ingredient
+                .Where(ingredient => ingredientIds.Contains(ingredient.Id))
+                .Include(ingredient => ingredient.Category)
+                .ToDictionaryAsync(ingredient => ingredient.Id);
+
             foreach (IngredientMeasurement ingredientMeasurement in recipe.IngredientMeasurements)
             {
-                ingredientMeasurement.Ingredient = await _context.Ingredient
-                    .Where(ingredient => ingredient.Id == ingredientMeasurement.IngredientId)
-                    .Include(ingredient => ingredient.Category)
-                    .FirstAsync();
+                ingredientMeasurement.Ingredient = ingredients[ingredientMeasurement.IngredientId];
             }
 
             recipe.Category = await _context.Category
@@ -136,14 +145,17 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
 
     private async Task UpdateRecipeIngredientMeasurements(Recipe currentRecipe, Recipe updatedRecipe)
     {
-        for (int index = 0; index < currentRecipe.IngredientMeasurements.Count; ++index)
+        // Build dictionary for O(1) lookup instead of O(n) for each iteration
+        var updatedMeasurementsById = updatedRecipe.IngredientMeasurements
+            .Where(im => im.Id != Guid.Empty)
+            .ToDictionary(im => im.Id);
+
+        // Process updates and deletions using reverse iteration to safely remove items
+        for (int index = currentRecipe.IngredientMeasurements.Count - 1; index >= 0; --index)
         {
             IngredientMeasurement ingredientMeasurementInCurrentRecipe = currentRecipe.IngredientMeasurements[index];
 
-            IngredientMeasurement? ingredientMeasurementInUpdatedRecipe = updatedRecipe.IngredientMeasurements
-                .FirstOrDefault(ingredientMeasurement => ingredientMeasurement.Id == ingredientMeasurementInCurrentRecipe.Id);
-
-            if (ingredientMeasurementInUpdatedRecipe != null)
+            if (updatedMeasurementsById.TryGetValue(ingredientMeasurementInCurrentRecipe.Id, out var ingredientMeasurementInUpdatedRecipe))
             {
                 ingredientMeasurementInCurrentRecipe.Measurement = ingredientMeasurementInUpdatedRecipe.Measurement;
                 ingredientMeasurementInCurrentRecipe.MeasurementUnit = ingredientMeasurementInUpdatedRecipe.MeasurementUnit;
@@ -156,22 +168,28 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
             }
             else
             {
-                currentRecipe.IngredientMeasurements.Remove(ingredientMeasurementInCurrentRecipe);
+                currentRecipe.IngredientMeasurements.RemoveAt(index);
                 _context.Entry(ingredientMeasurementInCurrentRecipe).State = EntityState.Deleted;
-
-                --index;
             }
         }
 
-        foreach (IngredientMeasurement ingredientMeasurementInUpdatedRecipe in updatedRecipe.IngredientMeasurements)
-        {
-            if (ingredientMeasurementInUpdatedRecipe.Id == Guid.Empty)
-            {
-                ingredientMeasurementInUpdatedRecipe.Ingredient = await _context.Ingredient
-                        .Where(ingredient => ingredient.Id == ingredientMeasurementInUpdatedRecipe.IngredientId)
-                        .Include(ingredient => ingredient.Category)
-                        .FirstAsync();
+        // Process new ingredient measurements
+        var newIngredientMeasurements = updatedRecipe.IngredientMeasurements
+            .Where(im => im.Id == Guid.Empty)
+            .ToList();
 
+        if (newIngredientMeasurements.Any())
+        {
+            // Batch load all new ingredients to avoid N+1 query problem
+            var newIngredientIds = newIngredientMeasurements.Select(im => im.IngredientId).ToList();
+            var ingredients = await _context.Ingredient
+                .Where(ingredient => newIngredientIds.Contains(ingredient.Id))
+                .Include(ingredient => ingredient.Category)
+                .ToDictionaryAsync(ingredient => ingredient.Id);
+
+            foreach (IngredientMeasurement ingredientMeasurementInUpdatedRecipe in newIngredientMeasurements)
+            {
+                ingredientMeasurementInUpdatedRecipe.Ingredient = ingredients[ingredientMeasurementInUpdatedRecipe.IngredientId];
                 currentRecipe.IngredientMeasurements.Add(ingredientMeasurementInUpdatedRecipe);
             }
         }

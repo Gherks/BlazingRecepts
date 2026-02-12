@@ -44,7 +44,9 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
     {
         try
         {
-            return await _context.Set<Ingredient>().FirstAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
+            return await _context.Set<Ingredient>()
+                .Include(ingredient => ingredient.Category)
+                .FirstAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
         }
         catch (Exception exception)
         {
