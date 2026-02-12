@@ -37,7 +37,7 @@ public static class EntityMapper
             Carbohydrates = ingredient.Carbohydrates,
             Protein = ingredient.Protein,
             Calories = ingredient.Calories,
-            CategoryDto = ToDto(ingredient.Category)
+            CategoryDto = ingredient.Category != null ? ToDto(ingredient.Category) : new CategoryDto()
         };
     }
 
@@ -51,8 +51,8 @@ public static class EntityMapper
             Carbohydrates = dto.Carbohydrates,
             Protein = dto.Protein,
             Calories = dto.Calories,
-            CategoryId = dto.CategoryDto.Id,
-            Category = ToEntity(dto.CategoryDto)
+            CategoryId = dto.CategoryDto?.Id ?? Guid.Empty,
+            Category = dto.CategoryDto != null ? ToEntity(dto.CategoryDto) : new Category()
         };
     }
 
@@ -66,7 +66,7 @@ public static class EntityMapper
             Grams = measurement.Grams,
             Note = measurement.Note,
             SortOrder = measurement.SortOrder,
-            IngredientDto = ToDto(measurement.Ingredient)
+            IngredientDto = measurement.Ingredient != null ? ToDto(measurement.Ingredient) : new IngredientDto()
         };
     }
 
@@ -80,8 +80,8 @@ public static class EntityMapper
             Grams = dto.Grams,
             Note = dto.Note,
             SortOrder = dto.SortOrder,
-            IngredientId = dto.IngredientDto.Id,
-            Ingredient = ToEntity(dto.IngredientDto)
+            IngredientId = dto.IngredientDto?.Id ?? Guid.Empty,
+            Ingredient = dto.IngredientDto != null ? ToEntity(dto.IngredientDto) : new Ingredient()
         };
     }
 
@@ -93,8 +93,8 @@ public static class EntityMapper
             Name = recipe.Name,
             Instructions = recipe.Instructions,
             PortionAmount = recipe.PortionAmount,
-            CategoryDto = ToDto(recipe.Category),
-            IngredientMeasurementDtos = recipe.IngredientMeasurements.Select(ToDto).ToList()
+            CategoryDto = recipe.Category != null ? ToDto(recipe.Category) : new CategoryDto(),
+            IngredientMeasurementDtos = recipe.IngredientMeasurements?.Select(ToDto).ToList() ?? new List<IngredientMeasurementDto>()
         };
     }
 
@@ -106,9 +106,9 @@ public static class EntityMapper
             Name = dto.Name,
             Instructions = dto.Instructions,
             PortionAmount = dto.PortionAmount,
-            CategoryId = dto.CategoryDto.Id,
-            Category = ToEntity(dto.CategoryDto),
-            IngredientMeasurements = dto.IngredientMeasurementDtos.Select(ToEntity).ToList()
+            CategoryId = dto.CategoryDto?.Id ?? Guid.Empty,
+            Category = dto.CategoryDto != null ? ToEntity(dto.CategoryDto) : new Category(),
+            IngredientMeasurements = dto.IngredientMeasurementDtos?.Select(ToEntity).ToList() ?? new List<IngredientMeasurement>()
         };
     }
 
