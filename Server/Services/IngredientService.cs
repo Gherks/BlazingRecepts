@@ -1,6 +1,6 @@
-using AutoMapper;
 using BlazingRecept.Contract;
 using BlazingRecept.Server.Entities;
+using BlazingRecept.Server.Mappers;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
@@ -10,12 +10,10 @@ namespace BlazingRecept.Server.Services;
 public class IngredientService : IIngredientService
 {
     private readonly IIngredientRepository _ingredientsRepository;
-    private readonly IMapper _mapper;
 
-    public IngredientService(IIngredientRepository ingredientsRepository, IMapper mapper)
+    public IngredientService(IIngredientRepository ingredientsRepository)
     {
         _ingredientsRepository = ingredientsRepository;
-        _mapper = mapper;
     }
 
     public async Task<bool> AnyAsync(Guid id)
@@ -34,7 +32,7 @@ public class IngredientService : IIngredientService
 
         if (ingredient != null)
         {
-            return _mapper.Map<IngredientDto>(ingredient);
+            return EntityMapper.ToDto(ingredient);
         }
 
         return null;
@@ -46,7 +44,7 @@ public class IngredientService : IIngredientService
 
         if (ingredient != null)
         {
-            return _mapper.Map<IngredientDto>(ingredient);
+            return EntityMapper.ToDto(ingredient);
         }
 
         return null;
@@ -58,12 +56,12 @@ public class IngredientService : IIngredientService
 
         Contracts.LogAndThrowWhenNull(ingredients, "Failed to fetch all ingredients from repository.");
 
-        return ingredients.Select(ingredient => _mapper.Map<IngredientDto>(ingredient)).ToList();
+        return ingredients.Select(ingredient => EntityMapper.ToDto(ingredient)).ToList();
     }
 
     public async Task<IngredientDto> SaveAsync(IngredientDto ingredientDto)
     {
-        Ingredient? ingredient = _mapper.Map<Ingredient>(ingredientDto);
+        Ingredient? ingredient = EntityMapper.ToEntity(ingredientDto);
 
         if (ingredient.Id == Guid.Empty)
         {
@@ -74,7 +72,9 @@ public class IngredientService : IIngredientService
             ingredient = await _ingredientsRepository.UpdateAsync(ingredient);
         }
 
-        return _mapper.Map<IngredientDto>(ingredient);
+        Contracts.LogAndThrowWhenNull(ingredient, "Failed to save ingredient, repository returned null.");
+
+        return EntityMapper.ToDto(ingredient);
     }
 
     public async Task<bool> DeleteAsync(Guid id)

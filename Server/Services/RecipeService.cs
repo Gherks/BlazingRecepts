@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using BlazingRecept.Contract;
+﻿using BlazingRecept.Contract;
 using BlazingRecept.Server.Entities;
+using BlazingRecept.Server.Mappers;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
@@ -10,12 +10,10 @@ namespace BlazingRecept.Server.Services;
 public class RecipeService : IRecipeService
 {
     private readonly IRecipeRepository _recipeRepository;
-    private readonly IMapper _mapper;
 
-    public RecipeService(IRecipeRepository recipeRepository, IMapper mapper)
+    public RecipeService(IRecipeRepository recipeRepository)
     {
         _recipeRepository = recipeRepository;
-        _mapper = mapper;
     }
 
     public async Task<bool> AnyAsync(Guid id)
@@ -34,7 +32,7 @@ public class RecipeService : IRecipeService
 
         if (recipe != null)
         {
-            return _mapper.Map<RecipeDto>(recipe);
+            return EntityMapper.ToDto(recipe);
         }
 
         return null;
@@ -46,7 +44,7 @@ public class RecipeService : IRecipeService
 
         if (recipe != null)
         {
-            return _mapper.Map<RecipeDto>(recipe);
+            return EntityMapper.ToDto(recipe);
         }
 
         return null;
@@ -58,12 +56,12 @@ public class RecipeService : IRecipeService
 
         Contracts.LogAndThrowWhenNull(recipes, "Failed to fetch all recipes from repository.");
 
-        return recipes.Select(recipe => _mapper.Map<RecipeDto>(recipe)).ToList();
+        return recipes.Select(recipe => EntityMapper.ToDto(recipe)).ToList();
     }
 
     public async Task<RecipeDto> SaveAsync(RecipeDto recipeDto)
     {
-        Recipe? recipe = _mapper.Map<Recipe>(recipeDto);
+        Recipe? recipe = EntityMapper.ToEntity(recipeDto);
 
         if (recipe.Id == Guid.Empty)
         {
@@ -74,7 +72,9 @@ public class RecipeService : IRecipeService
             recipe = await _recipeRepository.UpdateAsync(recipe);
         }
 
-        return _mapper.Map<RecipeDto>(recipe);
+        Contracts.LogAndThrowWhenNull(recipe, "Failed to save recipe, repository returned null.");
+
+        return EntityMapper.ToDto(recipe);
     }
 
     public async Task<bool> DeleteAsync(Guid id)
