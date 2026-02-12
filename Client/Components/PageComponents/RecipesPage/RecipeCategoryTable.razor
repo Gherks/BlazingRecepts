@@ -16,32 +16,12 @@ else
     {
         <hr />
         <div class="row">
-            <div class="d-flex">
-                <div class="flex-shrink-1" style="width: 50px;">
+            <div class="d-flex flex-column">
+                <div class="mb-3">
                     <h2>@char.ToUpperInvariant(pair.Key)</h2>
                 </div>
-                <div class="flex-fill">
-                    <table class="table table-hover table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th class="col-3"></th>
-                                <th class="col-3">Protein per portion</th>
-                                <th class="col-3">Kalorier per portion</th>
-                                <th class="col-3">Protein per kalori</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (RecipeDto recipeDto in _recipeCategories[pair.Key])
-                            {
-                                <tr id="@recipeDto.Id" style="cursor: pointer;" @onclick="@(_ => HandleRecipeNavigation(recipeDto))">
-                                    <td class="col-3">@recipeDto.Name</td>
-                                    <td class="col-3">@recipeDto.GetProteinPerPortion()</td>
-                                    <td class="col-3">@recipeDto.GetCaloriesPerPortion()</td>
-                                    <td class="col-3">@recipeDto.GetProteinPerCalorie()</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <div>
+                    <RecipeCards RecipeDtos="@_recipeCategories[pair.Key]" />
                 </div>
             </div>
         </div>

@@ -15,9 +15,6 @@ public partial class RecipeCategoryTable : PageComponentBase
     [Inject]
     protected internal IRecipeService? RecipeService { get; private set; }
 
-    [Inject]
-    protected internal NavigationManager? NavigationManager { get; private set; }
-
     protected override async Task OnInitializedAsync()
     {
         Contracts.LogAndThrowWhenNull(RecipeService, "Cannot initialize RecipeCategoryTable because recipe service has not been set.");
@@ -55,12 +52,5 @@ public partial class RecipeCategoryTable : PageComponentBase
         {
             _recipeCategories[letter].Sort((first, second) => string.Compare(first.Name.ToLower(), second.Name.ToLower()));
         }
-    }
-
-    private void HandleRecipeNavigation(RecipeDto recipeDto)
-    {
-        Contracts.LogAndThrowWhenNull(NavigationManager, "Cannot navigate to recipe page because navigation manager has not been set.");
-
-        NavigationManager.NavigateTo($"recipe/{recipeDto.Id}");
     }
 }
