@@ -7,12 +7,12 @@ public class BlazingReceptContext : DbContext
 {
     public BlazingReceptContext()
     {
-        this.ChangeTracker.LazyLoadingEnabled = false;
+        ChangeTracker.LazyLoadingEnabled = false;
     }
 
     public BlazingReceptContext(DbContextOptions options) : base(options)
     {
-        this.ChangeTracker.LazyLoadingEnabled = false;
+        ChangeTracker.LazyLoadingEnabled = false;
     }
 
     public DbSet<Category> Category => Set<Category>();
