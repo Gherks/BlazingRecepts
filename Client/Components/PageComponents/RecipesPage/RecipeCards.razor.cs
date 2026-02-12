@@ -41,10 +41,10 @@ public partial class RecipeCards : PageComponentBase
 
         // Calculate star rating based on protein to calorie ratio
         // Higher ratio = more protein per calorie = better
-        if (proteinPerCalorie >= 0.20) return 5;
-        if (proteinPerCalorie >= 0.15) return 4;
-        if (proteinPerCalorie >= 0.10) return 3;
-        if (proteinPerCalorie >= 0.05) return 2;
+        if (proteinPerCalorie >= 0.12) return 5;
+        if (proteinPerCalorie >= 0.09) return 4;
+        if (proteinPerCalorie >= 0.06) return 3;
+        if (proteinPerCalorie >= 0.03) return 2;
         return 1;
     }
 }
