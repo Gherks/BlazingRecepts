@@ -3,6 +3,7 @@ using BlazingRecept.Client.Extensions;
 using Havit.Blazor.Components.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Radzen;
 using Serilog;
 
 try
@@ -16,6 +17,9 @@ try
 
     builder.Services.AddHxServices();
     builder.Services.AddHxMessenger();
+
+    // Add Radzen services
+    builder.Services.AddRadzenComponents();
 
     builder.Services.AddMsalAuthentication(options =>
     {
