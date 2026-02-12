@@ -17,7 +17,7 @@ public sealed class DailyIntakeEntryLoaderFactory : IDailyIntakeEntryLoaderFacto
     {
         IDailyIntakeEntryLoader? dailyIntakeEntryLoader;
 
-        switch (name.ToLower())
+        switch (name.ToLowerInvariant())
         {
             case "recipe":
                 dailyIntakeEntryLoader = _serviceProvider.GetService<DailyIntakeEntryFromRecipeLoader>();

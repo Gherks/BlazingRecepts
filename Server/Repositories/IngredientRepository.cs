@@ -16,7 +16,9 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
     {
         try
         {
-            return await _context.Ingredient.AnyAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
+            // SQL Server uses case-insensitive collation by default (SQL_Latin1_General_CP1_CI_AS)
+            // Direct comparison is more efficient than ToLower() and avoids string allocation
+            return await _context.Ingredient.AnyAsync(ingredient => ingredient.Name == name);
         }
         catch (Exception exception)
         {
@@ -44,7 +46,9 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
     {
         try
         {
-            return await _context.Set<Ingredient>().FirstAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
+            return await _context.Set<Ingredient>()
+                .Include(ingredient => ingredient.Category)
+                .FirstAsync(ingredient => ingredient.Name == name);
         }
         catch (Exception exception)
         {

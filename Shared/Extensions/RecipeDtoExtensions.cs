@@ -4,64 +4,66 @@ namespace BlazingRecept.Shared.Extensions;
 
 public static class RecipeDtoExtensions
 {
-    public static double GetTotalGrams(this RecipeDto recipeDto)
-    {
-        double grams = recipeDto.IngredientMeasurementDtos.Sum(ingredientMeasurementDto => ingredientMeasurementDto.Grams);
+    // Helper method to calculate all totals in a single pass
+    private record struct RecipeTotals(double Grams, double Fat, double Carbohydrates, double Protein, double Calories);
 
-        return Math.Round(grams, 2);
-    }
-
-    public static double GetTotalFat(this RecipeDto recipeDto)
+    private static RecipeTotals CalculateTotals(RecipeDto recipeDto)
     {
+        double totalGrams = 0.0;
         double totalFat = 0.0;
-
-        foreach (IngredientMeasurementDto ingredientMeasurementDto in recipeDto.IngredientMeasurementDtos)
-        {
-            totalFat += ingredientMeasurementDto.IngredientDto.Fat * ingredientMeasurementDto.Grams * 0.01f;
-        }
-
-        return Math.Round(totalFat, 2);
-    }
-
-    public static double GetTotalCarbohydrates(this RecipeDto recipeDto)
-    {
         double totalCarbohydrates = 0.0;
-
-        foreach (IngredientMeasurementDto ingredientMeasurementDto in recipeDto.IngredientMeasurementDtos)
-        {
-            totalCarbohydrates += ingredientMeasurementDto.IngredientDto.Carbohydrates * ingredientMeasurementDto.Grams * 0.01f;
-        }
-
-        return Math.Round(totalCarbohydrates, 2);
-    }
-
-    public static double GetTotalProtein(this RecipeDto recipeDto)
-    {
         double totalProtein = 0.0;
-
-        foreach (IngredientMeasurementDto ingredientMeasurementDto in recipeDto.IngredientMeasurementDtos)
-        {
-            totalProtein += ingredientMeasurementDto.IngredientDto.Protein * ingredientMeasurementDto.Grams * 0.01f;
-        }
-
-        return Math.Round(totalProtein, 2);
-    }
-
-    public static double GetTotalCalories(this RecipeDto recipeDto)
-    {
         double totalCalories = 0.0;
 
         foreach (IngredientMeasurementDto ingredientMeasurementDto in recipeDto.IngredientMeasurementDtos)
         {
-            totalCalories += ingredientMeasurementDto.IngredientDto.Calories * ingredientMeasurementDto.Grams * 0.01f;
+            double grams = ingredientMeasurementDto.Grams;
+            double gramsMultiplier = grams * 0.01;
+            
+            totalGrams += grams;
+            totalFat += ingredientMeasurementDto.IngredientDto.Fat * gramsMultiplier;
+            totalCarbohydrates += ingredientMeasurementDto.IngredientDto.Carbohydrates * gramsMultiplier;
+            totalProtein += ingredientMeasurementDto.IngredientDto.Protein * gramsMultiplier;
+            totalCalories += ingredientMeasurementDto.IngredientDto.Calories * gramsMultiplier;
         }
 
-        return Math.Round(totalCalories, 2);
+        return new RecipeTotals(
+            Math.Round(totalGrams, 2),
+            Math.Round(totalFat, 2),
+            Math.Round(totalCarbohydrates, 2),
+            Math.Round(totalProtein, 2),
+            Math.Round(totalCalories, 2)
+        );
+    }
+
+    public static double GetTotalGrams(this RecipeDto recipeDto)
+    {
+        return CalculateTotals(recipeDto).Grams;
+    }
+
+    public static double GetTotalFat(this RecipeDto recipeDto)
+    {
+        return CalculateTotals(recipeDto).Fat;
+    }
+
+    public static double GetTotalCarbohydrates(this RecipeDto recipeDto)
+    {
+        return CalculateTotals(recipeDto).Carbohydrates;
+    }
+
+    public static double GetTotalProtein(this RecipeDto recipeDto)
+    {
+        return CalculateTotals(recipeDto).Protein;
+    }
+
+    public static double GetTotalCalories(this RecipeDto recipeDto)
+    {
+        return CalculateTotals(recipeDto).Calories;
     }
 
     public static double GetGramsPerPortion(this RecipeDto recipeDto)
     {
-        double gramsPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalGrams()) / recipeDto.PortionAmount, 2);
+        double gramsPerPortion = Math.Round(Convert.ToDouble(CalculateTotals(recipeDto).Grams) / recipeDto.PortionAmount, 2);
 
         if (double.IsNaN(gramsPerPortion))
         {
@@ -73,7 +75,7 @@ public static class RecipeDtoExtensions
 
     public static double GetFatPerPortion(this RecipeDto recipeDto)
     {
-        double fatPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalFat()) / recipeDto.PortionAmount, 2);
+        double fatPerPortion = Math.Round(Convert.ToDouble(CalculateTotals(recipeDto).Fat) / recipeDto.PortionAmount, 2);
 
         if (double.IsNaN(fatPerPortion))
         {
@@ -85,7 +87,7 @@ public static class RecipeDtoExtensions
 
     public static double GetCarbohydratesPerPortion(this RecipeDto recipeDto)
     {
-        double carbohydratesPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalCarbohydrates()) / recipeDto.PortionAmount, 2);
+        double carbohydratesPerPortion = Math.Round(Convert.ToDouble(CalculateTotals(recipeDto).Carbohydrates) / recipeDto.PortionAmount, 2);
 
         if (double.IsNaN(carbohydratesPerPortion))
         {
@@ -97,7 +99,7 @@ public static class RecipeDtoExtensions
 
     public static double GetProteinPerPortion(this RecipeDto recipeDto)
     {
-        double proteinPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalProtein()) / recipeDto.PortionAmount, 2);
+        double proteinPerPortion = Math.Round(Convert.ToDouble(CalculateTotals(recipeDto).Protein) / recipeDto.PortionAmount, 2);
 
         if (double.IsNaN(proteinPerPortion))
         {
@@ -109,19 +111,20 @@ public static class RecipeDtoExtensions
 
     public static double GetCaloriesPerPortion(this RecipeDto recipeDto)
     {
-        double calroriesPerPortion = Math.Round(Convert.ToDouble(recipeDto.GetTotalCalories()) / recipeDto.PortionAmount, 2);
+        double caloriesPerPortion = Math.Round(Convert.ToDouble(CalculateTotals(recipeDto).Calories) / recipeDto.PortionAmount, 2);
 
-        if (double.IsNaN(calroriesPerPortion))
+        if (double.IsNaN(caloriesPerPortion))
         {
             return 0.0;
         }
 
-        return calroriesPerPortion;
+        return caloriesPerPortion;
     }
 
     public static double GetProteinPerCalorie(this RecipeDto recipeDto)
     {
-        double proteinPerCalorie = Math.Round(recipeDto.GetTotalProtein() / recipeDto.GetTotalCalories(), 2);
+        var totals = CalculateTotals(recipeDto);
+        double proteinPerCalorie = Math.Round(totals.Protein / totals.Calories, 2);
 
         if (double.IsNaN(proteinPerCalorie))
         {
