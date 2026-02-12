@@ -9,6 +9,7 @@ namespace BlazingRecept.Client.Components.PageComponents.RecipePage;
 
 public partial class IngredientMeasurementTable : PageComponentBase
 {
+    private const double PERCENTAGE_TO_DECIMAL = 0.01;
     private List<CheckableIngredientMeasurement> _checkableIngredientMeasurements = new();
 
     [CascadingParameter]
@@ -44,8 +45,10 @@ public partial class IngredientMeasurementTable : PageComponentBase
     private string GetMeasurement(IngredientMeasurementDto ingredientMeasurementDto)
     {
         Contracts.LogAndThrowWhenNull(ingredientMeasurementDto, "Cannot access ingredient measurement within recipe because passed ingredient measurement has not been set.");
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get measurement because recipe page reference is null.");
 
-        return ingredientMeasurementDto.Measurement.ToString() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
+        double scaledMeasurement = Math.Round(ingredientMeasurementDto.Measurement * RecipePage.PortionScalingFactor, 2);
+        return scaledMeasurement.ToString() + " " + ingredientMeasurementDto.MeasurementUnit.ToSymbol();
     }
 
     private string GetIngredientMeasurementRowClass(CheckableIngredientMeasurement checkableIngredientMeasurement)
@@ -53,6 +56,129 @@ public partial class IngredientMeasurementTable : PageComponentBase
         Contracts.LogAndThrowWhenNull(checkableIngredientMeasurement, "Cannot set class on ingredient measurement table row because checkable ingredient measurement has not been set.");
 
         return checkableIngredientMeasurement.IsChecked ? "table-primary" : "";
+    }
+
+    private double GetScaledGrams(IngredientMeasurementDto ingredientMeasurementDto)
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled grams because recipe page reference is null.");
+        return Math.Round(ingredientMeasurementDto.Grams * RecipePage.PortionScalingFactor, 2);
+    }
+
+    private double GetScaledFat(IngredientMeasurementDto ingredientMeasurementDto)
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled fat because recipe page reference is null.");
+        double scaledGrams = ingredientMeasurementDto.Grams * RecipePage.PortionScalingFactor;
+        double fat = ingredientMeasurementDto.IngredientDto.Fat * scaledGrams * PERCENTAGE_TO_DECIMAL;
+        return Math.Round(fat, 2);
+    }
+
+    private double GetScaledCarbohydrates(IngredientMeasurementDto ingredientMeasurementDto)
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled carbohydrates because recipe page reference is null.");
+        double scaledGrams = ingredientMeasurementDto.Grams * RecipePage.PortionScalingFactor;
+        double carbohydrates = ingredientMeasurementDto.IngredientDto.Carbohydrates * scaledGrams * PERCENTAGE_TO_DECIMAL;
+        return Math.Round(carbohydrates, 2);
+    }
+
+    private double GetScaledProtein(IngredientMeasurementDto ingredientMeasurementDto)
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled protein because recipe page reference is null.");
+        double scaledGrams = ingredientMeasurementDto.Grams * RecipePage.PortionScalingFactor;
+        double protein = ingredientMeasurementDto.IngredientDto.Protein * scaledGrams * PERCENTAGE_TO_DECIMAL;
+        return Math.Round(protein, 2);
+    }
+
+    private double GetScaledCalories(IngredientMeasurementDto ingredientMeasurementDto)
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled calories because recipe page reference is null.");
+        double scaledGrams = ingredientMeasurementDto.Grams * RecipePage.PortionScalingFactor;
+        double calories = ingredientMeasurementDto.IngredientDto.Calories * scaledGrams * PERCENTAGE_TO_DECIMAL;
+        return Math.Round(calories, 2);
+    }
+
+    private double GetScaledTotalGrams()
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled total grams because recipe page reference is null.");
+        Contracts.LogAndThrowWhenNull(RecipePage.RecipeDto, "Cannot get scaled total grams because recipe has not been set.");
+        double totalGrams = RecipePage.RecipeDto.IngredientMeasurementDtos.Sum(i => i.Grams);
+        return Math.Round(totalGrams * RecipePage.PortionScalingFactor, 2);
+    }
+
+    private double GetScaledTotalFat()
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled total fat because recipe page reference is null.");
+        Contracts.LogAndThrowWhenNull(RecipePage.RecipeDto, "Cannot get scaled total fat because recipe has not been set.");
+        double totalFat = 0.0;
+        foreach (IngredientMeasurementDto ingredientMeasurementDto in RecipePage.RecipeDto.IngredientMeasurementDtos)
+        {
+            totalFat += ingredientMeasurementDto.IngredientDto.Fat * ingredientMeasurementDto.Grams * PERCENTAGE_TO_DECIMAL;
+        }
+        return Math.Round(totalFat * RecipePage.PortionScalingFactor, 2);
+    }
+
+    private double GetScaledTotalCarbohydrates()
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled total carbohydrates because recipe page reference is null.");
+        Contracts.LogAndThrowWhenNull(RecipePage.RecipeDto, "Cannot get scaled total carbohydrates because recipe has not been set.");
+        double totalCarbohydrates = 0.0;
+        foreach (IngredientMeasurementDto ingredientMeasurementDto in RecipePage.RecipeDto.IngredientMeasurementDtos)
+        {
+            totalCarbohydrates += ingredientMeasurementDto.IngredientDto.Carbohydrates * ingredientMeasurementDto.Grams * PERCENTAGE_TO_DECIMAL;
+        }
+        return Math.Round(totalCarbohydrates * RecipePage.PortionScalingFactor, 2);
+    }
+
+    private double GetScaledTotalProtein()
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled total protein because recipe page reference is null.");
+        Contracts.LogAndThrowWhenNull(RecipePage.RecipeDto, "Cannot get scaled total protein because recipe has not been set.");
+        double totalProtein = 0.0;
+        foreach (IngredientMeasurementDto ingredientMeasurementDto in RecipePage.RecipeDto.IngredientMeasurementDtos)
+        {
+            totalProtein += ingredientMeasurementDto.IngredientDto.Protein * ingredientMeasurementDto.Grams * PERCENTAGE_TO_DECIMAL;
+        }
+        return Math.Round(totalProtein * RecipePage.PortionScalingFactor, 2);
+    }
+
+    private double GetScaledTotalCalories()
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get scaled total calories because recipe page reference is null.");
+        Contracts.LogAndThrowWhenNull(RecipePage.RecipeDto, "Cannot get scaled total calories because recipe has not been set.");
+        double totalCalories = 0.0;
+        foreach (IngredientMeasurementDto ingredientMeasurementDto in RecipePage.RecipeDto.IngredientMeasurementDtos)
+        {
+            totalCalories += ingredientMeasurementDto.IngredientDto.Calories * ingredientMeasurementDto.Grams * PERCENTAGE_TO_DECIMAL;
+        }
+        return Math.Round(totalCalories * RecipePage.PortionScalingFactor, 2);
+    }
+
+    private double GetGramsPerPortion()
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get grams per portion because recipe page reference is null.");
+        double gramsPerPortion = Math.Round(GetScaledTotalGrams() / RecipePage.CurrentPortionAmount, 2);
+        return double.IsNaN(gramsPerPortion) ? 0.0 : gramsPerPortion;
+    }
+
+    private double GetProteinPerPortion()
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get protein per portion because recipe page reference is null.");
+        double proteinPerPortion = Math.Round(GetScaledTotalProtein() / RecipePage.CurrentPortionAmount, 2);
+        return double.IsNaN(proteinPerPortion) ? 0.0 : proteinPerPortion;
+    }
+
+    private double GetCaloriesPerPortion()
+    {
+        Contracts.LogAndThrowWhenNull(RecipePage, "Cannot get calories per portion because recipe page reference is null.");
+        double caloriesPerPortion = Math.Round(GetScaledTotalCalories() / RecipePage.CurrentPortionAmount, 2);
+        return double.IsNaN(caloriesPerPortion) ? 0.0 : caloriesPerPortion;
+    }
+
+    private double GetProteinPerCalorie()
+    {
+        double totalCalories = GetScaledTotalCalories();
+        if (totalCalories == 0) return 0.0;
+        double proteinPerCalorie = Math.Round(GetScaledTotalProtein() / totalCalories, 2);
+        return double.IsNaN(proteinPerCalorie) ? 0.0 : proteinPerCalorie;
     }
 
     private class CheckableIngredientMeasurement

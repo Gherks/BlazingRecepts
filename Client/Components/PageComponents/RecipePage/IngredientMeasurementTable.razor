@@ -37,11 +37,11 @@ else
                                 <NoteTooltipIcon IngredientMeasurementDto="@ingredientMeasurementDto" />
                             </td>
                             <td>@GetMeasurement(ingredientMeasurementDto)</td>
-                            <td>@ingredientMeasurementDto.Grams</td>
-                            <td>@ingredientMeasurementDto.GetFat()</td>
-                            <td>@ingredientMeasurementDto.GetCarbohydrates()</td>
-                            <td>@ingredientMeasurementDto.GetProtein()</td>
-                            <td>@ingredientMeasurementDto.GetCalories()</td>
+                            <td>@GetScaledGrams(ingredientMeasurementDto)</td>
+                            <td>@GetScaledFat(ingredientMeasurementDto)</td>
+                            <td>@GetScaledCarbohydrates(ingredientMeasurementDto)</td>
+                            <td>@GetScaledProtein(ingredientMeasurementDto)</td>
+                            <td>@GetScaledCalories(ingredientMeasurementDto)</td>
                         </tr>
                     }
                 </tbody>
@@ -49,11 +49,11 @@ else
                     <tr>
                         <td><b>Total</b></td>
                         <td></td>
-                        <td><b>@RecipePage.RecipeDto.GetTotalGrams()</b></td>
-                        <td><b>@RecipePage.RecipeDto.GetTotalFat()</b></td>
-                        <td><b>@RecipePage.RecipeDto.GetTotalCarbohydrates()</b></td>
-                        <td><b>@RecipePage.RecipeDto.GetTotalProtein()</b></td>
-                        <td><b>@RecipePage.RecipeDto.GetTotalCalories()</b></td>
+                        <td><b>@GetScaledTotalGrams()</b></td>
+                        <td><b>@GetScaledTotalFat()</b></td>
+                        <td><b>@GetScaledTotalCarbohydrates()</b></td>
+                        <td><b>@GetScaledTotalProtein()</b></td>
+                        <td><b>@GetScaledTotalCalories()</b></td>
                     </tr>
                 </tfoot>
             </table>
@@ -70,10 +70,10 @@ else
                 </thead>
                 <tbody>
                     <tr>
-                        <td>@RecipePage.RecipeDto.GetGramsPerPortion()</td>
-                        <td>@RecipePage.RecipeDto.GetProteinPerPortion()</td>
-                        <td>@RecipePage.RecipeDto.GetCaloriesPerPortion()</td>
-                        <td>@RecipePage.RecipeDto.GetProteinPerCalorie()</td>
+                        <td>@GetGramsPerPortion()</td>
+                        <td>@GetProteinPerPortion()</td>
+                        <td>@GetCaloriesPerPortion()</td>
+                        <td>@GetProteinPerCalorie()</td>
                     </tr>
                 </tbody>
             </table>
