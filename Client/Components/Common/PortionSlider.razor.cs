@@ -19,7 +19,7 @@ public partial class PortionSlider : ComponentBase, IAsyncDisposable
     public EventCallback<int> ValueChanged { get; set; }
 
     [Inject]
-    protected internal IJSRuntime? JSRuntime { get; set; }
+    private IJSRuntime? JSRuntime { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

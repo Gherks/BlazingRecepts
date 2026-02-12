@@ -29,7 +29,7 @@ public partial class Recipe : PageBase
         }
     }
 
-    private async Task OnPortionAmountChanged(int newValue)
+    private void OnPortionAmountChanged(int newValue)
     {
         CurrentPortionAmount = newValue;
     }
