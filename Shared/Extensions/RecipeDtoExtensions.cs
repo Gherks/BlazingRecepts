@@ -111,14 +111,14 @@ public static class RecipeDtoExtensions
 
     public static double GetCaloriesPerPortion(this RecipeDto recipeDto)
     {
-        double calroriesPerPortion = Math.Round(Convert.ToDouble(CalculateTotals(recipeDto).Calories) / recipeDto.PortionAmount, 2);
+        double caloriesPerPortion = Math.Round(Convert.ToDouble(CalculateTotals(recipeDto).Calories) / recipeDto.PortionAmount, 2);
 
-        if (double.IsNaN(calroriesPerPortion))
+        if (double.IsNaN(caloriesPerPortion))
         {
             return 0.0;
         }
 
-        return calroriesPerPortion;
+        return caloriesPerPortion;
     }
 
     public static double GetProteinPerCalorie(this RecipeDto recipeDto)

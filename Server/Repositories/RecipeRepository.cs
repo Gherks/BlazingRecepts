@@ -17,8 +17,9 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
     {
         try
         {
-            // Use EF.Functions.Like for case-insensitive comparison without string allocation
-            return await _context.Recipe.AnyAsync(recipe => EF.Functions.Like(recipe.Name, name));
+            // SQL Server uses case-insensitive collation by default (SQL_Latin1_General_CP1_CI_AS)
+            // Direct comparison is more efficient than ToLower() and avoids string allocation
+            return await _context.Recipe.AnyAsync(recipe => recipe.Name == name);
         }
         catch (Exception exception)
         {
@@ -54,7 +55,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
                 .Include(recipe => recipe.IngredientMeasurements)
                     .ThenInclude(ingredientMeasurement => ingredientMeasurement.Ingredient)
                         .ThenInclude(ingredient => ingredient.Category)
-                .FirstAsync(recipe => EF.Functions.Like(recipe.Name, name));
+                .FirstAsync(recipe => recipe.Name == name);
         }
         catch (Exception exception)
         {
