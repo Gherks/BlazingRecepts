@@ -98,3 +98,8 @@ a, .btn-link {
 .theme-toggle-btn:hover {
     opacity: 0.8;
 }
+
+/* Override Bootstrap's text-dark for dark theme */
+[data-theme="dark"] .text-dark {
+    color: var(--text-primary) !important;
+}
