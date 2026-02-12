@@ -17,7 +17,8 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
     {
         try
         {
-            return await _context.Recipe.AnyAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
+            // Use EF.Functions.Like for case-insensitive comparison without string allocation
+            return await _context.Recipe.AnyAsync(recipe => EF.Functions.Like(recipe.Name, name));
         }
         catch (Exception exception)
         {
@@ -53,7 +54,7 @@ public class RecipeRepository : RepositoryBase<Recipe>, IRecipeRepository
                 .Include(recipe => recipe.IngredientMeasurements)
                     .ThenInclude(ingredientMeasurement => ingredientMeasurement.Ingredient)
                         .ThenInclude(ingredient => ingredient.Category)
-                .FirstAsync(recipe => recipe.Name.ToLower() == name.ToLower());
+                .FirstAsync(recipe => EF.Functions.Like(recipe.Name, name));
         }
         catch (Exception exception)
         {

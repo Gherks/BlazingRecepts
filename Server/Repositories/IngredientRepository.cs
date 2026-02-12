@@ -16,7 +16,8 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
     {
         try
         {
-            return await _context.Ingredient.AnyAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
+            // Use EF.Functions.Like for case-insensitive comparison without string allocation
+            return await _context.Ingredient.AnyAsync(ingredient => EF.Functions.Like(ingredient.Name, name));
         }
         catch (Exception exception)
         {
@@ -46,7 +47,7 @@ public class IngredientRepository : RepositoryBase<Ingredient>, IIngredientRepos
         {
             return await _context.Set<Ingredient>()
                 .Include(ingredient => ingredient.Category)
-                .FirstAsync(ingredient => ingredient.Name.ToLower() == name.ToLower());
+                .FirstAsync(ingredient => EF.Functions.Like(ingredient.Name, name));
         }
         catch (Exception exception)
         {
