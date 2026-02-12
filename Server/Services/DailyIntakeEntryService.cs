@@ -1,7 +1,7 @@
-using AutoMapper;
 using BlazingRecept.Contract;
 using BlazingRecept.Logging;
 using BlazingRecept.Server.Entities;
+using BlazingRecept.Server.Mappers;
 using BlazingRecept.Server.Repositories.Interfaces;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Server.Services.ServiceUtilities.DailyIntakeEntryLoaderFactory;
@@ -14,15 +14,12 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 {
     private readonly IDailyIntakeEntryRepository _dailyIntakeEntryRepository;
     private readonly IReadOnlyList<IDailyIntakeEntryLoader> dailyIntakeEntryLoaders;
-    private readonly IMapper _mapper;
 
     public DailyIntakeEntryService(
         IDailyIntakeEntryRepository dailyIntakeEntryRepository,
-        IMapper mapper,
         IDailyIntakeEntryLoaderFactory dailyIntakeEntryLoaderFactory)
     {
         _dailyIntakeEntryRepository = dailyIntakeEntryRepository;
-        _mapper = mapper;
 
         dailyIntakeEntryLoaders = new List<IDailyIntakeEntryLoader>()
         {
@@ -70,7 +67,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
     public async Task<DailyIntakeEntryDto> SaveAsync(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        DailyIntakeEntry? dailyIntakeEntry = _mapper.Map<DailyIntakeEntry>(dailyIntakeEntryDto);
+        DailyIntakeEntry? dailyIntakeEntry = EntityMapper.ToEntity(dailyIntakeEntryDto);
 
         dailyIntakeEntry.ProductId = await GetProductIdFromProductName(dailyIntakeEntryDto.ProductName);
 
@@ -96,7 +93,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
     {
         foreach (DailyIntakeEntryDto dailyIntakeEntryDto in dailyIntakeEntryDtos)
         {
-            DailyIntakeEntry dailyIntakeEntry = _mapper.Map<DailyIntakeEntry>(dailyIntakeEntryDto);
+            DailyIntakeEntry dailyIntakeEntry = EntityMapper.ToEntity(dailyIntakeEntryDto);
 
             dailyIntakeEntry.ProductId = await GetProductIdFromProductName(dailyIntakeEntryDto.ProductName);
 
@@ -151,7 +148,7 @@ public class DailyIntakeEntryService : IDailyIntakeEntryService
 
     private async Task<DailyIntakeEntryDto?> LoadDailyIntakeEntryDtoFromDailyIntakeEntry(DailyIntakeEntry dailyIntakeEntry)
     {
-        DailyIntakeEntryDto dailyIntakeEntryDto = _mapper.Map<DailyIntakeEntryDto>(dailyIntakeEntry);
+        DailyIntakeEntryDto dailyIntakeEntryDto = EntityMapper.ToDto(dailyIntakeEntry);
 
         foreach (IDailyIntakeEntryLoader dailyIntakeEntryLoader in dailyIntakeEntryLoaders)
         {

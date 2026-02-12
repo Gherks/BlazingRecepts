@@ -16,7 +16,6 @@ builder.Services.AddRazorPages();
 builder.AddBlazingReceptDbContext(builder.Configuration);
 builder.AddBlazingReceptServices();
 builder.AddBlazingReceptRepositories();
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSwaggerGen();
 
 // Configure Serilog
