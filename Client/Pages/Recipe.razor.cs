@@ -28,6 +28,11 @@ public partial class Recipe : PageBase
             }
         }
     }
+
+    private async Task OnPortionAmountChanged(int newValue)
+    {
+        CurrentPortionAmount = newValue;
+    }
     
     public double PortionScalingFactor => _originalPortionAmount > 0 ? (double)_currentPortionAmount / _originalPortionAmount : 1.0;
 

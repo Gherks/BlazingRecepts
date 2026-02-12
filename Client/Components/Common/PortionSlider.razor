@@ -1,0 +1,14 @@
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="portion-slider-container">
+    <label class="portion-slider-label">Portioner:</label>
+    <div class="portion-slider-wrapper">
+        <div class="portion-slider-track"></div>
+        <div class="portion-slider-knob" 
+             style="left: @GetKnobPosition()"
+             @onmousedown="HandleMouseDown"
+             @ontouchstart="HandleTouchStart">
+            <span class="portion-slider-value">@Value</span>
+        </div>
+    </div>
+</div>
