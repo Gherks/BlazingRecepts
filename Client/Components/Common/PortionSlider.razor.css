@@ -29,8 +29,8 @@
 
 .portion-slider-knob {
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     background: linear-gradient(135deg, #1b6ec2 0%, #0071c1 100%);
     border-radius: 50%;
     cursor: grab;
