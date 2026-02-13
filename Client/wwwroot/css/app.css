@@ -164,6 +164,24 @@ a, .btn-link {
     border-color: var(--border-color);
 }
 
+/* Table selection - make selected rows readable */
+[data-theme="dark"] .table-primary {
+    --bs-table-bg: #1e4d7a;
+    --bs-table-color: #e0e0e0;
+    background-color: #1e4d7a !important;
+    color: #e0e0e0 !important;
+}
+
+[data-theme="dark"] .table-primary > * {
+    background-color: #1e4d7a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Text muted - improve visibility on dark backgrounds */
+[data-theme="dark"] .text-muted {
+    color: #a8a8a8 !important;
+}
+
 /* Cards */
 [data-theme="dark"] .card {
     background-color: var(--bg-secondary);
