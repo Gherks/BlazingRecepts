@@ -35,5 +35,22 @@
     <script src="fontawesome-free-7.2.0/js/all.min.js"></script>
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
     <script src="bootstrap-5.3.8/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Theme management
+        window.getTheme = function() {
+            return localStorage.getItem('theme') || 'light';
+        };
+
+        window.setTheme = function(theme) {
+            localStorage.setItem('theme', theme);
+            document.documentElement.setAttribute('data-theme', theme);
+        };
+
+        // Apply theme on page load
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </body>
 </html>

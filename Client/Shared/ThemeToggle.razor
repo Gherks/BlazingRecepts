@@ -1,0 +1,27 @@
+@inject IJSRuntime JSRuntime
+
+<button class="nav-link btn btn-link theme-toggle-btn" @onclick="ToggleTheme" title="Toggle theme">
+    <span class="@ThemeIcon"></span>
+</button>
+
+@code {
+    private string currentTheme = "light";
+    private string ThemeIcon => currentTheme == "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var theme = await JSRuntime.InvokeAsync<string>("getTheme");
+            currentTheme = string.IsNullOrEmpty(theme) ? "light" : theme;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        currentTheme = currentTheme == "light" ? "dark" : "light";
+        await JSRuntime.InvokeVoidAsync("setTheme", currentTheme);
+        StateHasChanged();
+    }
+}

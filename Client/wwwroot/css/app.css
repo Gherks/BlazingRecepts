@@ -1,5 +1,50 @@
-﻿html, body {
+﻿/* CSS Variables for Light Theme (default) */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7f7f7;
+    --bg-sidebar: #525252;
+    --text-primary: #000000;
+    --text-secondary: #0071c1;
+    --border-color: #d6d5d5;
+    --btn-primary-bg: #1b6ec2;
+    --btn-primary-border: #1861ac;
+}
+
+/* Dark Theme Variables */
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #252525;
+    --bg-sidebar: #1f1f1f;
+    --text-primary: #e0e0e0;
+    --text-secondary: #4a9eff;
+    --text-muted: #888888;
+    --text-disabled: #666666;
+    --border-color: #444444;
+    --btn-primary-bg: #2b7fd4;
+    --btn-primary-border: #2470c0;
+    --hover-bg: #333333;
+    
+    /* Bootstrap component colors for dark theme */
+    --bs-table-bg: var(--bg-secondary);
+    --bs-table-striped-bg: var(--bg-tertiary);
+    --bs-table-hover-bg: var(--hover-bg);
+    --bs-table-border-color: var(--border-color);
+    --bs-card-bg: var(--bg-secondary);
+    --bs-card-border-color: var(--border-color);
+    --bs-input-bg: var(--bg-secondary);
+    --bs-input-border-color: var(--border-color);
+    --bs-input-color: var(--text-primary);
+    --bs-body-bg: var(--bg-primary);
+    --bs-body-color: var(--text-primary);
+    --bs-border-color: var(--border-color);
+}
+
+html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1:focus {
@@ -7,13 +52,13 @@ h1:focus {
 }
 
 a, .btn-link {
-    color: #0071c1;
+    color: var(--text-secondary);
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: var(--btn-primary-bg);
+    border-color: var(--btn-primary-border);
 }
 
 .content {
@@ -59,4 +104,339 @@ a, .btn-link {
 
 .blazor-error-boundary::after {
     content: "An error has occurred."
+}
+
+/* Theme toggle button styling */
+.theme-toggle-btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.theme-toggle-btn:hover {
+    opacity: 0.8;
+}
+
+/* Override Bootstrap's text-dark for dark theme using higher specificity */
+[data-theme="dark"] .top-row .text-dark {
+    color: var(--text-primary);
+}
+
+/* ======================================
+   Bootstrap Component Dark Theme Overrides
+   ====================================== */
+
+/* Tables */
+[data-theme="dark"] .table {
+    --bs-table-bg: var(--bg-secondary);
+    --bs-table-color: var(--text-primary);
+    --bs-table-border-color: var(--border-color);
+    --bs-table-striped-bg: var(--bg-tertiary);
+    --bs-table-striped-color: var(--text-primary);
+    --bs-table-hover-bg: var(--hover-bg);
+    --bs-table-hover-color: var(--text-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .table > :not(caption) > * > * {
+    background-color: var(--bs-table-bg);
+    border-bottom-color: var(--bs-table-border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-bg-type: var(--bs-table-striped-bg);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .table-hover > tbody > tr:hover > * {
+    --bs-table-bg-state: var(--bs-table-hover-bg);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] thead,
+[data-theme="dark"] tbody,
+[data-theme="dark"] tfoot,
+[data-theme="dark"] tr,
+[data-theme="dark"] td,
+[data-theme="dark"] th {
+    border-color: var(--border-color);
+}
+
+/* Table selection - make selected rows readable */
+[data-theme="dark"] .table-primary {
+    --bs-table-bg: #1e4d7a;
+    --bs-table-color: #e0e0e0;
+    background-color: #1e4d7a !important;
+    color: #e0e0e0 !important;
+}
+
+[data-theme="dark"] .table-primary > * {
+    background-color: #1e4d7a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Text muted - improve visibility on dark backgrounds */
+[data-theme="dark"] .text-muted {
+    color: #a8a8a8 !important;
+}
+
+/* Cards */
+[data-theme="dark"] .card {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-body {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-header {
+    background-color: var(--bg-tertiary);
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-footer {
+    background-color: var(--bg-tertiary);
+    border-top-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Forms */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+    background-color: var(--hover-bg);
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.25rem rgba(74, 158, 255, 0.25);
+}
+
+[data-theme="dark"] .form-control::placeholder {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .form-control:disabled,
+[data-theme="dark"] .form-select:disabled {
+    background-color: var(--bg-sidebar);
+    color: var(--text-disabled);
+}
+
+/* Input groups */
+[data-theme="dark"] .input-group-text {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Buttons - Secondary, Success, Danger variants */
+[data-theme="dark"] .btn-secondary {
+    background-color: #4a4a4a;
+    border-color: #5a5a5a;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background-color: #5a5a5a;
+    border-color: #6a6a6a;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .btn-success {
+    background-color: #2d7d3d;
+    border-color: #2a6f38;
+}
+
+[data-theme="dark"] .btn-success:hover {
+    background-color: #36914a;
+    border-color: #2f7d3f;
+}
+
+[data-theme="dark"] .btn-danger {
+    background-color: #b82e2e;
+    border-color: #a32929;
+}
+
+[data-theme="dark"] .btn-danger:hover {
+    background-color: #c83838;
+    border-color: #b02f2f;
+}
+
+/* Modals */
+[data-theme="dark"] .modal-content {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal-footer {
+    border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Alerts */
+[data-theme="dark"] .alert {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .alert-primary {
+    background-color: #1e4d7a;
+    border-color: #2b7fd4;
+    color: #b3d9ff;
+}
+
+[data-theme="dark"] .alert-success {
+    background-color: #1e5a2e;
+    border-color: #2d7d3d;
+    color: #b3f0c3;
+}
+
+[data-theme="dark"] .alert-danger {
+    background-color: #7a1e1e;
+    border-color: #b82e2e;
+    color: #ffb3b3;
+}
+
+[data-theme="dark"] .alert-warning {
+    background-color: #7a5a1e;
+    border-color: #d4962b;
+    color: #ffe0b3;
+}
+
+[data-theme="dark"] .alert-info {
+    background-color: #1e5a7a;
+    border-color: #2b96d4;
+    color: #b3e0ff;
+}
+
+/* Badges */
+[data-theme="dark"] .badge {
+    border: 1px solid var(--border-color);
+}
+
+/* Dropdowns */
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .dropdown-item {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-divider {
+    border-top-color: var(--border-color);
+}
+
+/* List groups */
+[data-theme="dark"] .list-group-item {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .list-group-item:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Breadcrumbs */
+[data-theme="dark"] .breadcrumb {
+    background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .breadcrumb-item a {
+    color: var(--text-secondary);
+}
+
+/* Pagination */
+[data-theme="dark"] .page-link {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .page-link:hover {
+    background-color: var(--hover-bg);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .page-item.active .page-link {
+    background-color: var(--btn-primary-bg);
+    border-color: var(--btn-primary-border);
+}
+
+[data-theme="dark"] .page-item.disabled .page-link {
+    background-color: var(--bg-sidebar);
+    border-color: var(--border-color);
+    color: var(--text-disabled);
+}
+
+/* Navs and tabs */
+[data-theme="dark"] .nav-tabs {
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .nav-tabs .nav-link {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .nav-tabs .nav-link:hover,
+[data-theme="dark"] .nav-tabs .nav-link:focus {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .nav-tabs .nav-link.active {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color) var(--border-color) var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Progress bars */
+[data-theme="dark"] .progress {
+    background-color: var(--bg-sidebar);
+}
+
+/* Tooltips and Popovers */
+[data-theme="dark"] .tooltip-inner {
+    background-color: var(--bg-sidebar);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .popover {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .popover-header {
+    background-color: var(--bg-tertiary);
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .popover-body {
+    color: var(--text-primary);
 }
