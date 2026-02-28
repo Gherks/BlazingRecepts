@@ -1,5 +1,4 @@
 using BlazingRecept.Client.Services.Interfaces;
-using BlazingRecept.Contract;
 using BlazingRecept.Logging;
 using BlazingRecept.Shared.Dto;
 using System.Net;
@@ -91,11 +90,19 @@ public class IngredientService : IIngredientService
     {
         IReadOnlyList<IngredientDto>? ingredientDtos = await GetAllAsync();
 
-        Contracts.LogAndThrowWhenNull(ingredientDtos, "Failed while fetching all ingredients sorted because fetched and unsorted ingredient dto list is null.");
+        if (ingredientDtos == null)
+        {
+            Log.Error("Failed while fetching all ingredients sorted because fetched and unsorted ingredient dto list is null.");
+            return new List<IngredientCollectionTypeDto>();
+        }
 
         IReadOnlyList<CategoryDto>? categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
 
-        Contracts.LogAndThrowWhenNull(categoryDtos, "Failed while fetching all ingredients sorted because fetched category dto list is null.");
+        if (categoryDtos == null)
+        {
+            Log.Error("Failed while fetching all ingredients sorted because fetched category dto list is null.");
+            return new List<IngredientCollectionTypeDto>();
+        }
 
         List<IngredientCollectionTypeDto> ingredientCollectionTypes = new();
 

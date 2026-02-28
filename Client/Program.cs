@@ -24,7 +24,7 @@ try
     // Configure Serilog
     Log.Logger = new LoggerConfiguration()
         .Enrich.WithProperty("ClientId", Guid.NewGuid().ToString("n"))
-        .WriteTo.DurableHttpUsingFileSizeRolledBuffers(requestUri: builder.HostEnvironment.BaseAddress + "api/logs")
+        .WriteTo.Http(requestUri: builder.HostEnvironment.BaseAddress + "api/logs", queueLimitBytes: null)
         .CreateLogger();
 
     await builder.Build().RunAsync();

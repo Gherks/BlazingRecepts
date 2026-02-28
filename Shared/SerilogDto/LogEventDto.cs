@@ -6,5 +6,5 @@ public sealed class LogEventDto
     public string Level { get; set; } = string.Empty;
     public string RenderedMessage { get; set; } = string.Empty;
     public string Exception { get; set; } = string.Empty;
-    public Dictionary<string, string> Properties { get; set; } = new();
+    public Dictionary<string, object> Properties { get; set; } = new();
 }
