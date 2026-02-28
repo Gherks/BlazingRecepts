@@ -13,7 +13,7 @@ namespace BlazingRecept.Server.Controllers;
 public sealed class LogController : ControllerBase
 {
     [HttpPost]
-    public void PostAsync(JsonDocument logEventsJsonDocument)
+    public IActionResult PostAsync([FromBody] JsonDocument logEventsJsonDocument)
     {
         string jsonString = logEventsJsonDocument.RootElement.GetRawText();
 
@@ -41,15 +41,17 @@ public sealed class LogController : ControllerBase
                 Serilog.Log.Information($"ClientLog (Failed to determine log level) - {logEventDto.RenderedMessage}");
             }
         }
+
+        return Ok();
     }
 
     private List<LogEventProperty> BuildLogEventProperties(LogEventDto logEventDto)
     {
         List<LogEventProperty> properties = new();
 
-        foreach (KeyValuePair<string, string> property in logEventDto.Properties)
+        foreach (KeyValuePair<string, object> property in logEventDto.Properties)
         {
-            properties.Add(new LogEventProperty(property.Key, new ScalarValue(property.Value)));
+            properties.Add(new LogEventProperty(property.Key, new ScalarValue(property.Value?.ToString())));
         }
 
         return properties;

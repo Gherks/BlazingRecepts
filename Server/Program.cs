@@ -1,15 +1,9 @@
-using Azure.Identity;
 using BlazingRecept.Server.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Identity.Web;
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -22,14 +16,6 @@ builder.Services.AddSwaggerGen();
 builder.Host.UseSerilog((hostBuilderContext, serviceProvider, loggerConfiguration) => loggerConfiguration
     .Enrich.FromLogContext()
     .ReadFrom.Configuration(hostBuilderContext.Configuration));
-
-// Configure Azure key vault
-if (builder.Environment.IsProduction())
-{
-    builder.Configuration.AddAzureKeyVault(
-        new Uri($"https://{builder.Configuration["AzureKeyVaultName"]}.vault.azure.net/"),
-        new DefaultAzureCredential());
-}
 
 var app = builder.Build();
 
@@ -63,15 +49,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
 app.MapRazorPages();
 
-//if (app.Environment.IsDevelopment())
-//    app.MapControllers().WithMetadata(new AllowAnonymousAttribute());
-//else
-//    app.MapControllers();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 

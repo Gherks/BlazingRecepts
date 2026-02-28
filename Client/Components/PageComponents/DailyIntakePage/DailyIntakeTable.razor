@@ -26,9 +26,7 @@ else
                                 <th class="col-1">Protein</th>
                                 <th class="col-1">Kalorier</th>
                                 <th class="col-1">Protein/kalori</th>
-                                <AuthorizeView>
-                                    <th class="col-3">Åtgärder</th>
-                                </AuthorizeView>
+                                <th class="col-3">Åtgärder</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,35 +52,31 @@ else
                                     <td class="col-1">@GetProteinPerCalorie(dailyIntakeEntryDto)</td>
                                     @if (_uneditedDailyIntakeEntryDto != null && _uneditedDailyIntakeEntryDto.Id == dailyIntakeEntryDto.Id)
                                     {
-                                        <AuthorizeView>
-                                            <td class="col-3">
-                                                <button class="btn btn-success btn-sm" @onclick="() => HandleDailyIntakeEntryEditSubmitClickAsync(dailyIntakeEntryDto)">
-                                                    <i class="fa-solid fa-check"></i>
-                                                </button>
-                                                <button class="btn btn-danger btn-sm" @onclick="() => HandleDailyIntakeEntryEditCancelClick(dailyIntakeEntryDto)">
-                                                    <i class="fa-solid fa-xmark"></i>
-                                                </button>
-                                            </td>
-                                        </AuthorizeView>
+                                        <td class="col-3">
+                                            <button class="btn btn-success btn-sm" @onclick="() => HandleDailyIntakeEntryEditSubmitClickAsync(dailyIntakeEntryDto)">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" @onclick="() => HandleDailyIntakeEntryEditCancelClick(dailyIntakeEntryDto)">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </td>
                                     }
                                     else
                                     {
-                                        <AuthorizeView>
-                                            <td class="col-3">
-                                                <button type="button" class="btn btn-primary btn-sm" disabled="@(_uneditedDailyIntakeEntryDto != null)" @onclick="() => HandleDailyIntakeEntryMoveUpInOrderClickAsync(dailyIntakeEntryDto)">
-                                                    <i class="fa-solid fa-arrow-up"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-primary btn-sm" disabled="@(_uneditedDailyIntakeEntryDto != null)" @onclick="() => HandleDailyIntakeEntryMoveDownInOrderClickAsync(dailyIntakeEntryDto)">
-                                                    <i class="fa-solid fa-arrow-down"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-primary btn-sm" disabled="@(_uneditedDailyIntakeEntryDto != null)" @onclick="() => HandleDailyIntakeEntryEditClick(dailyIntakeEntryDto)">
-                                                    <i class="fa-solid fa-pen-to-square"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-sm" disabled="@(_uneditedDailyIntakeEntryDto != null)" @onclick="() => HandleDailyIntakeEntryRemoveClickAsync(dailyIntakeEntryDto)">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </AuthorizeView>
+                                        <td class="col-3">
+                                            <button type="button" class="btn btn-primary btn-sm" disabled="@(_uneditedDailyIntakeEntryDto != null)" @onclick="() => HandleDailyIntakeEntryMoveUpInOrderClickAsync(dailyIntakeEntryDto)">
+                                                <i class="fa-solid fa-arrow-up"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm" disabled="@(_uneditedDailyIntakeEntryDto != null)" @onclick="() => HandleDailyIntakeEntryMoveDownInOrderClickAsync(dailyIntakeEntryDto)">
+                                                <i class="fa-solid fa-arrow-down"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm" disabled="@(_uneditedDailyIntakeEntryDto != null)" @onclick="() => HandleDailyIntakeEntryEditClick(dailyIntakeEntryDto)">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" disabled="@(_uneditedDailyIntakeEntryDto != null)" @onclick="() => HandleDailyIntakeEntryRemoveClickAsync(dailyIntakeEntryDto)">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
                                     }
                                 </tr>
                             }
@@ -98,9 +92,7 @@ else
                                     <th class="col-1">@GetCheckedProteinTotal()</th>
                                     <th class="col-1">@GetCheckedCalorieTotal()</th>
                                     <th class="col-1">@GetCheckedAverageProteinPerCalorie()</th>
-                                    <AuthorizeView>
-                                        <th class="col-3"></th>
-                                    </AuthorizeView>
+                                    <th class="col-3"></th>
                                 </tr>
                             }
                             <tr>
@@ -111,19 +103,15 @@ else
                                 <th class="col-1">@GetProteinTotal()</th>
                                 <th class="col-1">@GetCalorieTotal()</th>
                                 <th class="col-1">@GetAverageProteinPerCalorie()</th>
-                                <AuthorizeView>
-                                    <th class="col-3"></th>
-                                </AuthorizeView>
+                                <th class="col-3"></th>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             }
-            <AuthorizeView>
-                <div>
-                    <button type="button" class="btn btn-primary" @onclick="@(_ => HandleDailyIntakeEntryAddClickAsync())">Lägg till produkt</button>
-                </div>
-            </AuthorizeView>
+            <div>
+                <button type="button" class="btn btn-primary" @onclick="@(_ => HandleDailyIntakeEntryAddClickAsync())">Lägg till produkt</button>
+            </div>
         </div>
     </div>
 }

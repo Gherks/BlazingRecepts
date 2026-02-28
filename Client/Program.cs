@@ -21,16 +21,10 @@ try
     // Add Radzen services
     builder.Services.AddRadzenComponents();
 
-    builder.Services.AddMsalAuthentication(options =>
-    {
-        builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
-        options.ProviderOptions.DefaultAccessTokenScopes.Add("api://9fe5670d-f19b-454b-bfd1-1ba2180409d0/API.Access");
-    });
-
     // Configure Serilog
     Log.Logger = new LoggerConfiguration()
         .Enrich.WithProperty("ClientId", Guid.NewGuid().ToString("n"))
-        .WriteTo.DurableHttpUsingFileSizeRolledBuffers(requestUri: builder.HostEnvironment.BaseAddress + "api/logs")
+        .WriteTo.Http(requestUri: builder.HostEnvironment.BaseAddress + "api/logs", queueLimitBytes: null)
         .CreateLogger();
 
     await builder.Build().RunAsync();

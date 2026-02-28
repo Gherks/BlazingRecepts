@@ -1,8 +1,6 @@
 using BlazingRecept.Client.Services.Interfaces;
-using BlazingRecept.Contract;
 using BlazingRecept.Logging;
 using BlazingRecept.Shared.Dto;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using System.Net;
 using System.Net.Http.Json;
 using static BlazingRecept.Shared.Enums;
@@ -13,15 +11,13 @@ public class IngredientService : IIngredientService
 {
     private static readonly string _apiAddress = "api/ingredients";
 
-    private readonly HttpClient _publicHttpClient;
-    private readonly HttpClient _authenticatedHttpClient;
+    private readonly HttpClient _httpClient;
 
     private readonly ICategoryService _categoryService;
 
     public IngredientService(IHttpClientFactory httpClientFactory, ICategoryService categoryService)
     {
-        _publicHttpClient = httpClientFactory.CreateClient("BlazingRecept.PublicServerAPI");
-        _authenticatedHttpClient = httpClientFactory.CreateClient("BlazingRecept.AuthenticatedServerAPI");
+        _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
 
         _categoryService = categoryService;
     }
@@ -30,9 +26,9 @@ public class IngredientService : IIngredientService
     {
         try
         {
-            Uri uri = new Uri(_publicHttpClient.BaseAddress + _apiAddress + $"/{name}");
+            Uri uri = new Uri(_httpClient.BaseAddress + _apiAddress + $"/{name}");
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
-            HttpResponseMessage response = await _publicHttpClient.SendAsync(httpRequestMessage);
+            HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
 
             return response.StatusCode == HttpStatusCode.OK;
         }
@@ -48,7 +44,7 @@ public class IngredientService : IIngredientService
     {
         try
         {
-            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + $"/{id}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -67,7 +63,7 @@ public class IngredientService : IIngredientService
     {
         try
         {
-            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress);
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -94,11 +90,19 @@ public class IngredientService : IIngredientService
     {
         IReadOnlyList<IngredientDto>? ingredientDtos = await GetAllAsync();
 
-        Contracts.LogAndThrowWhenNull(ingredientDtos, "Failed while fetching all ingredients sorted because fetched and unsorted ingredient dto list is null.");
+        if (ingredientDtos == null)
+        {
+            Log.Error("Failed while fetching all ingredients sorted because fetched and unsorted ingredient dto list is null.");
+            return new List<IngredientCollectionTypeDto>();
+        }
 
         IReadOnlyList<CategoryDto>? categoryDtos = await _categoryService.GetAllOfTypeAsync(CategoryType.Ingredient);
 
-        Contracts.LogAndThrowWhenNull(categoryDtos, "Failed while fetching all ingredients sorted because fetched category dto list is null.");
+        if (categoryDtos == null)
+        {
+            Log.Error("Failed while fetching all ingredients sorted because fetched category dto list is null.");
+            return new List<IngredientCollectionTypeDto>();
+        }
 
         List<IngredientCollectionTypeDto> ingredientCollectionTypes = new();
 
@@ -129,16 +133,12 @@ public class IngredientService : IIngredientService
     {
         try
         {
-            HttpResponseMessage response = await _authenticatedHttpClient.PostAsJsonAsync(_apiAddress, ingredientDto);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_apiAddress, ingredientDto);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return await response.Content.ReadFromJsonAsync<IngredientDto>();
             }
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
         }
         catch (Exception exception)
         {
@@ -152,13 +152,9 @@ public class IngredientService : IIngredientService
     {
         try
         {
-            HttpResponseMessage response = await _authenticatedHttpClient.DeleteAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _httpClient.DeleteAsync(_apiAddress + $"/{id}");
 
             return response.StatusCode == HttpStatusCode.OK;
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
         }
         catch (Exception exception)
         {

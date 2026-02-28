@@ -1,9 +1,7 @@
 ﻿using BlazingRecept.Logging;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace BlazingRecept.Server.Controllers;
 
@@ -11,8 +9,6 @@ namespace BlazingRecept.Server.Controllers;
 [Route("api/daily-intake-entries")]
 public class DailyIntakeEntryController : ControllerBase
 {
-    private static readonly string[] _scopeRequiredByApi = new string[] { "API.Access" };
-
     private readonly IDailyIntakeEntryService _dailyIntakeEntryService;
 
     public DailyIntakeEntryController(IDailyIntakeEntryService dailyIntakeEntryService)
@@ -64,13 +60,9 @@ public class DailyIntakeEntryController : ControllerBase
         return NoContent();
     }
 
-    [Authorize]
-    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpPost]
     public async Task<ActionResult<DailyIntakeEntryDto>> Post(DailyIntakeEntryDto dailyIntakeEntryDto)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
-
         try
         {
             if (dailyIntakeEntryDto == null)
@@ -87,13 +79,9 @@ public class DailyIntakeEntryController : ControllerBase
         }
     }
 
-    [Authorize]
-    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpPost("many")]
     public async Task<ActionResult<bool>> Post(List<DailyIntakeEntryDto> dailyIntakeEntryDtos)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
-
         try
         {
             if (dailyIntakeEntryDtos == null)
@@ -119,13 +107,9 @@ public class DailyIntakeEntryController : ControllerBase
         }
     }
 
-    [Authorize]
-    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
-
         bool dailyIntakeEntryRemoved = await _dailyIntakeEntryService.DeleteAsync(id);
 
         if (dailyIntakeEntryRemoved)

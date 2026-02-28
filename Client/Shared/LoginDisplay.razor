@@ -1,16 +1,1 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-
-<AuthorizeView>
-    <Authorized>
-        Hej @context.User.Identity?.Name!
-        <button class="nav-link btn btn-link text-dark" @onclick="HandleBeginLogout">
-            Logga ut
-        </button>
-    </Authorized>
-    <NotAuthorized>
-        <button class="nav-link btn btn-link text-dark" @onclick="HandleBeginLogin">
-            Logga in
-        </button>
-    </NotAuthorized>
-</AuthorizeView>
+﻿

@@ -11,7 +11,6 @@
 		<PackageReference Include="Markdig" Version="0.45.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.3" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="10.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.3" />
 		<PackageReference Include="Radzen.Blazor" Version="9.0.4" />
 		<PackageReference Include="Serilog.Settings.Configuration" Version="10.0.0" />
@@ -22,10 +21,6 @@
 		<ProjectReference Include="..\Contracts\BlazingRecept.Contract.csproj" />
 		<ProjectReference Include="..\Logging\BlazingRecept.Logging.csproj" />
 		<ProjectReference Include="..\Shared\BlazingRecept.Shared.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
 	</ItemGroup>
 
 </Project>
