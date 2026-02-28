@@ -11,18 +11,18 @@ public class CategoryService : ICategoryService
 {
     private static readonly string _apiAddress = "api/categories";
 
-    private readonly HttpClient _publicHttpClient;
+    private readonly HttpClient _httpClient;
 
     public CategoryService(IHttpClientFactory httpClientFactory)
     {
-        _publicHttpClient = httpClientFactory.CreateClient("BlazingRecept.PublicServerAPI");
+        _httpClient = httpClientFactory.CreateClient("BlazingRecept.ServerAPI");
     }
 
     public async Task<CategoryDto?> GetByIdAsync(Guid id)
     {
         try
         {
-            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress + $"/{id}");
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + $"/{id}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -41,7 +41,7 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            HttpResponseMessage response = await _publicHttpClient.GetAsync(_apiAddress + $"/by-type/{Convert.ToInt32(categoryType)}");
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiAddress + $"/by-type/{Convert.ToInt32(categoryType)}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
