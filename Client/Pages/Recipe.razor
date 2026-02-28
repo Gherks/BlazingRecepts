@@ -24,14 +24,12 @@ else
                 <h1>@RecipeDto.Name</h1>
             </div>
             <div class="flex-shrink-1">
-                <AuthorizeView>
-                    <button class="btn btn-primary" @onclick="() => HandleNavigationToEditRecipe(RecipeDto)">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </button>
-                    <button class="btn btn-danger" @onclick="() => HandleRecipeRemovalModalOpen(RecipeDto)">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </AuthorizeView>
+                <button class="btn btn-primary" @onclick="() => HandleNavigationToEditRecipe(RecipeDto)">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-danger" @onclick="() => HandleRecipeRemovalModalOpen(RecipeDto)">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </div>
         </div>
         <div class="d-flex justify-content-between align-items-center">

@@ -1,9 +1,7 @@
 ﻿using BlazingRecept.Logging;
 using BlazingRecept.Server.Services.Interfaces;
 using BlazingRecept.Shared.Dto;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 
 namespace BlazingRecept.Server.Controllers;
 
@@ -11,8 +9,6 @@ namespace BlazingRecept.Server.Controllers;
 [Route("api/recipes")]
 public class RecipeController : ControllerBase
 {
-    private static readonly string[] _scopeRequiredByApi = new string[] { "API.Access" };
-
     private readonly IRecipeService _recipeService;
 
     public RecipeController(IRecipeService recipeService)
@@ -64,13 +60,9 @@ public class RecipeController : ControllerBase
         return NoContent();
     }
 
-    [Authorize]
-    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpPost]
     public async Task<ActionResult<RecipeDto>> Post(RecipeDto recipeDto)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
-
         try
         {
             if (recipeDto == null)
@@ -87,13 +79,9 @@ public class RecipeController : ControllerBase
         }
     }
 
-    [Authorize]
-    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(_scopeRequiredByApi);
-
         bool recipeRemoved = await _recipeService.DeleteAsync(id);
 
         if (recipeRemoved)

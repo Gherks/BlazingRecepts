@@ -29,9 +29,7 @@ else
                           OnDailyIntakeEntryEditSubmitAsync="@HandleDailyIntakeEntryEditSubmitAsync"
                           OnDailyIntakeEntryRemoveAsync="@HandleDailyIntakeEntryRemoveAsync" />
         }
-        <AuthorizeView>
-            <button class="btn btn-primary" @onclick="() => HandleAddNewCollectionClick()">Lägg till tabell</button>
-        </AuthorizeView>
+        <button class="btn btn-primary" @onclick="() => HandleAddNewCollectionClick()">Lägg till tabell</button>
     </CascadingValue>
 }
 

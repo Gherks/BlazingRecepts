@@ -9,7 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.App.Internal.Assets" Version="10.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
@@ -31,13 +30,6 @@
 		<ProjectReference Include="..\Contracts\BlazingRecept.Contract.csproj" />
 		<ProjectReference Include="..\Logging\BlazingRecept.Logging.csproj" />
 		<ProjectReference Include="..\Shared\BlazingRecept.Shared.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" NoWarn="NU1605" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.3" NoWarn="NU1605" />
-		<PackageReference Include="Microsoft.Identity.Web" Version="4.3.0" />
-		<PackageReference Include="Microsoft.Identity.Web.UI" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
