@@ -13,7 +13,12 @@
                 <CustomValidation @ref="_customValidation" />
                 <div class="row my-2">
                     <div class="col-12 col-md-9 col-lg-7">
-                        <input type="text" id="name" name="name" class="form-control" @ref="_nameInput" @bind="_form.Name" @onblur="@(_ => HandleNameBlur())" placeholder="Ange namn">
+                        <IngredientAutocomplete @bind-SearchText="_form.Name" 
+                                               OnResultSelected="HandleIngredientSelected"
+                                               Placeholder="Ange namn"
+                                               id="name" 
+                                               name="name"
+                                               @onblur="@(_ => HandleNameBlur())" />
                         <ValidationMessage For="() => _form.Name" />
                     </div>
                 </div>

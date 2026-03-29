@@ -14,6 +14,12 @@ public static class ServiceCollectionExtensions
         builder.Services.AddHttpClient("BlazingRecept.AuthenticatedServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
             .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
+        builder.Services.AddHttpClient("OpenFoodFacts", client => 
+        {
+            client.BaseAddress = new Uri("https://world.openfoodfacts.org/");
+            client.DefaultRequestHeaders.Add("User-Agent", "BlazingRecepts - Nutrition App");
+        });
+
         builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("BlazingRecept.PublicServerAPI"));
         builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("BlazingRecept.AuthenticatedServerAPI"));
 
@@ -25,6 +31,7 @@ public static class ServiceCollectionExtensions
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IDailyIntakeEntryService, DailyIntakeEntryService>();
         builder.Services.AddScoped<IIngredientService, IngredientService>();
+        builder.Services.AddScoped<IIngredientSearchService, IngredientSearchService>();
         builder.Services.AddScoped<IRecipeService, RecipeService>();
 
         return builder;
