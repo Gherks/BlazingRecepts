@@ -26,7 +26,7 @@ public class RecipeService : IRecipeService
         try
         {
             Uri uri = new Uri(_publicHttpClient.BaseAddress + _apiAddress + $"/{name}");
-            HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
+            using HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Head, uri);
             HttpResponseMessage response = await _publicHttpClient.SendAsync(httpRequestMessage);
 
             return response.StatusCode == HttpStatusCode.OK;

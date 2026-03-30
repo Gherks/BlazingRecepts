@@ -80,12 +80,12 @@ public partial class AddDailyIntakeEntryModal : PageComponentBase
         Contracts.LogAndThrowWhenNull(DailyIntakePage.Recipes, "DailyIntake page reference contains no recipes during daily intake recipe input search procedure.");
 
         List<IngredientDto> foundIngredients = DailyIntakePage.Ingredients
-            .Where(ingredientDto => ingredientDto.Name?.Contains(request.UserInput, StringComparison.CurrentCultureIgnoreCase) ?? false)
+            .Where(ingredientDto => ingredientDto.Name?.Contains(request.UserInput, StringComparison.OrdinalIgnoreCase) ?? false)
             .OrderBy(ingredientDto => ingredientDto.Name)
             .ToList();
 
         List<RecipeDto> foundRecipes = DailyIntakePage.Recipes
-            .Where(recipeDto => recipeDto.Name?.Contains(request.UserInput, StringComparison.CurrentCultureIgnoreCase) ?? false)
+            .Where(recipeDto => recipeDto.Name?.Contains(request.UserInput, StringComparison.OrdinalIgnoreCase) ?? false)
             .OrderBy(recipeDto => recipeDto.Name)
             .ToList();
 

@@ -13,6 +13,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+// Add response compression for better performance
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
 builder.AddBlazingReceptDbContext(builder.Configuration);
 builder.AddBlazingReceptServices();
 builder.AddBlazingReceptRepositories();
@@ -46,6 +52,9 @@ else
 }
 
 //app.UseMiddleware<CustomExceptionHandlingMiddleware>();
+
+// Enable response compression
+app.UseResponseCompression();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {

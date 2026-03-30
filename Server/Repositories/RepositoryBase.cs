@@ -79,10 +79,9 @@ public class RepositoryBase<Type> : IAsyncRepository<Type> where Type : BaseEnti
             await _context.Set<Type>().AddRangeAsync(entities);
             await _context.SaveChangesAsync();
 
-            foreach (var entity in entities)
-            {
-                await _context.Entry(entity).ReloadAsync();
-            }
+            // Entity Framework already populates generated values (like IDs) after SaveChangesAsync
+            // Individual ReloadAsync calls are unnecessary and create N+1 queries
+            // Only reload if there are database-generated computed columns that need to be fetched
         }
         catch (Exception exception)
         {

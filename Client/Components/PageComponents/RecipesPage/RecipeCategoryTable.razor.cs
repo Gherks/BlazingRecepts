@@ -50,7 +50,7 @@ public partial class RecipeCategoryTable : PageComponentBase
 
         foreach (char letter in _recipeCategories.Keys)
         {
-            _recipeCategories[letter].Sort((first, second) => string.Compare(first.Name.ToLower(), second.Name.ToLower()));
+            _recipeCategories[letter].Sort((first, second) => string.Compare(first.Name, second.Name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

@@ -66,7 +66,7 @@ public partial class AddIngredientMeasurementModal : PageComponentBase
         return await Task.FromResult(new AutosuggestDataProviderResult<IngredientDto>
         {
             Data = RecipeWorkbench.Ingredients
-                .Where(ingredientDto => ingredientDto.Name?.Contains(request.UserInput, StringComparison.CurrentCultureIgnoreCase) ?? false)
+                .Where(ingredientDto => ingredientDto.Name?.Contains(request.UserInput, StringComparison.OrdinalIgnoreCase) ?? false)
                 .OrderBy(ingredientDto => ingredientDto.Name)
                 .ToList()
         });
